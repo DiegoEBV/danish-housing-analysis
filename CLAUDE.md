@@ -88,7 +88,7 @@ black src/ scripts/ tests/
 mypy src/
 ```
 
-**Datos**: `data/` está en `.gitignore` y no se commitea. El raw debe colocarse manualmente (`data/raw/danish_housing_prices.csv` para `run_cleaning.py`, o `data/raw/DKHousingPrices.parquet` para `run_pipeline.py` — los scripts usan rutas distintas, ver más abajo).
+**Datos**: `data/` está en `.gitignore` y no se commitea. El raw debe colocarse manualmente. Rutas configurables en `configs/analysis.yaml -> paths.raw_csv` (CSV de Kaggle) y `paths.raw_parquet` (1.2M filas, preferido cuando existe).
 
 ## Architecture
 
@@ -114,8 +114,9 @@ Tableau Desktop (.twbx)
 
 Hay **dos scripts de pipeline** que no son intercambiables — esto es deliberado, no un bug:
 
-- `scripts/run_cleaning.py` — entrega TB2, lee **CSV** desde `configs/analysis.yaml`, escribe sólo Silver, y produce la bitácora. Usa el módulo `src/danish_housing/cleaning.py`.
-- `scripts/run_pipeline.py` — entrega TB3, lee **Parquet** desde una ruta absoluta hardcodeada (`/sessions/.../DKHousingPrices.parquet`), inlinea las reglas P1–P8 y genera los 5 marts Gold en una sola corrida memory-efficient (libera el raw antes de generar marts, recarga sólo las columnas necesarias). **No reusa `cleaning.py`** porque está optimizado para 1.5M filas en RAM limitada.
+- `scripts/run_cleaning.py` — entrega TB2, lee CSV o Parquet desde `configs/analysis.yaml -> paths.raw_*` (prefiere parquet si ambos existen), delega en `src/danish_housing/cleaning.py:run_cleaning_pipeline`, escribe Silver parquet + bitácora.
+- `scripts/run_pipeline.py` — entrega TB3, lee Parquet (1.2M filas) desde `paths.raw_parquet` configurable, **inlinea** las reglas P1–P8 + genera los 5 marts Gold en una sola corrida memory-efficient (libera el raw antes de generar marts, recarga sólo las columnas necesarias). **No reusa `cleaning.py`** porque está optimizado para 1.2M filas en RAM limitada.
+- `scripts/export_marts.py` — generación de marts standalone leyendo Silver. Pendiente de absorber por completo la FASE B de `run_pipeline.py` (issue `ixa`).
 
 Si tocas reglas de limpieza, **actualiza ambos** o documenta explícitamente la divergencia. El plan de medio plazo (issue `ixa`) es extraer la lógica de marts a `scripts/export_marts.py` reutilizable.
 
