@@ -29,7 +29,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(me
 logger = logging.getLogger(__name__)
 
 # ── Configuración GCP ─────────────────────────────────────────────────────────
-GCP_PROJECT  = "danish-housing-upc"       # Cambiar por tu project ID
+GCP_PROJECT  = "project-43d6b6df-15b5-4496-a5e"       # Cambiar por tu project ID
 BUCKET_BRONZE = "danish-housing-bronze"   # gs://danish-housing-bronze
 BUCKET_SILVER = "danish-housing-silver"   # gs://danish-housing-silver
 BUCKET_GOLD   = "danish-housing-gold"     # gs://danish-housing-gold
