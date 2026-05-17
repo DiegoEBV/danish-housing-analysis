@@ -76,13 +76,16 @@ def main() -> None:
         df = df.head(args.sample).copy()
     logger.info(f"Raw cargado: {len(df):,} filas")
 
-    # P8 renombrar
-    df = df.rename(columns={
-        "nom_interest_rate%":              "nom_interest_rate_pct",
-        "dk_ann_infl_rate%":               "dk_ann_infl_rate_pct",
-        "yield_on_mortgage_credit_bonds%": "yield_mortgage_bonds_pct",
-        "%_change_between_offer_and_purchase": "pct_change_offer_purchase",
-    })
+    # P8 renombrar (tolera tanto '%' como '%25' segun como venga el raw)
+    rename_map = {}
+    for suffix in ("%", "%25"):
+        rename_map.update({
+            f"nom_interest_rate{suffix}":              "nom_interest_rate_pct",
+            f"dk_ann_infl_rate{suffix}":               "dk_ann_infl_rate_pct",
+            f"yield_on_mortgage_credit_bonds{suffix}": "yield_mortgage_bonds_pct",
+        })
+    rename_map["%_change_between_offer_and_purchase"] = "pct_change_offer_purchase"
+    df = df.rename(columns={k: v for k, v in rename_map.items() if k in df.columns})
 
     # P1 nulos city
     df["city"] = df["city"].fillna("Unknown")
