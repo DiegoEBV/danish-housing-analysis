@@ -91,10 +91,11 @@ def build_quarterly_regional_index(df: pd.DataFrame, cfg: dict) -> pd.DataFrame:
     return mart
 
 
-def build_drawdowns(df: pd.DataFrame) -> pd.DataFrame:
+def build_drawdowns(df: pd.DataFrame, min_obs: int = 5) -> pd.DataFrame:
     """
     mart_drawdowns.csv
-    Drawdown pico-valle por región y tipo de vivienda.
+    Drawdown pico-valle por region y tipo de vivienda.
+    Filtra celdas con menos de min_obs transacciones (evita artefactos de muestra minima).
     """
     df_filtered = df[
         ~df.get("purchase_price_outlier", pd.Series(False, index=df.index))
@@ -103,14 +104,21 @@ def build_drawdowns(df: pd.DataFrame) -> pd.DataFrame:
 
     df_filtered["quarter"] = pd.to_datetime(df_filtered["date"]).dt.to_period("Q").astype(str)
 
-    # Precio promedio por trimestre / región / tipología
+    # Precio promedio + conteo por trimestre / region / tipologia
     quarterly = (
-        df_filtered.groupby(["quarter", "region", "house_type"])["sqm_price_real"]
-        .mean()
+        df_filtered.groupby(["quarter", "region", "house_type"])
+        .agg(
+            avg_sqm_price_real=("sqm_price_real", "mean"),
+            n_transactions=("sqm_price_real", "count"),
+        )
         .reset_index()
-        .rename(columns={"sqm_price_real": "avg_sqm_price_real"})
         .sort_values(["region", "house_type", "quarter"])
     )
+
+    # Filtro de muestra minima (fix issue 44y: Bornholm 2018Q3 con drawdown -97.5%)
+    n_before = len(quarterly)
+    quarterly = quarterly[quarterly["n_transactions"] >= min_obs].copy()
+    logger.info(f"mart_drawdowns: filtro n_transactions >= {min_obs}: {n_before:,} -> {len(quarterly):,} filas")
 
     # Drawdown
     quarterly["cumulative_max"] = quarterly.groupby(["region", "house_type"])["avg_sqm_price_real"].cummax()
@@ -119,7 +127,6 @@ def build_drawdowns(df: pd.DataFrame) -> pd.DataFrame:
         / quarterly["cumulative_max"] * 100
     )
 
-    logger.info(f"mart_drawdowns: {len(quarterly):,} filas")
     return quarterly
 
 
@@ -228,9 +235,11 @@ def main():
     with open(args.config) as f:
         cfg = yaml.safe_load(f)
 
-    silver_path = Path(cfg["paths"]["processed_dir"]) / "danish_housing_clean.parquet"
-    gold_dir = Path(cfg["paths"]["processed_dir"]) / "gold"
+    silver_path = Path(cfg["paths"]["silver_parquet"])
+    gold_dir = Path(cfg["paths"]["gold_dir"])
+    marts_dir = Path(cfg["paths"]["marts_dir"])
     gold_dir.mkdir(parents=True, exist_ok=True)
+    marts_dir.mkdir(parents=True, exist_ok=True)
 
     if not silver_path.exists():
         logger.error(f"Silver layer no encontrado: {silver_path}")
@@ -246,20 +255,26 @@ def main():
     # Agregar columnas derivadas necesarias
     df = add_derived_columns(df)
 
+    # Parametros marts
+    marts_cfg = cfg.get("marts", {})
+    drawdown_min_obs = marts_cfg.get("drawdown_min_obs", 5)
+    volatility_window = cfg.get("kpis", {}).get("volatility_window_quarters", 4)
+
     # Generar y guardar cada mart
     marts = {
         "mart_quarterly_regional_index": build_quarterly_regional_index(df, cfg),
-        "mart_drawdowns": build_drawdowns(df),
-        "mart_volatility": build_volatility(df, cfg.get("kpis", {}).get("volatility_window_quarters", 4)),
+        "mart_drawdowns": build_drawdowns(df, min_obs=drawdown_min_obs),
+        "mart_volatility": build_volatility(df, volatility_window),
         "mart_macro_correlation": build_macro_correlation(df),
         "mart_transactions_map": build_transactions_map(df),
     }
 
     for nombre, mart in marts.items():
         if mart is not None and len(mart) > 0:
-            output = gold_dir / f"{nombre}.csv"
-            mart.to_csv(output, index=False)
-            logger.info(f"✅ {nombre}.csv → {output} ({len(mart):,} filas)")
+            for d in (gold_dir, marts_dir):
+                out = d / f"{nombre}.csv"
+                mart.to_csv(out, index=False)
+            logger.info(f"✅ {nombre}.csv → {gold_dir} y {marts_dir} ({len(mart):,} filas)")
         else:
             logger.warning(f"⚠️  {nombre} vacío — omitido")
 
