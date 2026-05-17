@@ -45,7 +45,7 @@ def main() -> None:
     args = parse_args()
 
     # Cargar configuración
-    with open(args.config) as f:
+    with open(args.config, encoding="utf-8") as f:
         cfg = yaml.safe_load(f)
 
     raw_path = Path(cfg["paths"]["raw_data"])

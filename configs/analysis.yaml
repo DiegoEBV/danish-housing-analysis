@@ -1,21 +1,21 @@
 # configs/analysis.yaml
-# Parámetros centralizados para el pipeline de análisis
+# Parametros centralizados para el pipeline de analisis
 
-# ── Rutas ────────────────────────────────────────────────────────────────────
+# Rutas
 paths:
   raw_data: data/raw/danish_housing_prices.csv
   processed_dir: data/processed/
   tableau_dir: data/processed/tableau_marts/
 
-# ── Dataset ──────────────────────────────────────────────────────────────────
+# Dataset
 dataset:
   kaggle_url: "https://www.kaggle.com/datasets/martinfrederiksen/danish-residential-housing-prices-1992-2024"
   date_column: date
   id_column: house_id
 
-# ── Limpieza (reglas TB2) ─────────────────────────────────────────────────────
+# Limpieza (reglas TB2)
 cleaning:
-  # P4: year_build atípico
+  # P4: year_build atipico
   year_build_min: 1800
 
   # P5: Outliers en precios (multiplicador IQR)
@@ -24,15 +24,15 @@ cleaning:
     - purchase_price
     - sqm_price
 
-  # P6: Período con menor completitud
+  # P6: Periodo con menor completitud
   preliminary_period_before: 1995
 
   # P3: sales_type no clasificable
   invalid_sales_types:
     - "-"
-    - "Familiehandel"   # ventas no de mercado
+    - "Familiehandel"
 
-  # P7: zip_code → string con 4 dígitos
+  # P7: zip_code string con 4 digitos
   zip_code_pad: 4
 
   # P8: Renombrar columnas con encoding %25
@@ -41,18 +41,18 @@ cleaning:
     "dk_ann_infl_rate%25": dk_ann_infl_rate_pct
     "yield_on_mortgage_credit_bonds%25": yield_mortgage_bonds_pct
 
-# ── KPIs ──────────────────────────────────────────────────────────────────────
+# KPIs
 kpis:
   # Precio Real: base del IPC
   cpi_base_year: 2024
 
-  # Índice Regional: año base
+  # Indice Regional: anio base
   index_base_year: 1992
 
-  # Volatilidad: ventana móvil en trimestres
+  # Volatilidad: ventana movil en trimestres
   volatility_window_quarters: 4
 
-  # Drawdown: períodos de crisis a destacar
+  # Drawdown: periodos de crisis
   crisis_periods:
     - name: "Crisis financiera global"
       start: "2007-01-01"
@@ -61,27 +61,24 @@ kpis:
       start: "2006-01-01"
       end: "2009-12-31"
 
-# ── Filtros para análisis principal ──────────────────────────────────────────
+# Filtros para analisis principal
 filters:
-  # Excluir ventas no de mercado del análisis de precios
   exclude_invalid_sales: true
-  # Excluir outliers de precio en análisis de tendencias
   exclude_price_outliers: true
-  # Incluir período preliminar (con advertencia)
   include_preliminary_period: true
 
-# ── Tipos de vivienda de interés ─────────────────────────────────────────────
+# Tipos de vivienda de interes
 house_types:
   villa: "Villa"
-  apartment: "Ejerlejlighed"   # Apartamento en propiedad
-  summerhouse: "Fritidshus"    # Casa de verano
-  terraced: "Rækkehus"         # Casa adosada
+  apartment: "Ejerlejlighed"
+  summerhouse: "Fritidshus"
+  terraced: "Raekke hus"
 
-# ── Regiones ─────────────────────────────────────────────────────────────────
+# Regiones
 regions:
-  capital: "København"
+  capital: "Kobenhavn"
   provinces:
     - "Midtjylland"
     - "Nordjylland"
-    - "Sjælland"
+    - "Sjaelland"
     - "Syddanmark"

@@ -35,3 +35,7 @@ Thumbs.db
 
 # MLflow / experimentos
 mlruns/
+
+.venv
+
+data/
