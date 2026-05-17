@@ -36,6 +36,8 @@ Thumbs.db
 # MLflow / experimentos
 mlruns/
 
-.venv
+# uv
+.uv-cache/
 
-data/
+# Claude Code (per-user, no organizacional)
+.claude/settings.local.json

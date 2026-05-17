@@ -60,32 +60,35 @@ La documentación interna y los nombres de variables/columnas están **en españ
 ## Commands
 
 ```bash
-# Setup
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+# Setup (uv 0.9+ requerido)
+uv sync --extra dev --extra notebook
 
-# Cleaning solo (Bronze → Silver, lee CSV de Kaggle)
-python scripts/run_cleaning.py --config configs/analysis.yaml
-python scripts/run_cleaning.py --config configs/analysis.yaml --sample 10000   # smoke test
+# Cleaning solo (Bronze → Silver; prefiere parquet si existe, sino CSV)
+uv run python scripts/run_cleaning.py --config configs/analysis.yaml
+uv run python scripts/run_cleaning.py --config configs/analysis.yaml --sample 10000   # smoke test
 
-# Pipeline completo (Silver + 5 marts Gold) — lee parquet, no CSV
-python scripts/run_pipeline.py
+# Pipeline completo (Silver + 5 marts Gold) — lee parquet 1.2M
+uv run python scripts/run_pipeline.py --config configs/analysis.yaml
+uv run python scripts/run_pipeline.py --config configs/analysis.yaml --sample 1000    # smoke
+
+# Marts standalone (lee Silver, escribe Gold)
+uv run python scripts/export_marts.py --config configs/analysis.yaml
 
 # Subir capas a GCS (requiere gcloud auth application-default login)
-python scripts/upload_to_gcs.py --layer all --config configs/analysis.yaml
+uv run python scripts/upload_to_gcs.py --layer all --config configs/analysis.yaml
 
-# Generar marts sintéticos para Tableau (sin data real)
-python scripts/generate_tableau.py
+# Generar marts sintéticos (sin data real, para previews)
+uv run python scripts/generate_tableau.py
 
 # Tests
-pytest tests/                               # toda la suite
-pytest tests/test_cleaning.py::test_<name>  # un solo test
-pytest tests/ --cov=src/danish_housing      # con cobertura
+uv run pytest tests/                               # toda la suite
+uv run pytest tests/test_cleaning.py::test_<name>  # un solo test
+uv run pytest tests/ --cov=src/danish_housing      # con cobertura
 
-# Linters configurados en requirements.txt
-ruff check src/ scripts/ tests/
-black src/ scripts/ tests/
-mypy src/
+# Linters (config en pyproject.toml)
+uv run ruff check src/ scripts/ tests/
+uv run black src/ scripts/ tests/
+uv run mypy src/
 ```
 
 **Datos**: `data/` está en `.gitignore` y no se commitea. El raw debe colocarse manualmente. Rutas configurables en `configs/analysis.yaml -> paths.raw_csv` (CSV de Kaggle) y `paths.raw_parquet` (1.2M filas, preferido cuando existe).
