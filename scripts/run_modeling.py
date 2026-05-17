@@ -68,8 +68,13 @@ def train_rf(X_train, y_train_log, X_test):
     return m, np.expm1(m.predict(X_train)), np.expm1(m.predict(X_test))
 
 
-def train_xgb(X_train, y_train_log, X_test, optuna_trials: int):
+def train_xgb(X_train, y_train_log, X_test, optuna_trials: int, device: str = "cpu"):
     from xgboost import XGBRegressor
+
+    # Para GPU XGBoost 2.0+ usa device='cuda', tree_method='hist' (no 'gpu_hist' deprecado)
+    base_kwargs = {"n_jobs": -1, "random_state": 42, "verbosity": 0, "tree_method": "hist"}
+    if device == "cuda":
+        base_kwargs["device"] = "cuda"
 
     if optuna_trials > 0:
         import optuna
@@ -85,7 +90,7 @@ def train_xgb(X_train, y_train_log, X_test, optuna_trials: int):
                 "min_child_weight": trial.suggest_int("min_child_weight", 1, 10),
                 "reg_alpha": trial.suggest_float("reg_alpha", 0.0, 1.0),
                 "reg_lambda": trial.suggest_float("reg_lambda", 0.0, 2.0),
-                "n_jobs": -1, "random_state": 42, "verbosity": 0,
+                **base_kwargs,
             }
             # CV simple sobre train (3 folds para velocidad)
             kf = KFold(n_splits=3, shuffle=True, random_state=42)
@@ -96,20 +101,20 @@ def train_xgb(X_train, y_train_log, X_test, optuna_trials: int):
                 p = model.predict(X_train.iloc[va])
                 # Optimizar sobre RMSE en escala log (estable)
                 scores.append(float(np.sqrt(np.mean((p - y_train_log.iloc[va]) ** 2))))
-            return np.mean(scores)
+            return float(np.mean(scores))
 
         optuna.logging.set_verbosity(optuna.logging.WARNING)
         study = optuna.create_study(direction="minimize", sampler=optuna.samplers.TPESampler(seed=42))
         study.optimize(objective, n_trials=optuna_trials, show_progress_bar=False)
         best_params = study.best_params
-        logger.info(f"XGB Optuna best params: {best_params}")
+        logger.info(f"XGB Optuna best params (device={device}): {best_params}")
     else:
         best_params = {
             "n_estimators": 400, "max_depth": 6, "learning_rate": 0.05,
             "subsample": 0.85, "colsample_bytree": 0.85,
         }
 
-    m = XGBRegressor(**best_params, n_jobs=-1, random_state=42, verbosity=0)
+    m = XGBRegressor(**best_params, **base_kwargs)
     m.fit(X_train, y_train_log)
     return m, np.expm1(m.predict(X_train)), np.expm1(m.predict(X_test))
 
@@ -134,6 +139,8 @@ def parse_args():
     p.add_argument("--top-k-importance", type=int, default=20)
     p.add_argument("--train-end-year", type=int, default=2017)
     p.add_argument("--test-start-year", type=int, default=2018)
+    p.add_argument("--device", choices=["cpu", "cuda"], default="cpu",
+                   help="Device para XGBoost (cuda requiere GPU NVIDIA + xgboost compilado con CUDA)")
     return p.parse_args()
 
 
@@ -188,8 +195,8 @@ def main() -> None:
     models["M2_Ridge"] = train_ridge(X_train, y_train_log, X_test)
     logger.info("Entrenando M3 RandomForest...")
     models["M3_RandomForest"] = train_rf(X_train, y_train_log, X_test)
-    logger.info(f"Entrenando M4 XGBoost{' + Optuna ' + str(trials) + 'trials' if trials else ' (no Optuna)'}...")
-    models["M4_XGBoost"] = train_xgb(X_train, y_train_log, X_test, optuna_trials=trials)
+    logger.info(f"Entrenando M4 XGBoost{' + Optuna ' + str(trials) + 'trials' if trials else ' (no Optuna)'} (device={args.device})...")
+    models["M4_XGBoost"] = train_xgb(X_train, y_train_log, X_test, optuna_trials=trials, device=args.device)
 
     # Comparativa (metricas en escala NOMINAL via expm1)
     comparison_rows = []
@@ -234,6 +241,7 @@ def main() -> None:
         "log_target_used_for_training": True,
         "back_transform": "np.expm1",
         "optuna_trials": trials,
+        "device": args.device,
     }, indent=2))
 
     # Print resumen
