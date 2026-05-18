@@ -12,12 +12,12 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from danish_housing.cleaning import (
     fix_city_nulls,
-    flag_macro_nulls,
-    flag_invalid_sales,
-    flag_old_year_build,
-    flag_price_outliers,
-    flag_preliminary_period,
     fix_zip_code,
+    flag_invalid_sales,
+    flag_macro_nulls,
+    flag_old_year_build,
+    flag_preliminary_period,
+    flag_price_outliers,
     rename_rate_columns,
     run_cleaning_pipeline,
 )

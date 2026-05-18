@@ -11,8 +11,6 @@ KPI 5: Elasticidad Volumen-Bonos (correlación descriptiva)
 from __future__ import annotations
 
 import pandas as pd
-import numpy as np
-
 
 # ── KPI 1: Precio Real por m² ─────────────────────────────────────────────────
 

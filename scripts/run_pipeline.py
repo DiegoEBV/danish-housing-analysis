@@ -18,10 +18,8 @@ import gc
 import logging
 import os
 import sys
-import zipfile
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 import yaml
 
@@ -50,7 +48,7 @@ def main() -> None:
     silver_path = Path(cfg["paths"]["silver_parquet"])
     gold_dir = Path(cfg["paths"]["gold_dir"])
     marts_dir = Path(cfg["paths"]["marts_dir"])
-    twbx_path = Path(cfg["paths"]["twbx_path"])
+    Path(cfg["paths"]["twbx_path"])
 
     silver_path.parent.mkdir(parents=True, exist_ok=True)
     gold_dir.mkdir(parents=True, exist_ok=True)
