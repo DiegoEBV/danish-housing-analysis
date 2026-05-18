@@ -177,6 +177,8 @@ def parse_args():
                    help="Device para XGBoost (cuda requiere GPU NVIDIA + xgboost compilado con CUDA)")
     p.add_argument("--cv-folds", type=int, default=0,
                    help="Time-series CV folds dentro del train (>0 activa CV). Hyperparams fijos.")
+    p.add_argument("--predictions-sample-per-year", type=int, default=700,
+                   help="Max filas por año en mart_predictions_sample.csv (0 = no escribir sample)")
     return p.parse_args()
 
 
@@ -206,8 +208,10 @@ def cross_val_temporal(
     from xgboost import XGBRegressor
 
     train_sorted = train_df.sort_values("year").reset_index(drop=True)
-    medians_full = train_sorted[feature_names].median()
-    X_all = train_sorted[feature_names].fillna(medians_full)
+    # NOTA: NO imputamos a nivel global aqui — la mediana se calcula DENTRO
+    # de cada fold sobre su propio X_tr para no leakear info de folds futuros
+    # hacia folds pasados (review de Copilot, follow-up al PR #5).
+    X_all_raw = train_sorted[feature_names]
     y_all_log = np.log1p(train_sorted["purchase_price"])
     y_all = train_sorted["purchase_price"].to_numpy(dtype=np.float64)
     years_all = train_sorted["year"].to_numpy()
@@ -218,8 +222,13 @@ def cross_val_temporal(
 
     tscv = TimeSeriesSplit(n_splits=n_splits)
     rows = []
-    for fold_idx, (tr, va) in enumerate(tscv.split(X_all), start=1):
-        X_tr, X_va = X_all.iloc[tr], X_all.iloc[va]
+    for fold_idx, (tr, va) in enumerate(tscv.split(X_all_raw), start=1):
+        # Imputar SOLO con medianas del train del fold (no del df completo)
+        X_tr_raw = X_all_raw.iloc[tr]
+        X_va_raw = X_all_raw.iloc[va]
+        medians_tr = X_tr_raw.median()
+        X_tr = X_tr_raw.fillna(medians_tr)
+        X_va = X_va_raw.fillna(medians_tr)
         y_tr_log = y_all_log.iloc[tr]
         y_va = y_all[va]
         train_period = (int(years_all[tr].min()), int(years_all[tr].max()))
@@ -343,6 +352,18 @@ def main() -> None:
     logger.info(f"Campeon: {champion} (test_r2={comparison_df['test_r2'].max():.4f})")
     logger.info(f"mart_predictions: {len(predictions_df):,} filas del campeon ({champion})")
 
+    # Sample para el dashboard (CSV grande no se renderiza bien en browser)
+    sample_per_year = args.predictions_sample_per_year
+    if sample_per_year and sample_per_year > 0:
+        parts: list[pd.DataFrame] = []
+        for _year, grp in predictions_df.groupby("year", observed=True):
+            n = min(len(grp), sample_per_year)
+            parts.append(grp.sample(n=n, random_state=42) if n > 0 else grp)
+        predictions_sample_df = pd.concat(parts, ignore_index=True) if parts else predictions_df.head(0)
+        logger.info(f"mart_predictions_sample: {len(predictions_sample_df):,} filas (max {sample_per_year} por año)")
+    else:
+        predictions_sample_df = pd.DataFrame()
+
     # CV temporal opcional (post-training, con best_params XGB ya conocidos)
     cv_df = pd.DataFrame()
     if args.cv_folds and args.cv_folds > 1:
@@ -375,6 +396,8 @@ def main() -> None:
         comparison_df.to_csv(out_dir / "mart_model_comparison.csv", index=False)
         predictions_df.to_csv(out_dir / "mart_predictions.csv", index=False)
         importance_df.to_csv(out_dir / "mart_feature_importance.csv", index=False)
+        if not predictions_sample_df.empty:
+            predictions_sample_df.to_csv(out_dir / "mart_predictions_sample.csv", index=False)
         if not cv_df.empty:
             cv_df.to_csv(out_dir / "mart_model_cv.csv", index=False)
     logger.info(f"  marts en {gold} y {marts}")
