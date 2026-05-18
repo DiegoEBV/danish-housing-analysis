@@ -188,3 +188,14 @@ Las reglas de limpieza **flagean** en vez de borrar: `sales_type_valido`, `purch
 ## Documentación y entregables
 
 El proyecto se entrega por semanas: TB2 (S4, limpieza ✅), TB3 (S7, modelado y marts 🔄), TF (S13, dashboard ⏳). El estado en vivo está en `docs/project-current-state.md` y el plan en `plans/project_plan.md`. Los runbooks de ejecución end-to-end están en `runbooks/` (`full-execution.md`, `gcp-medallion-setup.md`). Los pendientes de TB3/TF ya están trackeados en `bd` — usar `bd ready` para ver el siguiente trabajo disponible.
+
+## Hosting del dashboard (dos deploys, deliberadamente)
+
+| Branch | Hosting | Configuración | Notas |
+|---|---|---|---|
+| `main` | **Netlify** (config externa) | `netlify.toml` con redirects: `/` → `/danish_housing_dashboard.html`, `/marts/*` → `gs://danish-housing-gold/marts/*` | Dashboard.html usa **paths absolutos** (`/chart.umd.min.js`) y marts directo de GCS. NO tocar a menos que el equipo lo coordine. |
+| `visualization` | **GitHub Pages** (`.github/workflows/pages.yml`) | Trigger en push a visualization; sirve los archivos trackeados (HTML + chart.umd.min.js + `data/marts/*.csv`) bajo `https://diegoebv.github.io/danish-housing-analysis/` | Dashboard.html usa **paths relativos** (`./chart.umd.min.js`, `./data/marts`). Anti-caché: deploy automático cuando cambia HTML/JS/marts. |
+
+Cada deploy tiene su propio HTML adaptado a su hosting; no intentar unificar los dos. La rama de desarrollo activa es `visualization`. `main` está congelado para Netlify y solo se toca de común acuerdo.
+
+**Setting one-time pendiente para Pages**: Settings → Environments → `github-pages` → Deployment branches → permitir `visualization` (por default solo permite main).
