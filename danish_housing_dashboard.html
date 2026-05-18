@@ -313,7 +313,7 @@ function parseCSV(text) {
 }
 
 async function loadMarts() {
-  const base = './data/marts';
+  const base = 'https://storage.googleapis.com/danish-housing-gold/marts';
   const fetchCSV = async name => {
     const r = await fetch(`${base}/${name}`);
     if (!r.ok) throw new Error(`${name}: HTTP ${r.status}`);
