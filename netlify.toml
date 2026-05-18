@@ -1,0 +1,4 @@
+[[redirects]]
+  from = "/"
+  to = "/danish_housing_dashboard.html"
+  status = 200
