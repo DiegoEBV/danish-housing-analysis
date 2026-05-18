@@ -21,6 +21,7 @@ import argparse
 import json
 import logging
 import sys
+import time
 from pathlib import Path
 
 import numpy as np
@@ -47,25 +48,32 @@ def metrics(y_true: np.ndarray, y_pred: np.ndarray) -> dict:
     }
 
 
+def _fit_predict(m, X_train, y_train_log, X_test, name: str):
+    t0 = time.time()
+    m.fit(X_train, y_train_log)
+    fit_s = time.time() - t0
+    t0 = time.time()
+    pred_train = np.expm1(m.predict(X_train))
+    pred_test = np.expm1(m.predict(X_test))
+    predict_s = time.time() - t0
+    logger.info(f"  {name}: fit={fit_s:.1f}s, predict={predict_s:.1f}s")
+    return m, pred_train, pred_test
+
+
 def train_linear(X_train, y_train_log, X_test):
     from sklearn.linear_model import LinearRegression
-    m = LinearRegression()
-    m.fit(X_train, y_train_log)
-    return m, np.expm1(m.predict(X_train)), np.expm1(m.predict(X_test))
+    return _fit_predict(LinearRegression(), X_train, y_train_log, X_test, "M1_Linear")
 
 
 def train_ridge(X_train, y_train_log, X_test):
     from sklearn.linear_model import Ridge
-    m = Ridge(alpha=1.0, random_state=42)
-    m.fit(X_train, y_train_log)
-    return m, np.expm1(m.predict(X_train)), np.expm1(m.predict(X_test))
+    return _fit_predict(Ridge(alpha=1.0, random_state=42), X_train, y_train_log, X_test, "M2_Ridge")
 
 
 def train_rf(X_train, y_train_log, X_test):
     from sklearn.ensemble import RandomForestRegressor
     m = RandomForestRegressor(n_estimators=200, max_depth=12, n_jobs=-1, random_state=42)
-    m.fit(X_train, y_train_log)
-    return m, np.expm1(m.predict(X_train)), np.expm1(m.predict(X_test))
+    return _fit_predict(m, X_train, y_train_log, X_test, "M3_RandomForest")
 
 
 def train_xgb(X_train, y_train_log, X_test, optuna_trials: int, device: str = "cpu"):
@@ -105,7 +113,9 @@ def train_xgb(X_train, y_train_log, X_test, optuna_trials: int, device: str = "c
 
         optuna.logging.set_verbosity(optuna.logging.WARNING)
         study = optuna.create_study(direction="minimize", sampler=optuna.samplers.TPESampler(seed=42))
+        t0 = time.time()
         study.optimize(objective, n_trials=optuna_trials, show_progress_bar=False)
+        logger.info(f"  Optuna {optuna_trials} trials en {time.time()-t0:.1f}s")
         best_params = study.best_params
         logger.info(f"XGB Optuna best params (device={device}): {best_params}")
     else:
@@ -114,20 +124,44 @@ def train_xgb(X_train, y_train_log, X_test, optuna_trials: int, device: str = "c
             "subsample": 0.85, "colsample_bytree": 0.85,
         }
 
+    logger.info(f"  Final XGB fit (n_estimators={best_params.get('n_estimators')}, device={device})...")
+    t0 = time.time()
     m = XGBRegressor(**best_params, **base_kwargs)
     m.fit(X_train, y_train_log)
-    return m, np.expm1(m.predict(X_train)), np.expm1(m.predict(X_test))
+    logger.info(f"  Final XGB fit en {time.time()-t0:.1f}s")
+    t0 = time.time()
+    pred_train = np.expm1(m.predict(X_train))
+    pred_test = np.expm1(m.predict(X_test))
+    logger.info(f"  Predict train+test en {time.time()-t0:.1f}s")
+    # Adjunta best_params al modelo para que la corrida principal los persista en el audit
+    m._optuna_best_params = best_params  # type: ignore[attr-defined]
+    return m, pred_train, pred_test
 
 
-def feature_importance(model, feature_names: list[str]) -> pd.DataFrame:
-    """Importancia normalizada por modelo. Sklearn linear → coef abs; tree → feature_importances_."""
+def feature_importance(
+    model, feature_names: list[str], X_train: pd.DataFrame | None = None,
+) -> pd.DataFrame:
+    """Importancia normalizada por modelo.
+
+    - Tree-based (RF, XGB): usa `feature_importances_` directo.
+    - Lineal (Linear, Ridge): `|coef * std(feature)|` (standardized coefficient).
+      Sin escalar, las magnitudes de coef no son comparables porque dependen del
+      rango de cada feature.
+    """
     if hasattr(model, "feature_importances_"):
         imp = pd.Series(model.feature_importances_, index=feature_names)
     elif hasattr(model, "coef_"):
-        imp = pd.Series(np.abs(model.coef_), index=feature_names)
+        coef = np.abs(np.asarray(model.coef_).ravel())
+        if X_train is not None:
+            stds = X_train.std(numeric_only=True).reindex(feature_names).fillna(0.0).values
+            imp = pd.Series(coef * stds, index=feature_names)
+        else:
+            imp = pd.Series(coef, index=feature_names)
     else:
         return pd.DataFrame()
-    imp = imp / imp.sum() if imp.sum() > 0 else imp
+    total = imp.sum()
+    if total > 0:
+        imp = imp / total
     return imp.sort_values(ascending=False).to_frame("importance").reset_index().rename(columns={"index": "feature"})
 
 
@@ -198,10 +232,14 @@ def main() -> None:
     logger.info(f"Entrenando M4 XGBoost{' + Optuna ' + str(trials) + 'trials' if trials else ' (no Optuna)'} (device={args.device})...")
     models["M4_XGBoost"] = train_xgb(X_train, y_train_log, X_test, optuna_trials=trials, device=args.device)
 
-    # Comparativa (metricas en escala NOMINAL via expm1)
+    # Metricas + importance por modelo (vectorizado, sin iloc en loop)
+    test_years = test["year"].to_numpy()
+    test_y_f64 = y_test.astype(np.float64)
+    row_idx = np.arange(len(test), dtype=np.int32)
+
     comparison_rows = []
-    predictions_rows = []
     importance_rows = []
+    per_model_pred = {}  # name -> pred_test (np.array) para luego elegir el campeon
     for name, (model, pred_train, pred_test) in models.items():
         train_m = metrics(y_train, pred_train)
         test_m = metrics(y_test, pred_test)
@@ -211,28 +249,38 @@ def main() -> None:
             "test_r2": test_m["r2"], "test_mae": test_m["mae"], "test_mape_pct": test_m["mape_pct"], "test_rmse": test_m["rmse"],
             "n_train": len(y_train), "n_test": len(y_test),
         })
-        for i, (yt, yp) in enumerate(zip(y_test, pred_test, strict=False)):
-            predictions_rows.append({
-                "model": name, "row_id": int(test.iloc[i].get("house_id", i)),
-                "year": int(test.iloc[i]["year"]),
-                "region": test.iloc[i].get("region", "Unknown"),
-                "y_true": float(yt), "y_pred": float(yp), "residual": float(yt - yp),
-            })
-        imp_df = feature_importance(model, feature_names)
+        per_model_pred[name] = np.asarray(pred_test, dtype=np.float64)
+        imp_df = feature_importance(model, feature_names, X_train=X_train)
         for _, row in imp_df.head(args.top_k_importance).iterrows():
             importance_rows.append({"model": name, "feature": row["feature"], "importance": float(row["importance"])})
 
     comparison_df = pd.DataFrame(comparison_rows)
-    predictions_df = pd.DataFrame(predictions_rows)
     importance_df = pd.DataFrame(importance_rows)
 
+    # Champion: mejor test_r2
+    champion = comparison_df.sort_values("test_r2", ascending=False).iloc[0]["model"]
+    pred_champ = per_model_pred[champion]
+    predictions_df = pd.DataFrame({
+        "model": champion,
+        "row_idx": row_idx,
+        "year": test_years,
+        "y_true": test_y_f64,
+        "y_pred": pred_champ,
+        "residual": test_y_f64 - pred_champ,
+    })
+    logger.info(f"Campeon: {champion} (test_r2={comparison_df['test_r2'].max():.4f})")
+    logger.info(f"mart_predictions: {len(predictions_df):,} filas del campeon ({champion})")
+
+    logger.info("Escribiendo marts...")
     for out_dir in (gold, marts):
         comparison_df.to_csv(out_dir / "mart_model_comparison.csv", index=False)
         predictions_df.to_csv(out_dir / "mart_predictions.csv", index=False)
         importance_df.to_csv(out_dir / "mart_feature_importance.csv", index=False)
+    logger.info(f"  marts en {gold} y {marts}")
 
     # Audit final
     audit_path = gold / "modeling_audit.json"
+    optuna_best_params = getattr(models["M4_XGBoost"][0], "_optuna_best_params", None)
     audit_path.write_text(json.dumps({
         "feature_matrix": audit,
         "split": {"train_end": args.train_end_year, "test_start": args.test_start_year,
@@ -241,7 +289,9 @@ def main() -> None:
         "log_target_used_for_training": True,
         "back_transform": "np.expm1",
         "optuna_trials": trials,
+        "optuna_best_params": optuna_best_params,
         "device": args.device,
+        "champion": champion,
     }, indent=2))
 
     # Print resumen

@@ -108,8 +108,11 @@ def add_size_features(df: pd.DataFrame) -> pd.DataFrame:
     df["sqm"] = pd.to_numeric(df["sqm"], errors="coerce")
     df["no_rooms"] = pd.to_numeric(df["no_rooms"], errors="coerce")
 
-    df["sqm_per_room"] = (df["sqm"] / df["no_rooms"]).replace([np.inf, -np.inf], np.nan)
-    df["rooms_sqm_ratio"] = (df["no_rooms"] / df["sqm"]).replace([np.inf, -np.inf], np.nan)
+    # Evita division por cero: convertir 0 -> NaN antes del split
+    rooms_safe = df["no_rooms"].replace(0, np.nan)
+    sqm_safe = df["sqm"].replace(0, np.nan)
+    df["sqm_per_room"] = (df["sqm"] / rooms_safe).replace([np.inf, -np.inf], np.nan)
+    df["rooms_sqm_ratio"] = (df["no_rooms"] / sqm_safe).replace([np.inf, -np.inf], np.nan)
     df["sqm_per_room_squared"] = df["sqm_per_room"] ** 2
     df["rooms_sqm_interaction"] = df["no_rooms"] * df["sqm"]
 
