@@ -14,16 +14,12 @@ import logging
 import sys
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 import yaml
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from danish_housing.kpis import (
     compute_regional_index,
-    compute_regional_drawdowns,
-    compute_volatility,
-    compute_volume_bond_correlation,
 )
 
 logging.basicConfig(

@@ -54,10 +54,12 @@ def main() -> None:
 
     if raw_parquet.exists():
         raw_path = raw_parquet
-        loader = lambda p: pd.read_parquet(p)
+        def loader(p):
+            return pd.read_parquet(p)
     elif raw_csv.exists():
         raw_path = raw_csv
-        loader = lambda p: pd.read_csv(p, nrows=args.sample)
+        def loader(p):
+            return pd.read_csv(p, nrows=args.sample)
     else:
         logger.error(
             f"No se encontró raw_parquet ({raw_parquet}) ni raw_csv ({raw_csv}).\n"

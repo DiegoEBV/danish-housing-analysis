@@ -4,11 +4,9 @@ Genera marts Gold sintéticos + workbook preliminar de Tableau (.twbx)
 para Entrega 3 del proyecto Danish Housing Analysis 1992-2024.
 """
 
-import pandas as pd
+
 import numpy as np
-import zipfile
-import os
-import io
+import pandas as pd
 
 np.random.seed(42)
 
@@ -72,14 +70,22 @@ def danish_price_multiplier(year_float: float) -> float:
 
 def bond_yield(year_float: float) -> float:
     """Rendimiento bonos hipotecarios 30Y daneses simulado."""
-    if year_float < 1994: return 10.5
-    elif year_float < 2000: return 10.5 - 3.5*(year_float-1994)/6
-    elif year_float < 2009: return 6.5 - 1.0*(year_float-2000)/9
-    elif year_float < 2013: return 5.5 - 1.5*(year_float-2009)/4
-    elif year_float < 2020: return 2.5 - 1.5*(year_float-2013)/7
-    elif year_float < 2022: return 1.0 - 0.3*(year_float-2020)/2
-    elif year_float < 2023: return 0.7 + 3.3*(year_float-2022)
-    else: return 4.0 - 0.5*(year_float-2023)
+    if year_float < 1994:
+        return 10.5
+    elif year_float < 2000:
+        return 10.5 - 3.5 * (year_float - 1994) / 6
+    elif year_float < 2009:
+        return 6.5 - 1.0 * (year_float - 2000) / 9
+    elif year_float < 2013:
+        return 5.5 - 1.5 * (year_float - 2009) / 4
+    elif year_float < 2020:
+        return 2.5 - 1.5 * (year_float - 2013) / 7
+    elif year_float < 2022:
+        return 1.0 - 0.3 * (year_float - 2020) / 2
+    elif year_float < 2023:
+        return 0.7 + 3.3 * (year_float - 2022)
+    else:
+        return 4.0 - 0.5 * (year_float - 2023)
 
 def quarter_to_float(q: str) -> float:
     year = int(q[:4])

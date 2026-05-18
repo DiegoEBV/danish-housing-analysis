@@ -31,11 +31,16 @@ def build_dim_tiempo(df: pd.DataFrame) -> pd.DataFrame:
     df["quarter"] = df["date"].dt.to_period("Q").astype(str)
 
     def clasif_periodo(y):
-        if y < 2000: return "pre_2000"
-        elif y < 2008: return "boom"
-        elif y < 2013: return "crisis"
-        elif y < 2020: return "recuperacion"
-        else: return "post_covid"
+        if y < 2000:
+            return "pre_2000"
+        elif y < 2008:
+            return "boom"
+        elif y < 2013:
+            return "crisis"
+        elif y < 2020:
+            return "recuperacion"
+        else:
+            return "post_covid"
 
     dim = df[["date", "year", "quarter"]].drop_duplicates().copy()
     dim["periodo_macro"] = dim["year"].apply(clasif_periodo)
