@@ -37,7 +37,8 @@ logger = logging.getLogger(__name__)
 # concepto. Es la lista FORBIDDEN del legacy mas las flags Silver-only.
 FORBIDDEN_FEATURE_COLUMNS = {
     # Target y derivadas directas del precio
-    "purchase_price", "sqm_price", "price_per_sqm", "price_zscore",
+    "purchase_price", "sqm_price", "sqm_price_real", "sqm_price_nom",
+    "price_per_sqm", "price_per_sqm_real", "price_zscore",
     "price_category", "price_per_sqm_x_region", "sqm_x_region",
     "is_premium", "price_deviation_from_median",
     "regional_p90", "regional_median",
