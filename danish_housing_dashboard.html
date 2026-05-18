@@ -401,7 +401,7 @@ function buildDataFromMarts({ ri, dd, vol, mc, mp }) {
   mc.forEach(d => {
     macroByQ[d.quarter] = {
       n: parseInt(d.n_transactions) || 0,
-      bond: parseFloat(d.avg_bond_yield) || null,
+      bond: parseFloat(d.yield_avg) || null,
     };
   });
 
@@ -412,7 +412,7 @@ function buildDataFromMarts({ ri, dd, vol, mc, mp }) {
     regional_index[d.region].push({
       q: d.quarter,
       year: parseInt(d.year),
-      price: parseFloat(d.avg_price),
+      price: parseFloat(d.avg_sqm_price_real),
     });
   });
   Object.keys(regional_index).forEach(region => {
@@ -480,7 +480,7 @@ function buildDataFromMarts({ ri, dd, vol, mc, mp }) {
     .map(d => ({
       q: d.quarter,
       n_tx: parseInt(d.n_transactions) || 0,
-      yield: parseFloat(d.avg_bond_yield),
+      yield: parseFloat(d.yield_avg),
       bond_lag2: parseFloat(d.bond_yield_lag2q),
       period: periodOfQ(d.quarter),
     }))
@@ -513,7 +513,7 @@ function buildDataFromMarts({ ri, dd, vol, mc, mp }) {
   const reg_annual_price = {};
   const annualAgg = {};
   ri.forEach(d => {
-    const p = parseFloat(d.avg_price);
+    const p = parseFloat(d.avg_sqm_price_real);
     if (isNaN(p) || p <= 0) return;
     const key = d.region + '|' + d.year;
     if (!annualAgg[key]) annualAgg[key] = { region: d.region, year: parseInt(d.year), sum: 0, cnt: 0 };
