@@ -57,11 +57,17 @@ cleaning:
   # P7: zip_code string con 4 digitos
   zip_code_pad: 4
 
-  # P8: Renombrar columnas con encoding %25
+  # P8: Renombrar columnas macro con sufijo `%` (parquet de Kaggle) o `%25`
+  # (CSV URL-encoded) al nombre canonico `_pct`. Ambas variantes incluidas
+  # para tolerar cualquier procedencia del raw.
   column_renames:
+    "nom_interest_rate%": nom_interest_rate_pct
     "nom_interest_rate%25": nom_interest_rate_pct
+    "dk_ann_infl_rate%": dk_ann_infl_rate_pct
     "dk_ann_infl_rate%25": dk_ann_infl_rate_pct
+    "yield_on_mortgage_credit_bonds%": yield_mortgage_bonds_pct
     "yield_on_mortgage_credit_bonds%25": yield_mortgage_bonds_pct
+    "%_change_between_offer_and_purchase": pct_change_offer_purchase
 
 # KPIs
 kpis:

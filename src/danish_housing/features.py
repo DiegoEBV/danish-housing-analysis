@@ -251,6 +251,23 @@ def encode_categoricals(
     return pd.get_dummies(df, columns=present, drop_first=drop_first, dtype="int8")
 
 
+def add_frequency_encoding(df: pd.DataFrame, cols: list[str]) -> pd.DataFrame:
+    """
+    Frequency encoding (count del valor en el dataset) para categoricas de
+    alta cardinalidad como city o zip_code. Convierte 1 categorica en 1
+    feature numerica en vez de explosion one-hot. No usa target.
+
+    Crea columna `{col}_frequency` por cada cole de cols.
+    """
+    df = df.copy()
+    for col in cols:
+        if col not in df.columns:
+            continue
+        freq = df[col].value_counts(dropna=False).to_dict()
+        df[f"{col}_frequency"] = df[col].map(freq).astype("int32")
+    return df
+
+
 # ── Pipeline completo + guardas anti-leak ─────────────────────────────────────
 
 def build_feature_matrix(
@@ -292,8 +309,14 @@ def build_feature_matrix(
     if include_causal_derived:
         df = add_causal_derived_features(df, target_col=target_col)
 
-    # 3) One-hot de categoricas
-    df = encode_categoricals(df, cols=["region", "house_type", "rooms_category", "size_category", "city"])
+    # 3) Encoding categorico:
+    #    - One-hot SOLO para baja cardinalidad (region: 5, house_type: 4, *_category: 3-4)
+    #    - Frequency encoding para alta cardinalidad (city: ~100s, zip_code: ~4000)
+    #    El legacy excluye city/zip_code del feature set; aqui los conservamos como
+    #    senal de "densidad de transacciones en esa zona", que es informativa y no
+    #    leaky.
+    df = add_frequency_encoding(df, cols=["city", "zip_code", "sales_type"])
+    df = encode_categoricals(df, cols=["region", "house_type", "rooms_category", "size_category"])
 
     # 4) Interacciones (despues de one-hot)
     df = add_interactions(df)
