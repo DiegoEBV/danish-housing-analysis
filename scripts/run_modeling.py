@@ -175,7 +175,79 @@ def parse_args():
     p.add_argument("--test-start-year", type=int, default=2018)
     p.add_argument("--device", choices=["cpu", "cuda"], default="cpu",
                    help="Device para XGBoost (cuda requiere GPU NVIDIA + xgboost compilado con CUDA)")
+    p.add_argument("--cv-folds", type=int, default=0,
+                   help="Time-series CV folds dentro del train (>0 activa CV). Hyperparams fijos.")
     return p.parse_args()
+
+
+def cross_val_temporal(
+    train_df: pd.DataFrame,
+    feature_names: list[str],
+    n_splits: int,
+    best_xgb_params: dict,
+    device: str,
+) -> pd.DataFrame:
+    """Time-series CV con TimeSeriesSplit dentro del train portion.
+
+    Cada fold: train sobre periodo anterior expandido, test sobre la siguiente
+    ventana. Sin Optuna por fold (usa best_xgb_params encontrados en el train
+    completo). Metricas en escala NOMINAL de purchase_price.
+
+    Fold sklearn TimeSeriesSplit (n=5, train_end=2017):
+      F1: train 1992-2000, test 2001-2004
+      F2: train 1992-2004, test 2005-2008
+      F3: train 1992-2008, test 2009-2012
+      F4: train 1992-2012, test 2013-2014
+      F5: train 1992-2014, test 2015-2017
+    """
+    from sklearn.ensemble import RandomForestRegressor
+    from sklearn.linear_model import LinearRegression, Ridge
+    from sklearn.model_selection import TimeSeriesSplit
+    from xgboost import XGBRegressor
+
+    train_sorted = train_df.sort_values("year").reset_index(drop=True)
+    medians_full = train_sorted[feature_names].median()
+    X_all = train_sorted[feature_names].fillna(medians_full)
+    y_all_log = np.log1p(train_sorted["purchase_price"])
+    y_all = train_sorted["purchase_price"].to_numpy(dtype=np.float64)
+    years_all = train_sorted["year"].to_numpy()
+
+    xgb_kwargs = {"n_jobs": -1, "random_state": 42, "verbosity": 0, "tree_method": "hist"}
+    if device == "cuda":
+        xgb_kwargs["device"] = "cuda"
+
+    tscv = TimeSeriesSplit(n_splits=n_splits)
+    rows = []
+    for fold_idx, (tr, va) in enumerate(tscv.split(X_all), start=1):
+        X_tr, X_va = X_all.iloc[tr], X_all.iloc[va]
+        y_tr_log = y_all_log.iloc[tr]
+        y_va = y_all[va]
+        train_period = (int(years_all[tr].min()), int(years_all[tr].max()))
+        test_period = (int(years_all[va].min()), int(years_all[va].max()))
+        logger.info(f"  Fold {fold_idx}: train {train_period[0]}-{train_period[1]} (n={len(tr):,}), test {test_period[0]}-{test_period[1]} (n={len(va):,})")
+
+        # Fit + predict + metrics nominal
+        for mname, model in [
+            ("M1_Linear", LinearRegression()),
+            ("M2_Ridge", Ridge(alpha=1.0, random_state=42)),
+            ("M3_RandomForest", RandomForestRegressor(n_estimators=100, max_depth=10, n_jobs=-1, random_state=42)),
+            ("M4_XGBoost", XGBRegressor(**best_xgb_params, **xgb_kwargs)),
+        ]:
+            t0 = time.time()
+            model.fit(X_tr, y_tr_log)
+            y_pred = np.expm1(model.predict(X_va))
+            m = metrics(y_va, y_pred)
+            rows.append({
+                "fold": fold_idx, "model": mname,
+                "train_start": train_period[0], "train_end": train_period[1],
+                "test_start": test_period[0], "test_end": test_period[1],
+                "n_train": len(tr), "n_test": len(va),
+                "r2": m["r2"], "mae": m["mae"], "mape_pct": m["mape_pct"], "rmse": m["rmse"],
+                "fit_time_s": round(time.time() - t0, 1),
+            })
+            logger.info(f"    {mname}: r2={m['r2']:.3f} mae={m['mae']:,.0f} mape={m['mape_pct']:.1f}% ({time.time()-t0:.1f}s)")
+
+    return pd.DataFrame(rows)
 
 
 def main() -> None:
@@ -271,11 +343,40 @@ def main() -> None:
     logger.info(f"Campeon: {champion} (test_r2={comparison_df['test_r2'].max():.4f})")
     logger.info(f"mart_predictions: {len(predictions_df):,} filas del campeon ({champion})")
 
+    # CV temporal opcional (post-training, con best_params XGB ya conocidos)
+    cv_df = pd.DataFrame()
+    if args.cv_folds and args.cv_folds > 1:
+        logger.info(f"Time-series CV con {args.cv_folds} folds (hyperparams fijos)...")
+        best_xgb_params = getattr(models["M4_XGBoost"][0], "_optuna_best_params", None) or {
+            "n_estimators": 400, "max_depth": 6, "learning_rate": 0.05,
+            "subsample": 0.85, "colsample_bytree": 0.85,
+        }
+        t0 = time.time()
+        cv_df = cross_val_temporal(
+            train_df=train, feature_names=feature_names,
+            n_splits=args.cv_folds, best_xgb_params=best_xgb_params, device=args.device,
+        )
+        logger.info(f"CV completo en {time.time()-t0:.1f}s")
+
+        # Resumen agregado por modelo (mean ± std)
+        cv_summary = cv_df.groupby("model").agg(
+            r2_mean=("r2", "mean"), r2_std=("r2", "std"),
+            mae_mean=("mae", "mean"), mae_std=("mae", "std"),
+            mape_mean=("mape_pct", "mean"), mape_std=("mape_pct", "std"),
+            n_folds=("fold", "count"),
+        ).reset_index()
+        print("\n" + "=" * 60)
+        print("CV TIME-SERIES — metricas en escala NOMINAL (purchase_price DKK)")
+        print("=" * 60)
+        print(cv_summary.to_string(index=False))
+
     logger.info("Escribiendo marts...")
     for out_dir in (gold, marts):
         comparison_df.to_csv(out_dir / "mart_model_comparison.csv", index=False)
         predictions_df.to_csv(out_dir / "mart_predictions.csv", index=False)
         importance_df.to_csv(out_dir / "mart_feature_importance.csv", index=False)
+        if not cv_df.empty:
+            cv_df.to_csv(out_dir / "mart_model_cv.csv", index=False)
     logger.info(f"  marts en {gold} y {marts}")
 
     # Audit final
@@ -292,6 +393,7 @@ def main() -> None:
         "optuna_best_params": optuna_best_params,
         "device": args.device,
         "champion": champion,
+        "cv_folds": args.cv_folds if args.cv_folds and args.cv_folds > 1 else None,
     }, indent=2))
 
     # Print resumen
