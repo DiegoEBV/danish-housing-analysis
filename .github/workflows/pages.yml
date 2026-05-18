@@ -3,7 +3,7 @@ name: Deploy dashboard a GitHub Pages
 on:
   push:
     branches:
-      - visualization
+      - main
     paths:
       - "danish_housing_dashboard.html"
       - "chart.umd.min.js"
