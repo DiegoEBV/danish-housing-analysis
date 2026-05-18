@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Mercado Residencial Danés 1992–2024</title>
-<script src="/chart.umd.min.js"></script>
+<script src="./chart.umd.min.js"></script>
 <style>
   /* ── Tailwind utilities (inline, no CDN) ── */
   .flex{display:flex}.flex-wrap{flex-wrap:wrap}.grid{display:grid}
@@ -229,6 +229,53 @@
 
   </div>
 
+  <!-- ── Modelado Predictivo (M1-M4 + CV time-series) ── -->
+  <div class="mb-6">
+    <div class="section-heading">Modelado Predictivo · Comparativa M1-M4 + Cross-Validation</div>
+
+    <!-- Resumen + tabla -->
+    <div class="card p-5 mb-4">
+      <div class="flex items-start justify-between mb-3 gap-2">
+        <div>
+          <div class="section-title">Comparativa de modelos · holdout train 1992-2017 → test 2018-2024</div>
+          <div class="section-sub">Métricas en escala nominal DKK (back-transform <code style="font-size:0.72rem">np.expm1</code>) · 41 features · anti-leak guard PASS · Optuna 30 trials TPE (GPU L4)</div>
+        </div>
+        <span class="badge" style="background:#1e2a3a;color:#60a5fa" id="badge-champion">— campeón</span>
+      </div>
+      <div id="model-comparison-table" class="mt-3"></div>
+      <div class="takeaway">
+        <span class="takeaway-icon">▸</span>
+        <span class="takeaway-text" id="model-takeaway"></span>
+      </div>
+    </div>
+
+    <!-- Fila modelado 1: importance + CV folds -->
+    <div class="grid-2 mb-4">
+      <div class="card p-5">
+        <div class="section-title">Feature importance · top 10 del campeón</div>
+        <div class="section-sub">Importancia normalizada XGBoost · features clean (sin derivadas del target)</div>
+        <div style="position:relative;height:320px;margin-top:8px"><canvas id="chartImportance"></canvas></div>
+      </div>
+      <div class="card p-5">
+        <div class="section-title">CV time-series · R² por fold</div>
+        <div class="section-sub">5 folds expandidos (TimeSeriesSplit) en train 1992-2017 · ventana creciente</div>
+        <div style="position:relative;height:320px;margin-top:8px"><canvas id="chartCV"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Fila modelado 2: scatter predicciones -->
+    <div class="card p-5 mb-4">
+      <div class="flex items-start justify-between mb-3 gap-2">
+        <div>
+          <div class="section-title">Predicciones del campeón vs. valor real · test set 2018-2024</div>
+          <div class="section-sub">Sample 4,900 transacciones estratificado por año · línea diagonal = predicción perfecta</div>
+        </div>
+        <span class="badge" style="background:#1e2a3a;color:#60a5fa" id="badge-pred-stats">— MAE</span>
+      </div>
+      <div style="position:relative;height:380px"><canvas id="chartPredScatter"></canvas></div>
+    </div>
+  </div>
+
   <!-- ── Recomendaciones (storytelling: cierre accionable) ── -->
   <div class="mb-6">
     <div class="section-heading">Recomendaciones e Insights Accionables</div>
@@ -313,20 +360,28 @@ function parseCSV(text) {
 }
 
 async function loadMarts() {
-  const base = 'https://storage.googleapis.com/danish-housing-gold/marts';
-  const fetchCSV = async name => {
+  const base = './data/marts';
+  const fetchCSV = async (name, optional = false) => {
     const r = await fetch(`${base}/${name}`);
-    if (!r.ok) throw new Error(`${name}: HTTP ${r.status}`);
+    if (!r.ok) {
+      if (optional) { console.warn(`${name}: HTTP ${r.status} (opcional, omitido)`); return []; }
+      throw new Error(`${name}: HTTP ${r.status}`);
+    }
     return parseCSV(await r.text());
   };
-  const [ri, dd, vol, mc, mp] = await Promise.all([
+  const [ri, dd, vol, mc, mp, modelCmp, modelImp, modelCv, modelPred] = await Promise.all([
     fetchCSV('mart_quarterly_regional_index.csv'),
     fetchCSV('mart_drawdowns.csv'),
     fetchCSV('mart_volatility.csv'),
     fetchCSV('mart_macro_correlation.csv'),
     fetchCSV('mart_transactions_map.csv'),
+    // Modelado (opcionales: si no existen, la seccion de modelado queda vacia)
+    fetchCSV('mart_model_comparison.csv', true),
+    fetchCSV('mart_feature_importance.csv', true),
+    fetchCSV('mart_model_cv.csv', true),
+    fetchCSV('mart_predictions_sample.csv', true),
   ]);
-  return { ri, dd, vol, mc, mp };
+  return { ri, dd, vol, mc, mp, modelCmp, modelImp, modelCv, modelPred };
 }
 
 // Clasificación de período macroeconómico por trimestre (storytelling)
@@ -1030,6 +1085,243 @@ function renderAnnual() {
   makeLegend('annual-legend', REGION_COLORS);
 }
 
+// ── Sección Modelado ──────────────────────────────────────────────────────────
+const MODEL_COLORS = {
+  'M1_Linear':       '#94a3b8',
+  'M2_Ridge':        '#60a5fa',
+  'M3_RandomForest': '#34d399',
+  'M4_XGBoost':      '#f59e0b',
+};
+
+let MODEL_STATE = { comparison: [], importance: [], cv: [], predictions: [], champion: null };
+
+let chartImportance, chartCV, chartPredScatter;
+
+function fmtDKK(n) {
+  if (!isFinite(n)) return '—';
+  if (Math.abs(n) >= 1e6) return (n / 1e6).toFixed(2) + 'M';
+  if (Math.abs(n) >= 1e3) return (n / 1e3).toFixed(0) + 'k';
+  return n.toFixed(0);
+}
+function fmtPct(n, digits = 1) { return isFinite(n) ? n.toFixed(digits) + '%' : '—'; }
+
+function buildModelState({ modelCmp, modelImp, modelCv, modelPred }) {
+  if (!modelCmp || modelCmp.length === 0) { MODEL_STATE = null; return; }
+  // Coerce numeric fields
+  const comparison = modelCmp.map(r => ({
+    model: r.model,
+    train_r2: parseFloat(r.train_r2), test_r2: parseFloat(r.test_r2),
+    train_mae: parseFloat(r.train_mae), test_mae: parseFloat(r.test_mae),
+    train_mape: parseFloat(r.train_mape_pct), test_mape: parseFloat(r.test_mape_pct),
+    test_rmse: parseFloat(r.test_rmse),
+    n_train: parseInt(r.n_train), n_test: parseInt(r.n_test),
+  }));
+  const champion = comparison.slice().sort((a, b) => b.test_r2 - a.test_r2)[0]?.model || null;
+  const importance = (modelImp || []).map(r => ({
+    model: r.model, feature: r.feature, importance: parseFloat(r.importance),
+  }));
+  const cv = (modelCv || []).map(r => ({
+    fold: parseInt(r.fold), model: r.model,
+    train_start: parseInt(r.train_start), train_end: parseInt(r.train_end),
+    test_start: parseInt(r.test_start), test_end: parseInt(r.test_end),
+    n_train: parseInt(r.n_train), n_test: parseInt(r.n_test),
+    r2: parseFloat(r.r2), mae: parseFloat(r.mae), mape: parseFloat(r.mape_pct),
+  }));
+  const predictions = (modelPred || []).map(r => ({
+    model: r.model, year: parseInt(r.year),
+    y_true: parseFloat(r.y_true), y_pred: parseFloat(r.y_pred),
+    residual: parseFloat(r.residual),
+  }));
+  MODEL_STATE = { comparison, importance, cv, predictions, champion };
+}
+
+function renderModelComparison() {
+  if (!MODEL_STATE || !MODEL_STATE.comparison.length) return;
+  const tbl = document.getElementById('model-comparison-table');
+  const champ = MODEL_STATE.champion;
+  const rows = MODEL_STATE.comparison;
+
+  const header = `
+    <table style="width:100%;border-collapse:collapse;font-size:0.84rem">
+      <thead>
+        <tr style="border-bottom:1px solid var(--border);color:var(--muted);font-size:0.74rem;text-transform:uppercase;letter-spacing:0.04em">
+          <th style="text-align:left;padding:8px 6px">Modelo</th>
+          <th style="text-align:right;padding:8px 6px">train R²</th>
+          <th style="text-align:right;padding:8px 6px">test R²</th>
+          <th style="text-align:right;padding:8px 6px">test MAE</th>
+          <th style="text-align:right;padding:8px 6px">test MAPE</th>
+          <th style="text-align:right;padding:8px 6px">test RMSE</th>
+        </tr>
+      </thead>
+      <tbody>`;
+  const body = rows.map(r => {
+    const isChamp = r.model === champ;
+    const rowStyle = isChamp ? `background:rgba(245,158,11,0.06);border-left:2px solid ${MODEL_COLORS[r.model] || '#f59e0b'}` : '';
+    const champBadge = isChamp ? '<span style="color:#f59e0b;font-size:0.7rem;margin-left:6px">★ campeón</span>' : '';
+    return `
+      <tr style="border-bottom:1px solid var(--border);${rowStyle}">
+        <td style="padding:10px 8px;font-weight:${isChamp ? 600 : 500};color:${MODEL_COLORS[r.model] || 'var(--text)'}">${r.model}${champBadge}</td>
+        <td style="text-align:right;padding:10px 6px;color:var(--muted)">${r.train_r2.toFixed(3)}</td>
+        <td style="text-align:right;padding:10px 6px;font-weight:${isChamp ? 600 : 500}">${r.test_r2.toFixed(3)}</td>
+        <td style="text-align:right;padding:10px 6px">${fmtDKK(r.test_mae)} DKK</td>
+        <td style="text-align:right;padding:10px 6px">${fmtPct(r.test_mape, 1)}</td>
+        <td style="text-align:right;padding:10px 6px;color:var(--muted)">${fmtDKK(r.test_rmse)} DKK</td>
+      </tr>`;
+  }).join('');
+  tbl.innerHTML = header + body + '</tbody></table>';
+
+  // Badge campeón
+  const champRow = rows.find(r => r.model === champ);
+  document.getElementById('badge-champion').textContent = champ ? `★ ${champ} · R²=${champRow.test_r2.toFixed(3)}` : '— campeón';
+
+  // Takeaway
+  const linealMape = rows.find(r => r.model === 'M1_Linear')?.test_mape || 0;
+  document.getElementById('model-takeaway').innerHTML =
+    `<strong>${champ}</strong> reduce el error medio a <strong>${fmtDKK(champRow.test_mae)} DKK</strong> (MAPE ${fmtPct(champRow.test_mape)}), vs. ${fmtPct(linealMape)} del baseline lineal. ` +
+    `El gap train→test de R²=${champRow.train_r2.toFixed(2)}→${champRow.test_r2.toFixed(2)} refleja distribution shift en el período 2018-2024 (boom post-COVID). Anti-leak guard validó las 41 features.`;
+}
+
+function renderFeatureImportance() {
+  if (!MODEL_STATE) return;
+  const champ = MODEL_STATE.champion;
+  const imp = MODEL_STATE.importance
+    .filter(r => r.model === champ)
+    .sort((a, b) => b.importance - a.importance)
+    .slice(0, 10);
+  if (!imp.length) return;
+  const labels = imp.map(r => r.feature);
+  const data = imp.map(r => +(r.importance * 100).toFixed(2));
+
+  if (chartImportance) chartImportance.destroy();
+  chartImportance = new Chart(document.getElementById('chartImportance'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Importance (%)',
+        data,
+        backgroundColor: '#f59e0b',
+        borderColor: '#fb923c',
+        borderWidth: 1,
+      }],
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ctx.parsed.x.toFixed(2) + '%' } },
+      },
+      scales: {
+        x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.08)' } },
+        y: { ticks: { color: '#e2e8f0', font: { size: 11 } }, grid: { display: false } },
+      },
+    },
+  });
+}
+
+function renderCV() {
+  if (!MODEL_STATE || !MODEL_STATE.cv.length) return;
+  const folds = [...new Set(MODEL_STATE.cv.map(r => r.fold))].sort((a, b) => a - b);
+  const models = [...new Set(MODEL_STATE.cv.map(r => r.model))];
+
+  const datasets = models.map(m => ({
+    label: m,
+    data: folds.map(f => {
+      const row = MODEL_STATE.cv.find(r => r.fold === f && r.model === m);
+      return row ? +(row.r2.toFixed(3)) : null;
+    }),
+    borderColor: MODEL_COLORS[m] || '#94a3b8',
+    backgroundColor: MODEL_COLORS[m] || '#94a3b8',
+    borderWidth: m === MODEL_STATE.champion ? 3 : 1.5,
+    pointRadius: m === MODEL_STATE.champion ? 5 : 3,
+    pointHoverRadius: 6,
+    tension: 0.2,
+  }));
+
+  // Label de fold con periodo
+  const foldLabels = folds.map(f => {
+    const r = MODEL_STATE.cv.find(x => x.fold === f);
+    return r ? `F${f}\n${r.test_start}-${r.test_end}` : `F${f}`;
+  });
+
+  if (chartCV) chartCV.destroy();
+  chartCV = new Chart(document.getElementById('chartCV'), {
+    type: 'line',
+    data: { labels: foldLabels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 11 }, padding: 8, boxWidth: 12 } },
+        tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: R²=${ctx.parsed.y.toFixed(3)}` } },
+      },
+      scales: {
+        x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: 'rgba(148,163,184,0.08)' } },
+        y: { ticks: { color: '#94a3b8' }, title: { display: true, text: 'R² (escala nominal)', color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.08)' }, beginAtZero: true },
+      },
+    },
+  });
+}
+
+function renderPredScatter() {
+  if (!MODEL_STATE || !MODEL_STATE.predictions.length) return;
+  const preds = MODEL_STATE.predictions;
+  // Color por año
+  const years = [...new Set(preds.map(p => p.year))].sort();
+  const yearPalette = ['#60a5fa', '#34d399', '#f59e0b', '#f87171', '#a78bfa', '#fb923c', '#22d3ee'];
+  const colorOf = y => yearPalette[years.indexOf(y) % yearPalette.length];
+
+  const datasets = years.map(y => ({
+    label: String(y),
+    data: preds.filter(p => p.year === y).map(p => ({ x: p.y_true, y: p.y_pred })),
+    backgroundColor: colorOf(y) + 'cc',
+    borderColor: 'transparent',
+    pointRadius: 2,
+    pointHoverRadius: 4,
+  }));
+
+  // Diagonal y_pred = y_true
+  const maxV = Math.max(...preds.map(p => Math.max(p.y_true, p.y_pred))) * 1.05;
+  datasets.push({
+    label: 'y_pred = y_true',
+    data: [{ x: 0, y: 0 }, { x: maxV, y: maxV }],
+    type: 'line',
+    borderColor: 'rgba(226,232,240,0.4)',
+    borderDash: [4, 4],
+    borderWidth: 1,
+    pointRadius: 0,
+    fill: false,
+  });
+
+  // Stats badge
+  const mae = preds.reduce((s, p) => s + Math.abs(p.residual), 0) / preds.length;
+  document.getElementById('badge-pred-stats').textContent = `MAE muestral ${fmtDKK(mae)} DKK · n=${preds.length}`;
+
+  if (chartPredScatter) chartPredScatter.destroy();
+  chartPredScatter = new Chart(document.getElementById('chartPredScatter'), {
+    type: 'scatter',
+    data: { datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 11 }, padding: 8, boxWidth: 12 } },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.dataset.label}: real=${fmtDKK(ctx.parsed.x)} pred=${fmtDKK(ctx.parsed.y)}`,
+          },
+        },
+      },
+      scales: {
+        x: { type: 'linear', ticks: { color: '#94a3b8', callback: v => fmtDKK(v) }, title: { display: true, text: 'y_true (DKK)', color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.06)' } },
+        y: { type: 'linear', ticks: { color: '#94a3b8', callback: v => fmtDKK(v) }, title: { display: true, text: 'y_pred (DKK)', color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.06)' } },
+      },
+    },
+  });
+}
+
 // ── Init (async: carga CSVs desde data/marts/ antes de renderizar) ────────────
 window.addEventListener('load', async () => {
   try {
@@ -1045,6 +1337,15 @@ window.addEventListener('load', async () => {
     renderDrawdownTimeline();
     renderCities();
     renderAnnual();
+
+    // Modelado predictivo
+    buildModelState(raw);
+    if (MODEL_STATE && MODEL_STATE.comparison.length) {
+      renderModelComparison();
+      renderFeatureImportance();
+      renderCV();
+      renderPredScatter();
+    }
   } catch (err) {
     console.error('Error cargando marts:', err);
     document.getElementById('loading').innerHTML =

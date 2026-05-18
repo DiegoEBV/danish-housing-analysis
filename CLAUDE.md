@@ -60,35 +60,38 @@ La documentación interna y los nombres de variables/columnas están **en españ
 ## Commands
 
 ```bash
-# Setup
-python -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+# Setup (uv 0.9+ requerido)
+uv sync --extra dev --extra notebook
 
-# Cleaning solo (Bronze → Silver, lee CSV de Kaggle)
-python scripts/run_cleaning.py --config configs/analysis.yaml
-python scripts/run_cleaning.py --config configs/analysis.yaml --sample 10000   # smoke test
+# Cleaning solo (Bronze → Silver; prefiere parquet si existe, sino CSV)
+uv run python scripts/run_cleaning.py --config configs/analysis.yaml
+uv run python scripts/run_cleaning.py --config configs/analysis.yaml --sample 10000   # smoke test
 
-# Pipeline completo (Silver + 5 marts Gold) — lee parquet, no CSV
-python scripts/run_pipeline.py
+# Pipeline completo (Silver + 5 marts Gold) — lee parquet 1.2M
+uv run python scripts/run_pipeline.py --config configs/analysis.yaml
+uv run python scripts/run_pipeline.py --config configs/analysis.yaml --sample 1000    # smoke
+
+# Marts standalone (lee Silver, escribe Gold)
+uv run python scripts/export_marts.py --config configs/analysis.yaml
 
 # Subir capas a GCS (requiere gcloud auth application-default login)
-python scripts/upload_to_gcs.py --layer all --config configs/analysis.yaml
+uv run python scripts/upload_to_gcs.py --layer all --config configs/analysis.yaml
 
-# Generar marts sintéticos para Tableau (sin data real)
-python scripts/generate_tableau.py
+# Generar marts sintéticos (sin data real, para previews)
+uv run python scripts/generate_tableau.py
 
 # Tests
-pytest tests/                               # toda la suite
-pytest tests/test_cleaning.py::test_<name>  # un solo test
-pytest tests/ --cov=src/danish_housing      # con cobertura
+uv run pytest tests/                               # toda la suite
+uv run pytest tests/test_cleaning.py::test_<name>  # un solo test
+uv run pytest tests/ --cov=src/danish_housing      # con cobertura
 
-# Linters configurados en requirements.txt
-ruff check src/ scripts/ tests/
-black src/ scripts/ tests/
-mypy src/
+# Linters (config en pyproject.toml)
+uv run ruff check src/ scripts/ tests/
+uv run black src/ scripts/ tests/
+uv run mypy src/
 ```
 
-**Datos**: `data/` está en `.gitignore` y no se commitea. El raw debe colocarse manualmente (`data/raw/danish_housing_prices.csv` para `run_cleaning.py`, o `data/raw/DKHousingPrices.parquet` para `run_pipeline.py` — los scripts usan rutas distintas, ver más abajo).
+**Datos**: `data/` está en `.gitignore` y no se commitea. El raw debe colocarse manualmente. Rutas configurables en `configs/analysis.yaml -> paths.raw_csv` (CSV de Kaggle) y `paths.raw_parquet` (1.2M filas, preferido cuando existe).
 
 ## Architecture
 
@@ -114,8 +117,9 @@ Tableau Desktop (.twbx)
 
 Hay **dos scripts de pipeline** que no son intercambiables — esto es deliberado, no un bug:
 
-- `scripts/run_cleaning.py` — entrega TB2, lee **CSV** desde `configs/analysis.yaml`, escribe sólo Silver, y produce la bitácora. Usa el módulo `src/danish_housing/cleaning.py`.
-- `scripts/run_pipeline.py` — entrega TB3, lee **Parquet** desde una ruta absoluta hardcodeada (`/sessions/.../DKHousingPrices.parquet`), inlinea las reglas P1–P8 y genera los 5 marts Gold en una sola corrida memory-efficient (libera el raw antes de generar marts, recarga sólo las columnas necesarias). **No reusa `cleaning.py`** porque está optimizado para 1.5M filas en RAM limitada.
+- `scripts/run_cleaning.py` — entrega TB2, lee CSV o Parquet desde `configs/analysis.yaml -> paths.raw_*` (prefiere parquet si ambos existen), delega en `src/danish_housing/cleaning.py:run_cleaning_pipeline`, escribe Silver parquet + bitácora.
+- `scripts/run_pipeline.py` — entrega TB3, lee Parquet (1.2M filas) desde `paths.raw_parquet` configurable, **inlinea** las reglas P1–P8 + genera los 5 marts Gold en una sola corrida memory-efficient (libera el raw antes de generar marts, recarga sólo las columnas necesarias). **No reusa `cleaning.py`** porque está optimizado para 1.2M filas en RAM limitada.
+- `scripts/export_marts.py` — generación de marts standalone leyendo Silver. Pendiente de absorber por completo la FASE B de `run_pipeline.py` (issue `ixa`).
 
 Si tocas reglas de limpieza, **actualiza ambos** o documenta explícitamente la divergencia. El plan de medio plazo (issue `ixa`) es extraer la lógica de marts a `scripts/export_marts.py` reutilizable.
 
@@ -184,3 +188,14 @@ Las reglas de limpieza **flagean** en vez de borrar: `sales_type_valido`, `purch
 ## Documentación y entregables
 
 El proyecto se entrega por semanas: TB2 (S4, limpieza ✅), TB3 (S7, modelado y marts 🔄), TF (S13, dashboard ⏳). El estado en vivo está en `docs/project-current-state.md` y el plan en `plans/project_plan.md`. Los runbooks de ejecución end-to-end están en `runbooks/` (`full-execution.md`, `gcp-medallion-setup.md`). Los pendientes de TB3/TF ya están trackeados en `bd` — usar `bd ready` para ver el siguiente trabajo disponible.
+
+## Hosting del dashboard (dos deploys, deliberadamente)
+
+| Branch | Hosting | Configuración | Notas |
+|---|---|---|---|
+| `main` | **Netlify** (config externa) | `netlify.toml` con redirects: `/` → `/danish_housing_dashboard.html`, `/marts/*` → `gs://danish-housing-gold/marts/*` | Dashboard.html usa **paths absolutos** (`/chart.umd.min.js`) y marts directo de GCS. NO tocar a menos que el equipo lo coordine. |
+| `visualization` | **GitHub Pages** (`.github/workflows/pages.yml`) | Trigger en push a visualization; sirve los archivos trackeados (HTML + chart.umd.min.js + `data/marts/*.csv`) bajo `https://diegoebv.github.io/danish-housing-analysis/` | Dashboard.html usa **paths relativos** (`./chart.umd.min.js`, `./data/marts`). Anti-caché: deploy automático cuando cambia HTML/JS/marts. |
+
+Cada deploy tiene su propio HTML adaptado a su hosting; no intentar unificar los dos. La rama de desarrollo activa es `visualization`. `main` está congelado para Netlify y solo se toca de común acuerdo.
+
+**Setting one-time pendiente para Pages**: Settings → Environments → `github-pages` → Deployment branches → permitir `visualization` (por default solo permite main).

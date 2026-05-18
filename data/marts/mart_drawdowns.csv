@@ -1,0 +1,2424 @@
+quarter,region,house_type,avg_sqm_price_real,n_transactions,cumulative_max,drawdown_pct
+1996Q1,Bornholm,Apartment,24008.0,6,24008.0,0.0
+1996Q3,Bornholm,Apartment,23074.4,8,24008.0,-3.89
+1997Q3,Bornholm,Apartment,18366.3,5,24008.0,-23.5
+1999Q2,Bornholm,Apartment,99418.3,5,99418.3,0.0
+2001Q2,Bornholm,Apartment,19996.2,14,99418.3,-79.89
+2002Q3,Bornholm,Apartment,39404.7,13,99418.3,-60.36
+2003Q3,Bornholm,Apartment,21939.4,12,99418.3,-77.93
+2003Q4,Bornholm,Apartment,28410.1,8,99418.3,-71.42
+2005Q1,Bornholm,Apartment,15305.6,5,99418.3,-84.6
+2005Q2,Bornholm,Apartment,25872.2,9,99418.3,-73.98
+2005Q3,Bornholm,Apartment,17112.1,15,99418.3,-82.79
+2006Q2,Bornholm,Apartment,20916.7,7,99418.3,-78.96
+2006Q4,Bornholm,Apartment,33296.2,12,99418.3,-66.51
+2007Q1,Bornholm,Apartment,38752.8,9,99418.3,-61.02
+2007Q2,Bornholm,Apartment,33836.4,14,99418.3,-65.97
+2007Q3,Bornholm,Apartment,31786.4,10,99418.3,-68.03
+2008Q1,Bornholm,Apartment,22147.7,6,99418.3,-77.72
+2009Q3,Bornholm,Apartment,17247.2,8,99418.3,-82.65
+2010Q4,Bornholm,Apartment,16546.4,8,99418.3,-83.36
+2014Q1,Bornholm,Apartment,12458.8,5,99418.3,-87.47
+2014Q4,Bornholm,Apartment,43598.1,6,99418.3,-56.15
+2015Q2,Bornholm,Apartment,23547.0,7,99418.3,-76.32
+2015Q4,Bornholm,Apartment,11993.8,8,99418.3,-87.94
+2016Q2,Bornholm,Apartment,10795.9,6,99418.3,-89.14
+2016Q3,Bornholm,Apartment,24589.7,8,99418.3,-75.27
+2017Q3,Bornholm,Apartment,46946.6,16,99418.3,-52.78
+2017Q4,Bornholm,Apartment,17065.9,14,99418.3,-82.83
+2018Q1,Bornholm,Apartment,37773.0,8,99418.3,-62.01
+2018Q3,Bornholm,Apartment,7844.9,5,99418.3,-92.11
+2018Q4,Bornholm,Apartment,32448.3,17,99418.3,-67.36
+2019Q1,Bornholm,Apartment,13977.4,6,99418.3,-85.94
+2019Q2,Bornholm,Apartment,31615.1,6,99418.3,-68.2
+2019Q4,Bornholm,Apartment,29644.1,18,99418.3,-70.18
+2020Q1,Bornholm,Apartment,62335.0,27,99418.3,-37.3
+2020Q3,Bornholm,Apartment,43627.2,21,99418.3,-56.12
+2020Q4,Bornholm,Apartment,19549.2,8,99418.3,-80.34
+2021Q1,Bornholm,Apartment,36159.3,11,99418.3,-63.63
+2021Q2,Bornholm,Apartment,36303.9,12,99418.3,-63.48
+2021Q3,Bornholm,Apartment,25223.2,5,99418.3,-74.63
+2021Q4,Bornholm,Apartment,32020.2,9,99418.3,-67.79
+2022Q1,Bornholm,Apartment,22511.3,7,99418.3,-77.36
+2022Q2,Bornholm,Apartment,28076.6,12,99418.3,-71.76
+2022Q3,Bornholm,Apartment,21454.8,47,99418.3,-78.42
+2022Q4,Bornholm,Apartment,18543.7,5,99418.3,-81.35
+2023Q1,Bornholm,Apartment,17796.0,7,99418.3,-82.1
+2023Q2,Bornholm,Apartment,41593.0,13,99418.3,-58.16
+2023Q3,Bornholm,Apartment,27353.4,6,99418.3,-72.49
+2023Q4,Bornholm,Apartment,29204.3,14,99418.3,-70.62
+2024Q1,Bornholm,Apartment,12762.0,10,99418.3,-87.16
+2024Q2,Bornholm,Apartment,32443.9,7,99418.3,-67.37
+2024Q3,Bornholm,Apartment,26911.2,9,99418.3,-72.93
+1996Q1,Bornholm,Farm,5330.5,7,5330.5,0.0
+1996Q2,Bornholm,Farm,8499.2,6,8499.2,0.0
+1996Q3,Bornholm,Farm,9559.7,6,9559.7,0.0
+1996Q4,Bornholm,Farm,9909.8,6,9909.8,0.0
+1997Q3,Bornholm,Farm,8398.7,6,9909.8,-15.25
+1997Q4,Bornholm,Farm,5394.5,6,9909.8,-45.56
+1998Q3,Bornholm,Farm,8617.2,6,9909.8,-13.04
+1999Q2,Bornholm,Farm,7005.9,7,9909.8,-29.3
+1999Q3,Bornholm,Farm,7782.1,10,9909.8,-21.47
+1999Q4,Bornholm,Farm,6804.8,5,9909.8,-31.33
+2000Q1,Bornholm,Farm,5993.3,5,9909.8,-39.52
+2001Q1,Bornholm,Farm,7573.6,7,9909.8,-23.57
+2001Q2,Bornholm,Farm,6411.5,5,9909.8,-35.3
+2001Q3,Bornholm,Farm,6247.7,8,9909.8,-36.95
+2001Q4,Bornholm,Farm,8431.3,6,9909.8,-14.92
+2002Q1,Bornholm,Farm,9130.5,8,9909.8,-7.86
+2002Q2,Bornholm,Farm,7805.3,5,9909.8,-21.24
+2002Q4,Bornholm,Farm,11016.0,5,11016.0,0.0
+2003Q1,Bornholm,Farm,6163.3,6,11016.0,-44.05
+2003Q2,Bornholm,Farm,17054.5,5,17054.5,0.0
+2003Q3,Bornholm,Farm,17140.4,5,17140.4,0.0
+2004Q1,Bornholm,Farm,8489.5,7,17140.4,-50.47
+2004Q2,Bornholm,Farm,12267.8,7,17140.4,-28.43
+2004Q4,Bornholm,Farm,10002.7,10,17140.4,-41.64
+2005Q1,Bornholm,Farm,5438.7,5,17140.4,-68.27
+2005Q2,Bornholm,Farm,8439.2,5,17140.4,-50.76
+2005Q3,Bornholm,Farm,5687.2,5,17140.4,-66.82
+2005Q4,Bornholm,Farm,25081.8,9,25081.8,0.0
+2006Q2,Bornholm,Farm,8909.0,10,25081.8,-64.48
+2006Q3,Bornholm,Farm,6374.3,6,25081.8,-74.59
+2006Q4,Bornholm,Farm,13040.9,7,25081.8,-48.01
+2007Q1,Bornholm,Farm,17445.7,11,25081.8,-30.45
+2007Q2,Bornholm,Farm,12585.0,7,25081.8,-49.82
+2008Q2,Bornholm,Farm,10678.6,9,25081.8,-57.42
+2008Q3,Bornholm,Farm,13002.0,8,25081.8,-48.16
+2008Q4,Bornholm,Farm,14227.5,7,25081.8,-43.28
+2009Q4,Bornholm,Farm,10566.6,8,25081.8,-57.87
+2010Q1,Bornholm,Farm,15122.8,7,25081.8,-39.71
+2010Q2,Bornholm,Farm,8169.2,9,25081.8,-67.43
+2010Q3,Bornholm,Farm,7988.4,5,25081.8,-68.15
+2010Q4,Bornholm,Farm,10147.4,5,25081.8,-59.54
+2011Q2,Bornholm,Farm,11716.7,5,25081.8,-53.29
+2011Q3,Bornholm,Farm,7900.5,9,25081.8,-68.5
+2012Q2,Bornholm,Farm,7082.4,6,25081.8,-71.76
+2012Q4,Bornholm,Farm,7121.1,6,25081.8,-71.61
+2013Q1,Bornholm,Farm,9319.8,10,25081.8,-62.84
+2013Q2,Bornholm,Farm,8302.6,5,25081.8,-66.9
+2013Q3,Bornholm,Farm,10568.5,10,25081.8,-57.86
+2013Q4,Bornholm,Farm,5324.2,7,25081.8,-78.77
+2014Q3,Bornholm,Farm,5721.4,7,25081.8,-77.19
+2014Q4,Bornholm,Farm,7933.3,5,25081.8,-68.37
+2015Q1,Bornholm,Farm,5578.1,10,25081.8,-77.76
+2015Q2,Bornholm,Farm,10214.8,7,25081.8,-59.27
+2015Q3,Bornholm,Farm,10871.3,9,25081.8,-56.66
+2015Q4,Bornholm,Farm,9350.1,5,25081.8,-62.72
+2016Q2,Bornholm,Farm,10026.5,9,25081.8,-60.02
+2016Q3,Bornholm,Farm,10340.8,9,25081.8,-58.77
+2016Q4,Bornholm,Farm,13081.0,5,25081.8,-47.85
+2017Q3,Bornholm,Farm,9078.6,12,25081.8,-63.8
+2017Q4,Bornholm,Farm,8566.1,18,25081.8,-65.85
+2018Q1,Bornholm,Farm,8679.9,9,25081.8,-65.39
+2018Q2,Bornholm,Farm,11361.4,13,25081.8,-54.7
+2018Q3,Bornholm,Farm,8712.4,14,25081.8,-65.26
+2018Q4,Bornholm,Farm,7007.7,13,25081.8,-72.06
+2019Q1,Bornholm,Farm,10818.0,12,25081.8,-56.87
+2019Q2,Bornholm,Farm,9771.2,13,25081.8,-61.04
+2019Q3,Bornholm,Farm,8091.7,10,25081.8,-67.74
+2019Q4,Bornholm,Farm,8786.8,10,25081.8,-64.97
+2020Q1,Bornholm,Farm,11988.2,14,25081.8,-52.2
+2020Q2,Bornholm,Farm,10126.7,18,25081.8,-59.63
+2020Q3,Bornholm,Farm,9930.6,16,25081.8,-60.41
+2020Q4,Bornholm,Farm,11112.7,22,25081.8,-55.69
+2021Q1,Bornholm,Farm,11698.0,17,25081.8,-53.36
+2021Q2,Bornholm,Farm,13733.7,20,25081.8,-45.24
+2021Q3,Bornholm,Farm,11720.8,17,25081.8,-53.27
+2021Q4,Bornholm,Farm,12069.5,13,25081.8,-51.88
+2022Q1,Bornholm,Farm,13118.9,13,25081.8,-47.7
+2022Q2,Bornholm,Farm,12928.2,13,25081.8,-48.46
+2022Q3,Bornholm,Farm,12731.3,8,25081.8,-49.24
+2022Q4,Bornholm,Farm,11604.4,11,25081.8,-53.73
+2023Q1,Bornholm,Farm,8989.9,14,25081.8,-64.16
+2023Q2,Bornholm,Farm,13615.7,7,25081.8,-45.71
+2023Q3,Bornholm,Farm,5269.7,10,25081.8,-78.99
+2023Q4,Bornholm,Farm,12027.5,21,25081.8,-52.05
+2024Q1,Bornholm,Farm,7852.0,16,25081.8,-68.69
+2024Q2,Bornholm,Farm,8515.3,9,25081.8,-66.05
+2024Q3,Bornholm,Farm,9725.7,9,25081.8,-61.22
+1996Q1,Bornholm,Summerhouse,9846.7,5,9846.7,0.0
+1996Q2,Bornholm,Summerhouse,8110.6,7,9846.7,-17.63
+1996Q3,Bornholm,Summerhouse,9736.4,10,9846.7,-1.12
+1996Q4,Bornholm,Summerhouse,23944.2,15,23944.2,0.0
+1997Q1,Bornholm,Summerhouse,12906.2,8,23944.2,-46.1
+1997Q2,Bornholm,Summerhouse,12431.3,8,23944.2,-48.08
+1997Q3,Bornholm,Summerhouse,8988.4,10,23944.2,-62.46
+1997Q4,Bornholm,Summerhouse,11377.8,9,23944.2,-52.48
+1998Q1,Bornholm,Summerhouse,8900.8,8,23944.2,-62.83
+1998Q2,Bornholm,Summerhouse,10569.1,11,23944.2,-55.86
+1998Q3,Bornholm,Summerhouse,14625.2,10,23944.2,-38.92
+1998Q4,Bornholm,Summerhouse,9956.3,11,23944.2,-58.42
+1999Q1,Bornholm,Summerhouse,10985.8,6,23944.2,-54.12
+1999Q2,Bornholm,Summerhouse,11991.9,11,23944.2,-49.92
+1999Q3,Bornholm,Summerhouse,13100.9,12,23944.2,-45.29
+2000Q1,Bornholm,Summerhouse,10434.0,9,23944.2,-56.42
+2000Q2,Bornholm,Summerhouse,12260.8,15,23944.2,-48.79
+2000Q3,Bornholm,Summerhouse,10408.9,10,23944.2,-56.53
+2000Q4,Bornholm,Summerhouse,11743.0,7,23944.2,-50.96
+2001Q1,Bornholm,Summerhouse,22476.2,7,23944.2,-6.13
+2001Q2,Bornholm,Summerhouse,14820.5,14,23944.2,-38.1
+2001Q3,Bornholm,Summerhouse,17686.2,11,23944.2,-26.14
+2001Q4,Bornholm,Summerhouse,11743.6,10,23944.2,-50.95
+2002Q1,Bornholm,Summerhouse,11925.5,10,23944.2,-50.19
+2002Q2,Bornholm,Summerhouse,14474.5,16,23944.2,-39.55
+2002Q3,Bornholm,Summerhouse,13790.3,17,23944.2,-42.41
+2002Q4,Bornholm,Summerhouse,10025.9,10,23944.2,-58.13
+2003Q1,Bornholm,Summerhouse,14689.1,11,23944.2,-38.65
+2003Q2,Bornholm,Summerhouse,16713.7,32,23944.2,-30.2
+2003Q3,Bornholm,Summerhouse,11701.5,21,23944.2,-51.13
+2003Q4,Bornholm,Summerhouse,13372.3,17,23944.2,-44.15
+2004Q1,Bornholm,Summerhouse,13402.2,13,23944.2,-44.03
+2004Q2,Bornholm,Summerhouse,13871.3,20,23944.2,-42.07
+2004Q3,Bornholm,Summerhouse,13306.4,13,23944.2,-44.43
+2004Q4,Bornholm,Summerhouse,17034.0,11,23944.2,-28.86
+2005Q1,Bornholm,Summerhouse,27338.7,18,27338.7,0.0
+2005Q2,Bornholm,Summerhouse,17542.9,35,27338.7,-35.83
+2005Q3,Bornholm,Summerhouse,17039.4,31,27338.7,-37.67
+2005Q4,Bornholm,Summerhouse,20495.1,26,27338.7,-25.03
+2006Q1,Bornholm,Summerhouse,19065.2,24,27338.7,-30.26
+2006Q2,Bornholm,Summerhouse,17770.1,18,27338.7,-35.0
+2006Q3,Bornholm,Summerhouse,20420.5,17,27338.7,-25.31
+2006Q4,Bornholm,Summerhouse,18620.2,20,27338.7,-31.89
+2007Q1,Bornholm,Summerhouse,17941.4,21,27338.7,-34.37
+2007Q2,Bornholm,Summerhouse,25505.9,15,27338.7,-6.7
+2007Q3,Bornholm,Summerhouse,19945.6,22,27338.7,-27.04
+2007Q4,Bornholm,Summerhouse,27291.3,11,27338.7,-0.17
+2008Q2,Bornholm,Summerhouse,20887.7,19,27338.7,-23.6
+2008Q3,Bornholm,Summerhouse,29585.8,23,29585.8,0.0
+2008Q4,Bornholm,Summerhouse,23272.3,6,29585.8,-21.34
+2009Q2,Bornholm,Summerhouse,23749.5,17,29585.8,-19.73
+2009Q3,Bornholm,Summerhouse,18466.9,12,29585.8,-37.58
+2009Q4,Bornholm,Summerhouse,19338.3,17,29585.8,-34.64
+2010Q1,Bornholm,Summerhouse,21149.2,10,29585.8,-28.52
+2010Q2,Bornholm,Summerhouse,19068.6,27,29585.8,-35.55
+2010Q3,Bornholm,Summerhouse,17601.1,32,29585.8,-40.51
+2010Q4,Bornholm,Summerhouse,18443.1,16,29585.8,-37.66
+2011Q1,Bornholm,Summerhouse,24561.5,13,29585.8,-16.98
+2011Q2,Bornholm,Summerhouse,11775.1,8,29585.8,-60.2
+2011Q3,Bornholm,Summerhouse,12281.0,30,29585.8,-58.49
+2011Q4,Bornholm,Summerhouse,16395.2,18,29585.8,-44.58
+2012Q1,Bornholm,Summerhouse,14995.8,9,29585.8,-49.31
+2012Q2,Bornholm,Summerhouse,16539.1,14,29585.8,-44.1
+2012Q3,Bornholm,Summerhouse,13086.8,16,29585.8,-55.77
+2012Q4,Bornholm,Summerhouse,15326.8,12,29585.8,-48.2
+2013Q1,Bornholm,Summerhouse,12997.4,10,29585.8,-56.07
+2013Q2,Bornholm,Summerhouse,14535.1,17,29585.8,-50.87
+2013Q3,Bornholm,Summerhouse,14193.7,23,29585.8,-52.03
+2013Q4,Bornholm,Summerhouse,15892.9,25,29585.8,-46.28
+2014Q1,Bornholm,Summerhouse,15568.7,16,29585.8,-47.38
+2014Q2,Bornholm,Summerhouse,16935.1,29,29585.8,-42.76
+2014Q3,Bornholm,Summerhouse,13885.7,26,29585.8,-53.07
+2014Q4,Bornholm,Summerhouse,16157.3,19,29585.8,-45.39
+2015Q1,Bornholm,Summerhouse,10921.0,15,29585.8,-63.09
+2015Q2,Bornholm,Summerhouse,14933.9,23,29585.8,-49.52
+2015Q3,Bornholm,Summerhouse,12399.0,28,29585.8,-58.09
+2015Q4,Bornholm,Summerhouse,24315.0,23,29585.8,-17.82
+2016Q1,Bornholm,Summerhouse,17047.8,17,29585.8,-42.38
+2016Q2,Bornholm,Summerhouse,16432.2,41,29585.8,-44.46
+2016Q3,Bornholm,Summerhouse,14901.1,26,29585.8,-49.63
+2016Q4,Bornholm,Summerhouse,24353.1,30,29585.8,-17.69
+2017Q3,Bornholm,Summerhouse,15920.1,44,29585.8,-46.19
+2017Q4,Bornholm,Summerhouse,15448.2,30,29585.8,-47.78
+2018Q1,Bornholm,Summerhouse,16779.1,20,29585.8,-43.29
+2018Q2,Bornholm,Summerhouse,19014.5,35,29585.8,-35.73
+2018Q3,Bornholm,Summerhouse,17664.0,48,29585.8,-40.3
+2018Q4,Bornholm,Summerhouse,17897.0,42,29585.8,-39.51
+2019Q1,Bornholm,Summerhouse,14450.8,31,29585.8,-51.16
+2019Q2,Bornholm,Summerhouse,19102.7,46,29585.8,-35.43
+2019Q3,Bornholm,Summerhouse,16406.2,56,29585.8,-44.55
+2019Q4,Bornholm,Summerhouse,18362.6,48,29585.8,-37.93
+2020Q1,Bornholm,Summerhouse,22814.5,35,29585.8,-22.89
+2020Q2,Bornholm,Summerhouse,17407.2,65,29585.8,-41.16
+2020Q3,Bornholm,Summerhouse,22153.1,66,29585.8,-25.12
+2020Q4,Bornholm,Summerhouse,20857.8,58,29585.8,-29.5
+2021Q1,Bornholm,Summerhouse,22284.5,51,29585.8,-24.68
+2021Q2,Bornholm,Summerhouse,24952.5,66,29585.8,-15.66
+2021Q3,Bornholm,Summerhouse,26038.6,44,29585.8,-11.99
+2021Q4,Bornholm,Summerhouse,25536.2,36,29585.8,-13.69
+2022Q1,Bornholm,Summerhouse,27116.6,28,29585.8,-8.35
+2022Q2,Bornholm,Summerhouse,30826.4,41,30826.4,0.0
+2022Q3,Bornholm,Summerhouse,25162.3,38,30826.4,-18.37
+2022Q4,Bornholm,Summerhouse,26109.0,23,30826.4,-15.3
+2023Q1,Bornholm,Summerhouse,27501.8,28,30826.4,-10.78
+2023Q2,Bornholm,Summerhouse,24206.4,34,30826.4,-21.48
+2023Q3,Bornholm,Summerhouse,23331.3,31,30826.4,-24.31
+2023Q4,Bornholm,Summerhouse,26523.7,41,30826.4,-13.96
+2024Q1,Bornholm,Summerhouse,27631.6,18,30826.4,-10.36
+2024Q2,Bornholm,Summerhouse,25760.1,47,30826.4,-16.43
+2024Q3,Bornholm,Summerhouse,24020.2,34,30826.4,-22.08
+1996Q1,Bornholm,Townhouse,7085.6,10,7085.6,0.0
+1996Q2,Bornholm,Townhouse,6691.6,14,7085.6,-5.56
+1996Q3,Bornholm,Townhouse,7361.8,8,7361.8,0.0
+1996Q4,Bornholm,Townhouse,6500.7,10,7361.8,-11.7
+1997Q1,Bornholm,Townhouse,9158.1,8,9158.1,0.0
+1997Q2,Bornholm,Townhouse,7449.7,9,9158.1,-18.65
+1997Q3,Bornholm,Townhouse,29660.1,15,29660.1,0.0
+1997Q4,Bornholm,Townhouse,9992.7,7,29660.1,-66.31
+1998Q1,Bornholm,Townhouse,8882.7,7,29660.1,-70.05
+1998Q2,Bornholm,Townhouse,8996.5,13,29660.1,-69.67
+1998Q3,Bornholm,Townhouse,7565.2,16,29660.1,-74.49
+1998Q4,Bornholm,Townhouse,6790.3,10,29660.1,-77.11
+1999Q1,Bornholm,Townhouse,7586.2,10,29660.1,-74.42
+1999Q2,Bornholm,Townhouse,8072.7,14,29660.1,-72.78
+1999Q3,Bornholm,Townhouse,10352.9,13,29660.1,-65.09
+1999Q4,Bornholm,Townhouse,10979.2,8,29660.1,-62.98
+2000Q1,Bornholm,Townhouse,12907.2,16,29660.1,-56.48
+2000Q2,Bornholm,Townhouse,7102.5,13,29660.1,-76.05
+2000Q3,Bornholm,Townhouse,7246.7,13,29660.1,-75.57
+2000Q4,Bornholm,Townhouse,9778.6,12,29660.1,-67.03
+2001Q1,Bornholm,Townhouse,7386.1,19,29660.1,-75.1
+2001Q2,Bornholm,Townhouse,7309.5,13,29660.1,-75.36
+2001Q3,Bornholm,Townhouse,6652.8,12,29660.1,-77.57
+2001Q4,Bornholm,Townhouse,6819.0,7,29660.1,-77.01
+2002Q1,Bornholm,Townhouse,8038.1,19,29660.1,-72.9
+2002Q2,Bornholm,Townhouse,6527.2,11,29660.1,-77.99
+2002Q3,Bornholm,Townhouse,14622.2,21,29660.1,-50.7
+2002Q4,Bornholm,Townhouse,9406.9,12,29660.1,-68.28
+2003Q1,Bornholm,Townhouse,8298.7,22,29660.1,-72.02
+2003Q2,Bornholm,Townhouse,10009.2,19,29660.1,-66.25
+2003Q3,Bornholm,Townhouse,7736.4,16,29660.1,-73.92
+2003Q4,Bornholm,Townhouse,14480.8,20,29660.1,-51.18
+2004Q1,Bornholm,Townhouse,9877.7,23,29660.1,-66.7
+2004Q2,Bornholm,Townhouse,10512.8,8,29660.1,-64.56
+2004Q3,Bornholm,Townhouse,9107.6,11,29660.1,-69.29
+2004Q4,Bornholm,Townhouse,10868.4,21,29660.1,-63.36
+2005Q1,Bornholm,Townhouse,9782.7,12,29660.1,-67.02
+2005Q2,Bornholm,Townhouse,10507.4,25,29660.1,-64.57
+2005Q3,Bornholm,Townhouse,11129.7,16,29660.1,-62.48
+2005Q4,Bornholm,Townhouse,8619.1,17,29660.1,-70.94
+2006Q1,Bornholm,Townhouse,8410.0,26,29660.1,-71.65
+2006Q2,Bornholm,Townhouse,10639.7,20,29660.1,-64.13
+2006Q3,Bornholm,Townhouse,16039.5,13,29660.1,-45.92
+2006Q4,Bornholm,Townhouse,11386.3,15,29660.1,-61.61
+2007Q1,Bornholm,Townhouse,15960.5,30,29660.1,-46.19
+2007Q2,Bornholm,Townhouse,11896.0,21,29660.1,-59.89
+2007Q3,Bornholm,Townhouse,13249.7,20,29660.1,-55.33
+2007Q4,Bornholm,Townhouse,13079.1,15,29660.1,-55.9
+2008Q1,Bornholm,Townhouse,10484.3,21,29660.1,-64.65
+2008Q2,Bornholm,Townhouse,10554.9,28,29660.1,-64.41
+2008Q3,Bornholm,Townhouse,11344.6,12,29660.1,-61.75
+2008Q4,Bornholm,Townhouse,21299.3,17,29660.1,-28.19
+2009Q1,Bornholm,Townhouse,14906.7,10,29660.1,-49.74
+2009Q2,Bornholm,Townhouse,11949.3,14,29660.1,-59.71
+2009Q3,Bornholm,Townhouse,9996.0,16,29660.1,-66.3
+2009Q4,Bornholm,Townhouse,35556.7,23,35556.7,0.0
+2010Q1,Bornholm,Townhouse,10204.3,13,35556.7,-71.3
+2010Q2,Bornholm,Townhouse,9256.5,20,35556.7,-73.97
+2010Q3,Bornholm,Townhouse,10002.5,17,35556.7,-71.87
+2010Q4,Bornholm,Townhouse,11256.7,14,35556.7,-68.34
+2011Q1,Bornholm,Townhouse,10112.4,18,35556.7,-71.56
+2011Q2,Bornholm,Townhouse,9392.6,16,35556.7,-73.58
+2011Q3,Bornholm,Townhouse,9375.6,14,35556.7,-73.63
+2011Q4,Bornholm,Townhouse,7978.2,13,35556.7,-77.56
+2012Q1,Bornholm,Townhouse,8008.8,16,35556.7,-77.48
+2012Q2,Bornholm,Townhouse,6850.5,14,35556.7,-80.73
+2012Q3,Bornholm,Townhouse,7915.1,9,35556.7,-77.74
+2012Q4,Bornholm,Townhouse,7349.3,9,35556.7,-79.33
+2013Q1,Bornholm,Townhouse,8741.2,11,35556.7,-75.42
+2013Q2,Bornholm,Townhouse,7855.1,13,35556.7,-77.91
+2013Q3,Bornholm,Townhouse,9605.6,18,35556.7,-72.99
+2013Q4,Bornholm,Townhouse,38178.9,32,38178.9,0.0
+2014Q1,Bornholm,Townhouse,14458.6,40,38178.9,-62.13
+2014Q2,Bornholm,Townhouse,7989.9,16,38178.9,-79.07
+2014Q3,Bornholm,Townhouse,8130.0,17,38178.9,-78.71
+2014Q4,Bornholm,Townhouse,8988.6,16,38178.9,-76.46
+2015Q1,Bornholm,Townhouse,12954.4,17,38178.9,-66.07
+2015Q2,Bornholm,Townhouse,10047.2,23,38178.9,-73.68
+2015Q3,Bornholm,Townhouse,8274.4,20,38178.9,-78.33
+2015Q4,Bornholm,Townhouse,8119.6,20,38178.9,-78.73
+2016Q1,Bornholm,Townhouse,10032.0,25,38178.9,-73.72
+2016Q2,Bornholm,Townhouse,8632.0,19,38178.9,-77.39
+2016Q3,Bornholm,Townhouse,7962.7,26,38178.9,-79.14
+2016Q4,Bornholm,Townhouse,8458.0,10,38178.9,-77.85
+2017Q3,Bornholm,Townhouse,9037.7,29,38178.9,-76.33
+2017Q4,Bornholm,Townhouse,10814.9,32,38178.9,-71.67
+2018Q1,Bornholm,Townhouse,11408.5,34,38178.9,-70.12
+2018Q2,Bornholm,Townhouse,9648.1,30,38178.9,-74.73
+2018Q3,Bornholm,Townhouse,10200.3,35,38178.9,-73.28
+2018Q4,Bornholm,Townhouse,10202.8,34,38178.9,-73.28
+2019Q1,Bornholm,Townhouse,9904.0,42,38178.9,-74.06
+2019Q2,Bornholm,Townhouse,10329.9,50,38178.9,-72.94
+2019Q3,Bornholm,Townhouse,11719.9,63,38178.9,-69.3
+2019Q4,Bornholm,Townhouse,9584.7,31,38178.9,-74.9
+2020Q1,Bornholm,Townhouse,9775.1,35,38178.9,-74.4
+2020Q2,Bornholm,Townhouse,11013.0,46,38178.9,-71.15
+2020Q3,Bornholm,Townhouse,11777.5,60,38178.9,-69.15
+2020Q4,Bornholm,Townhouse,13361.1,49,38178.9,-65.0
+2021Q1,Bornholm,Townhouse,12471.3,54,38178.9,-67.33
+2021Q2,Bornholm,Townhouse,16692.4,64,38178.9,-56.28
+2021Q3,Bornholm,Townhouse,13195.7,55,38178.9,-65.44
+2021Q4,Bornholm,Townhouse,13603.4,52,38178.9,-64.37
+2022Q1,Bornholm,Townhouse,12928.0,63,38178.9,-66.14
+2022Q2,Bornholm,Townhouse,11991.2,48,38178.9,-68.59
+2022Q3,Bornholm,Townhouse,12030.4,51,38178.9,-68.49
+2022Q4,Bornholm,Townhouse,11022.7,35,38178.9,-71.13
+2023Q1,Bornholm,Townhouse,9944.1,51,38178.9,-73.95
+2023Q2,Bornholm,Townhouse,13412.3,48,38178.9,-64.87
+2023Q3,Bornholm,Townhouse,11928.2,41,38178.9,-68.76
+2023Q4,Bornholm,Townhouse,15144.6,43,38178.9,-60.33
+2024Q1,Bornholm,Townhouse,10535.2,35,38178.9,-72.41
+2024Q2,Bornholm,Townhouse,12353.4,57,38178.9,-67.64
+2024Q3,Bornholm,Townhouse,11309.6,37,38178.9,-70.38
+1996Q1,Bornholm,Villa,6102.2,26,6102.2,0.0
+1996Q2,Bornholm,Villa,6831.1,28,6831.1,0.0
+1996Q3,Bornholm,Villa,9204.6,29,9204.6,0.0
+1996Q4,Bornholm,Villa,7005.5,24,9204.6,-23.89
+1997Q1,Bornholm,Villa,7950.6,30,9204.6,-13.62
+1997Q2,Bornholm,Villa,8462.5,40,9204.6,-8.06
+1997Q3,Bornholm,Villa,7902.4,39,9204.6,-14.15
+1997Q4,Bornholm,Villa,7002.7,21,9204.6,-23.92
+1998Q1,Bornholm,Villa,7204.9,33,9204.6,-21.73
+1998Q2,Bornholm,Villa,8604.6,42,9204.6,-6.52
+1998Q3,Bornholm,Villa,6755.6,24,9204.6,-26.61
+1998Q4,Bornholm,Villa,7278.0,27,9204.6,-20.93
+1999Q1,Bornholm,Villa,7156.7,37,9204.6,-22.25
+1999Q2,Bornholm,Villa,8482.9,36,9204.6,-7.84
+1999Q3,Bornholm,Villa,6600.6,30,9204.6,-28.29
+1999Q4,Bornholm,Villa,8148.8,35,9204.6,-11.47
+2000Q1,Bornholm,Villa,6745.1,22,9204.6,-26.72
+2000Q2,Bornholm,Villa,7983.7,47,9204.6,-13.26
+2000Q3,Bornholm,Villa,7629.9,42,9204.6,-17.11
+2000Q4,Bornholm,Villa,7316.2,32,9204.6,-20.52
+2001Q1,Bornholm,Villa,8083.3,37,9204.6,-12.18
+2001Q2,Bornholm,Villa,7250.9,40,9204.6,-21.23
+2001Q3,Bornholm,Villa,7295.0,42,9204.6,-20.75
+2001Q4,Bornholm,Villa,7191.6,29,9204.6,-21.87
+2002Q1,Bornholm,Villa,7407.5,29,9204.6,-19.52
+2002Q2,Bornholm,Villa,6870.9,47,9204.6,-25.35
+2002Q3,Bornholm,Villa,7498.8,36,9204.6,-18.53
+2002Q4,Bornholm,Villa,8160.8,34,9204.6,-11.34
+2003Q1,Bornholm,Villa,8092.9,36,9204.6,-12.08
+2003Q2,Bornholm,Villa,8519.3,44,9204.6,-7.45
+2003Q3,Bornholm,Villa,7717.7,46,9204.6,-16.15
+2003Q4,Bornholm,Villa,8854.5,37,9204.6,-3.8
+2004Q1,Bornholm,Villa,8041.5,43,9204.6,-12.64
+2004Q2,Bornholm,Villa,8616.8,53,9204.6,-6.39
+2004Q3,Bornholm,Villa,8480.1,27,9204.6,-7.87
+2004Q4,Bornholm,Villa,9823.8,38,9823.8,0.0
+2005Q1,Bornholm,Villa,10719.1,51,10719.1,0.0
+2005Q2,Bornholm,Villa,10387.4,57,10719.1,-3.09
+2005Q3,Bornholm,Villa,9748.3,70,10719.1,-9.06
+2005Q4,Bornholm,Villa,10350.8,58,10719.1,-3.44
+2006Q1,Bornholm,Villa,11544.9,59,11544.9,0.0
+2006Q2,Bornholm,Villa,11236.1,69,11544.9,-2.68
+2006Q3,Bornholm,Villa,10604.7,73,11544.9,-8.14
+2006Q4,Bornholm,Villa,10933.3,57,11544.9,-5.3
+2007Q1,Bornholm,Villa,11685.3,64,11685.3,0.0
+2007Q2,Bornholm,Villa,12226.6,65,12226.6,0.0
+2007Q3,Bornholm,Villa,12346.1,59,12346.1,0.0
+2007Q4,Bornholm,Villa,12362.2,59,12362.2,0.0
+2008Q1,Bornholm,Villa,12111.5,47,12362.2,-2.03
+2008Q2,Bornholm,Villa,11714.9,47,12362.2,-5.24
+2008Q3,Bornholm,Villa,12622.6,45,12622.6,0.0
+2008Q4,Bornholm,Villa,11193.3,29,12622.6,-11.32
+2009Q1,Bornholm,Villa,11924.8,24,12622.6,-5.53
+2009Q2,Bornholm,Villa,10556.1,31,12622.6,-16.37
+2009Q3,Bornholm,Villa,10451.6,39,12622.6,-17.2
+2009Q4,Bornholm,Villa,11239.8,37,12622.6,-10.95
+2010Q1,Bornholm,Villa,10645.2,32,12622.6,-15.67
+2010Q2,Bornholm,Villa,10102.4,60,12622.6,-19.97
+2010Q3,Bornholm,Villa,8731.9,59,12622.6,-30.82
+2010Q4,Bornholm,Villa,9864.7,41,12622.6,-21.85
+2011Q1,Bornholm,Villa,10636.9,41,12622.6,-15.73
+2011Q2,Bornholm,Villa,9246.9,42,12622.6,-26.74
+2011Q3,Bornholm,Villa,9867.8,44,12622.6,-21.82
+2011Q4,Bornholm,Villa,10078.4,26,12622.6,-20.16
+2012Q1,Bornholm,Villa,8101.1,25,12622.6,-35.82
+2012Q2,Bornholm,Villa,8480.1,45,12622.6,-32.82
+2012Q3,Bornholm,Villa,7748.9,37,12622.6,-38.61
+2012Q4,Bornholm,Villa,8240.6,41,12622.6,-34.72
+2013Q1,Bornholm,Villa,9296.0,40,12622.6,-26.35
+2013Q2,Bornholm,Villa,9994.7,43,12622.6,-20.82
+2013Q3,Bornholm,Villa,8223.7,51,12622.6,-34.85
+2013Q4,Bornholm,Villa,9542.2,35,12622.6,-24.4
+2014Q1,Bornholm,Villa,7383.6,44,12622.6,-41.5
+2014Q2,Bornholm,Villa,8834.2,53,12622.6,-30.01
+2014Q3,Bornholm,Villa,9312.5,62,12622.6,-26.22
+2014Q4,Bornholm,Villa,8531.2,54,12622.6,-32.41
+2015Q1,Bornholm,Villa,7060.6,63,12622.6,-44.06
+2015Q2,Bornholm,Villa,8273.3,64,12622.6,-34.46
+2015Q3,Bornholm,Villa,8872.6,59,12622.6,-29.71
+2015Q4,Bornholm,Villa,7623.9,42,12622.6,-39.6
+2016Q1,Bornholm,Villa,9092.7,48,12622.6,-27.96
+2016Q2,Bornholm,Villa,8793.8,63,12622.6,-30.33
+2016Q3,Bornholm,Villa,8726.4,83,12622.6,-30.87
+2016Q4,Bornholm,Villa,9481.5,52,12622.6,-24.88
+2017Q3,Bornholm,Villa,9481.7,105,12622.6,-24.88
+2017Q4,Bornholm,Villa,9684.0,118,12622.6,-23.28
+2018Q1,Bornholm,Villa,9369.3,71,12622.6,-25.77
+2018Q2,Bornholm,Villa,9698.1,96,12622.6,-23.17
+2018Q3,Bornholm,Villa,9294.9,120,12622.6,-26.36
+2018Q4,Bornholm,Villa,10527.3,106,12622.6,-16.6
+2019Q1,Bornholm,Villa,10002.3,89,12622.6,-20.76
+2019Q2,Bornholm,Villa,10721.9,128,12622.6,-15.06
+2019Q3,Bornholm,Villa,10941.7,120,12622.6,-13.32
+2019Q4,Bornholm,Villa,9660.5,106,12622.6,-23.47
+2020Q1,Bornholm,Villa,10796.4,122,12622.6,-14.47
+2020Q2,Bornholm,Villa,10216.6,134,12622.6,-19.06
+2020Q3,Bornholm,Villa,11480.3,149,12622.6,-9.05
+2020Q4,Bornholm,Villa,11646.6,176,12622.6,-7.73
+2021Q1,Bornholm,Villa,13135.5,176,13135.5,0.0
+2021Q2,Bornholm,Villa,12966.9,171,13135.5,-1.28
+2021Q3,Bornholm,Villa,14378.9,150,14378.9,0.0
+2021Q4,Bornholm,Villa,14968.0,121,14968.0,0.0
+2022Q1,Bornholm,Villa,12341.5,123,14968.0,-17.55
+2022Q2,Bornholm,Villa,14530.8,117,14968.0,-2.92
+2022Q3,Bornholm,Villa,14456.0,124,14968.0,-3.42
+2022Q4,Bornholm,Villa,13037.8,78,14968.0,-12.89
+2023Q1,Bornholm,Villa,12423.9,106,14968.0,-17.0
+2023Q2,Bornholm,Villa,11886.3,111,14968.0,-20.59
+2023Q3,Bornholm,Villa,13292.7,109,14968.0,-11.19
+2023Q4,Bornholm,Villa,11945.8,145,14968.0,-20.19
+2024Q1,Bornholm,Villa,14501.1,111,14968.0,-3.12
+2024Q2,Bornholm,Villa,12644.0,126,14968.0,-15.53
+2024Q3,Bornholm,Villa,13424.7,108,14968.0,-10.31
+1992Q1,Fyn & islands,Apartment,49394.6,120,49394.6,0.0
+1992Q2,Fyn & islands,Apartment,22778.1,45,49394.6,-53.89
+1992Q3,Fyn & islands,Apartment,58121.5,152,58121.5,0.0
+1992Q4,Fyn & islands,Apartment,47508.1,44,58121.5,-18.26
+1993Q1,Fyn & islands,Apartment,28031.6,59,58121.5,-51.77
+1993Q2,Fyn & islands,Apartment,27611.1,48,58121.5,-52.49
+1993Q3,Fyn & islands,Apartment,35853.7,48,58121.5,-38.31
+1993Q4,Fyn & islands,Apartment,32738.3,101,58121.5,-43.67
+1994Q1,Fyn & islands,Apartment,34677.3,87,58121.5,-40.34
+1994Q2,Fyn & islands,Apartment,30778.6,59,58121.5,-47.04
+1994Q3,Fyn & islands,Apartment,34548.8,84,58121.5,-40.56
+1994Q4,Fyn & islands,Apartment,21166.3,39,58121.5,-63.58
+1995Q1,Fyn & islands,Apartment,14351.3,30,58121.5,-75.31
+1995Q2,Fyn & islands,Apartment,49965.2,100,58121.5,-14.03
+1995Q3,Fyn & islands,Apartment,18339.0,61,58121.5,-68.45
+1995Q4,Fyn & islands,Apartment,58723.6,87,58723.6,0.0
+1996Q1,Fyn & islands,Apartment,21346.4,97,58723.6,-63.65
+1996Q2,Fyn & islands,Apartment,30436.1,63,58723.6,-48.17
+1996Q3,Fyn & islands,Apartment,24734.4,87,58723.6,-57.88
+1996Q4,Fyn & islands,Apartment,32507.9,88,58723.6,-44.64
+1997Q1,Fyn & islands,Apartment,26773.0,73,58723.6,-54.41
+1997Q2,Fyn & islands,Apartment,27624.9,58,58723.6,-52.96
+1997Q3,Fyn & islands,Apartment,35971.6,84,58723.6,-38.74
+1997Q4,Fyn & islands,Apartment,22988.0,77,58723.6,-60.85
+1998Q1,Fyn & islands,Apartment,18974.5,68,58723.6,-67.69
+1998Q2,Fyn & islands,Apartment,27158.3,124,58723.6,-53.75
+1998Q3,Fyn & islands,Apartment,40515.5,116,58723.6,-31.01
+1998Q4,Fyn & islands,Apartment,45355.6,60,58723.6,-22.76
+1999Q1,Fyn & islands,Apartment,26043.4,44,58723.6,-55.65
+1999Q2,Fyn & islands,Apartment,28658.0,59,58723.6,-51.2
+1999Q3,Fyn & islands,Apartment,32850.3,79,58723.6,-44.06
+1999Q4,Fyn & islands,Apartment,29528.5,51,58723.6,-49.72
+2000Q1,Fyn & islands,Apartment,49953.9,271,58723.6,-14.93
+2000Q2,Fyn & islands,Apartment,48256.0,136,58723.6,-17.83
+2000Q3,Fyn & islands,Apartment,34909.1,72,58723.6,-40.55
+2000Q4,Fyn & islands,Apartment,41784.1,88,58723.6,-28.85
+2001Q1,Fyn & islands,Apartment,25286.9,109,58723.6,-56.94
+2001Q2,Fyn & islands,Apartment,29777.3,87,58723.6,-49.29
+2001Q3,Fyn & islands,Apartment,26597.4,66,58723.6,-54.71
+2001Q4,Fyn & islands,Apartment,40611.5,101,58723.6,-30.84
+2002Q1,Fyn & islands,Apartment,30588.2,87,58723.6,-47.91
+2002Q2,Fyn & islands,Apartment,36566.9,81,58723.6,-37.73
+2002Q3,Fyn & islands,Apartment,37953.2,107,58723.6,-35.37
+2002Q4,Fyn & islands,Apartment,45465.2,130,58723.6,-22.58
+2003Q1,Fyn & islands,Apartment,37540.2,180,58723.6,-36.07
+2003Q2,Fyn & islands,Apartment,51309.4,167,58723.6,-12.63
+2003Q3,Fyn & islands,Apartment,35704.9,85,58723.6,-39.2
+2003Q4,Fyn & islands,Apartment,31293.1,85,58723.6,-46.71
+2004Q1,Fyn & islands,Apartment,26974.8,99,58723.6,-54.06
+2004Q2,Fyn & islands,Apartment,37371.3,138,58723.6,-36.36
+2004Q3,Fyn & islands,Apartment,26658.2,68,58723.6,-54.6
+2004Q4,Fyn & islands,Apartment,40382.5,119,58723.6,-31.23
+2005Q1,Fyn & islands,Apartment,31660.2,101,58723.6,-46.09
+2005Q2,Fyn & islands,Apartment,24658.2,173,58723.6,-58.01
+2005Q3,Fyn & islands,Apartment,46462.9,179,58723.6,-20.88
+2005Q4,Fyn & islands,Apartment,31050.1,161,58723.6,-47.13
+2006Q1,Fyn & islands,Apartment,39118.4,172,58723.6,-33.39
+2006Q2,Fyn & islands,Apartment,39965.8,224,58723.6,-31.94
+2006Q3,Fyn & islands,Apartment,33291.6,101,58723.6,-43.31
+2006Q4,Fyn & islands,Apartment,28390.8,142,58723.6,-51.65
+2007Q1,Fyn & islands,Apartment,34134.4,135,58723.6,-41.87
+2007Q2,Fyn & islands,Apartment,39267.7,144,58723.6,-33.13
+2007Q3,Fyn & islands,Apartment,35378.3,116,58723.6,-39.75
+2007Q4,Fyn & islands,Apartment,41639.6,189,58723.6,-29.09
+2008Q1,Fyn & islands,Apartment,34871.2,140,58723.6,-40.62
+2008Q2,Fyn & islands,Apartment,33637.5,109,58723.6,-42.72
+2008Q3,Fyn & islands,Apartment,31174.9,91,58723.6,-46.91
+2008Q4,Fyn & islands,Apartment,33395.0,160,58723.6,-43.13
+2009Q1,Fyn & islands,Apartment,29160.2,37,58723.6,-50.34
+2009Q2,Fyn & islands,Apartment,40290.9,66,58723.6,-31.39
+2009Q3,Fyn & islands,Apartment,33730.6,68,58723.6,-42.56
+2009Q4,Fyn & islands,Apartment,30303.0,64,58723.6,-48.4
+2010Q1,Fyn & islands,Apartment,28998.8,113,58723.6,-50.62
+2010Q2,Fyn & islands,Apartment,34627.5,90,58723.6,-41.03
+2010Q3,Fyn & islands,Apartment,31047.6,79,58723.6,-47.13
+2010Q4,Fyn & islands,Apartment,24261.8,142,58723.6,-58.68
+2011Q1,Fyn & islands,Apartment,29464.8,118,58723.6,-49.82
+2011Q2,Fyn & islands,Apartment,22994.8,75,58723.6,-60.84
+2011Q3,Fyn & islands,Apartment,29467.2,72,58723.6,-49.82
+2011Q4,Fyn & islands,Apartment,40291.0,92,58723.6,-31.39
+2012Q1,Fyn & islands,Apartment,29134.3,75,58723.6,-50.39
+2012Q2,Fyn & islands,Apartment,30997.1,92,58723.6,-47.22
+2012Q3,Fyn & islands,Apartment,25476.1,85,58723.6,-56.62
+2012Q4,Fyn & islands,Apartment,21910.3,83,58723.6,-62.69
+2013Q1,Fyn & islands,Apartment,33886.4,101,58723.6,-42.3
+2013Q2,Fyn & islands,Apartment,33985.2,150,58723.6,-42.13
+2013Q3,Fyn & islands,Apartment,23628.0,109,58723.6,-59.76
+2013Q4,Fyn & islands,Apartment,24526.6,103,58723.6,-58.23
+2014Q1,Fyn & islands,Apartment,33192.3,99,58723.6,-43.48
+2014Q2,Fyn & islands,Apartment,35297.4,153,58723.6,-39.89
+2014Q3,Fyn & islands,Apartment,27864.2,101,58723.6,-52.55
+2014Q4,Fyn & islands,Apartment,41731.6,135,58723.6,-28.94
+2015Q1,Fyn & islands,Apartment,33774.3,123,58723.6,-42.49
+2015Q2,Fyn & islands,Apartment,29048.9,142,58723.6,-50.53
+2015Q3,Fyn & islands,Apartment,35156.9,167,58723.6,-40.13
+2015Q4,Fyn & islands,Apartment,30935.0,162,58723.6,-47.32
+2016Q1,Fyn & islands,Apartment,33679.8,187,58723.6,-42.65
+2016Q2,Fyn & islands,Apartment,32449.3,141,58723.6,-44.74
+2016Q3,Fyn & islands,Apartment,27549.0,140,58723.6,-53.09
+2016Q4,Fyn & islands,Apartment,30850.0,81,58723.6,-47.47
+2017Q3,Fyn & islands,Apartment,26562.6,177,58723.6,-54.77
+2017Q4,Fyn & islands,Apartment,33292.6,231,58723.6,-43.31
+2018Q1,Fyn & islands,Apartment,29012.2,194,58723.6,-50.6
+2018Q2,Fyn & islands,Apartment,29861.8,218,58723.6,-49.15
+2018Q3,Fyn & islands,Apartment,30453.0,222,58723.6,-48.14
+2018Q4,Fyn & islands,Apartment,32897.9,236,58723.6,-43.98
+2019Q1,Fyn & islands,Apartment,31099.5,260,58723.6,-47.04
+2019Q2,Fyn & islands,Apartment,31261.0,266,58723.6,-46.77
+2019Q3,Fyn & islands,Apartment,26434.8,231,58723.6,-54.98
+2019Q4,Fyn & islands,Apartment,30478.0,246,58723.6,-48.1
+2020Q1,Fyn & islands,Apartment,28876.0,239,58723.6,-50.83
+2020Q2,Fyn & islands,Apartment,32355.5,230,58723.6,-44.9
+2020Q3,Fyn & islands,Apartment,31096.9,259,58723.6,-47.05
+2020Q4,Fyn & islands,Apartment,34701.3,340,58723.6,-40.91
+2021Q1,Fyn & islands,Apartment,31124.9,382,58723.6,-47.0
+2021Q2,Fyn & islands,Apartment,29278.5,330,58723.6,-50.14
+2021Q3,Fyn & islands,Apartment,32662.6,289,58723.6,-44.38
+2021Q4,Fyn & islands,Apartment,33744.8,320,58723.6,-42.54
+2022Q1,Fyn & islands,Apartment,28697.7,283,58723.6,-51.13
+2022Q2,Fyn & islands,Apartment,27828.1,266,58723.6,-52.61
+2022Q3,Fyn & islands,Apartment,28187.4,174,58723.6,-52.0
+2022Q4,Fyn & islands,Apartment,23325.7,149,58723.6,-60.28
+2023Q1,Fyn & islands,Apartment,25743.0,186,58723.6,-56.16
+2023Q2,Fyn & islands,Apartment,26041.5,174,58723.6,-55.65
+2023Q3,Fyn & islands,Apartment,26985.8,147,58723.6,-54.05
+2023Q4,Fyn & islands,Apartment,28302.9,231,58723.6,-51.8
+2024Q1,Fyn & islands,Apartment,24841.6,199,58723.6,-57.7
+2024Q2,Fyn & islands,Apartment,27210.9,244,58723.6,-53.66
+2024Q3,Fyn & islands,Apartment,26579.3,159,58723.6,-54.74
+2024Q4,Fyn & islands,Apartment,24094.8,7,58723.6,-58.97
+1992Q1,Fyn & islands,Farm,8118.8,13,8118.8,0.0
+1992Q2,Fyn & islands,Farm,9836.4,10,9836.4,0.0
+1992Q3,Fyn & islands,Farm,8804.0,15,9836.4,-10.5
+1992Q4,Fyn & islands,Farm,7623.0,11,9836.4,-22.5
+1993Q1,Fyn & islands,Farm,12625.2,16,12625.2,0.0
+1993Q2,Fyn & islands,Farm,10628.0,35,12625.2,-15.82
+1993Q3,Fyn & islands,Farm,9053.2,24,12625.2,-28.29
+1993Q4,Fyn & islands,Farm,12522.6,28,12625.2,-0.81
+1994Q1,Fyn & islands,Farm,8372.6,25,12625.2,-33.68
+1994Q2,Fyn & islands,Farm,9722.4,27,12625.2,-22.99
+1994Q3,Fyn & islands,Farm,9449.2,39,12625.2,-25.16
+1994Q4,Fyn & islands,Farm,12592.7,22,12625.2,-0.26
+1995Q1,Fyn & islands,Farm,11764.7,26,12625.2,-6.82
+1995Q2,Fyn & islands,Farm,13990.5,35,13990.5,0.0
+1995Q3,Fyn & islands,Farm,10256.9,26,13990.5,-26.69
+1995Q4,Fyn & islands,Farm,9464.8,22,13990.5,-32.35
+1996Q1,Fyn & islands,Farm,8751.5,20,13990.5,-37.45
+1996Q2,Fyn & islands,Farm,13588.5,25,13990.5,-2.87
+1996Q3,Fyn & islands,Farm,9510.3,30,13990.5,-32.02
+1996Q4,Fyn & islands,Farm,8856.2,17,13990.5,-36.7
+1997Q1,Fyn & islands,Farm,9476.0,28,13990.5,-32.27
+1997Q2,Fyn & islands,Farm,10485.1,31,13990.5,-25.06
+1997Q3,Fyn & islands,Farm,7945.1,25,13990.5,-43.21
+1997Q4,Fyn & islands,Farm,9355.9,17,13990.5,-33.13
+1998Q1,Fyn & islands,Farm,12136.8,32,13990.5,-13.25
+1998Q2,Fyn & islands,Farm,14697.4,28,14697.4,0.0
+1998Q3,Fyn & islands,Farm,12641.4,19,14697.4,-13.99
+1998Q4,Fyn & islands,Farm,13236.2,32,14697.4,-9.94
+1999Q1,Fyn & islands,Farm,11501.3,26,14697.4,-21.75
+1999Q2,Fyn & islands,Farm,11289.2,26,14697.4,-23.19
+1999Q3,Fyn & islands,Farm,9539.6,30,14697.4,-35.09
+1999Q4,Fyn & islands,Farm,13411.8,19,14697.4,-8.75
+2000Q1,Fyn & islands,Farm,10592.6,22,14697.4,-27.93
+2000Q2,Fyn & islands,Farm,10947.5,26,14697.4,-25.51
+2000Q3,Fyn & islands,Farm,10779.1,36,14697.4,-26.66
+2000Q4,Fyn & islands,Farm,12402.6,37,14697.4,-15.61
+2001Q1,Fyn & islands,Farm,11958.7,34,14697.4,-18.63
+2001Q2,Fyn & islands,Farm,9371.2,36,14697.4,-36.24
+2001Q3,Fyn & islands,Farm,14839.3,32,14839.3,0.0
+2001Q4,Fyn & islands,Farm,12465.0,32,14839.3,-16.0
+2002Q1,Fyn & islands,Farm,11615.3,28,14839.3,-21.73
+2002Q2,Fyn & islands,Farm,12866.7,43,14839.3,-13.29
+2002Q3,Fyn & islands,Farm,11312.3,29,14839.3,-23.77
+2002Q4,Fyn & islands,Farm,10564.3,38,14839.3,-28.81
+2003Q1,Fyn & islands,Farm,11470.9,35,14839.3,-22.7
+2003Q2,Fyn & islands,Farm,14458.8,42,14839.3,-2.56
+2003Q3,Fyn & islands,Farm,9883.6,33,14839.3,-33.4
+2003Q4,Fyn & islands,Farm,12957.8,49,14839.3,-12.68
+2004Q1,Fyn & islands,Farm,13639.4,48,14839.3,-8.09
+2004Q2,Fyn & islands,Farm,10256.0,43,14839.3,-30.89
+2004Q3,Fyn & islands,Farm,11940.5,34,14839.3,-19.53
+2004Q4,Fyn & islands,Farm,10586.7,43,14839.3,-28.66
+2005Q1,Fyn & islands,Farm,11340.6,44,14839.3,-23.58
+2005Q2,Fyn & islands,Farm,12813.1,43,14839.3,-13.65
+2005Q3,Fyn & islands,Farm,11978.3,37,14839.3,-19.28
+2005Q4,Fyn & islands,Farm,14913.5,39,14913.5,0.0
+2006Q1,Fyn & islands,Farm,10773.5,43,14913.5,-27.76
+2006Q2,Fyn & islands,Farm,11890.0,39,14913.5,-20.27
+2006Q3,Fyn & islands,Farm,13190.8,51,14913.5,-11.55
+2006Q4,Fyn & islands,Farm,11950.0,60,14913.5,-19.87
+2007Q1,Fyn & islands,Farm,15308.3,39,15308.3,0.0
+2007Q2,Fyn & islands,Farm,16917.0,40,16917.0,0.0
+2007Q3,Fyn & islands,Farm,17396.7,27,17396.7,0.0
+2007Q4,Fyn & islands,Farm,14576.2,28,17396.7,-16.21
+2008Q1,Fyn & islands,Farm,16311.8,29,17396.7,-6.24
+2008Q2,Fyn & islands,Farm,13861.4,41,17396.7,-20.32
+2008Q3,Fyn & islands,Farm,19793.4,27,19793.4,0.0
+2008Q4,Fyn & islands,Farm,16891.1,24,19793.4,-14.66
+2009Q1,Fyn & islands,Farm,17285.8,37,19793.4,-12.67
+2009Q2,Fyn & islands,Farm,13444.5,29,19793.4,-32.08
+2009Q3,Fyn & islands,Farm,14620.5,25,19793.4,-26.13
+2009Q4,Fyn & islands,Farm,12790.4,22,19793.4,-35.38
+2010Q1,Fyn & islands,Farm,10567.0,48,19793.4,-46.61
+2010Q2,Fyn & islands,Farm,10598.4,49,19793.4,-46.45
+2010Q3,Fyn & islands,Farm,15241.4,21,19793.4,-23.0
+2010Q4,Fyn & islands,Farm,11226.0,35,19793.4,-43.28
+2011Q1,Fyn & islands,Farm,14134.1,23,19793.4,-28.59
+2011Q2,Fyn & islands,Farm,14510.5,27,19793.4,-26.69
+2011Q3,Fyn & islands,Farm,14346.3,39,19793.4,-27.52
+2011Q4,Fyn & islands,Farm,12344.5,30,19793.4,-37.63
+2012Q1,Fyn & islands,Farm,12092.2,46,19793.4,-38.91
+2012Q2,Fyn & islands,Farm,11244.4,23,19793.4,-43.19
+2012Q3,Fyn & islands,Farm,15066.1,48,19793.4,-23.88
+2012Q4,Fyn & islands,Farm,13553.1,22,19793.4,-31.53
+2013Q1,Fyn & islands,Farm,10683.2,26,19793.4,-46.03
+2013Q2,Fyn & islands,Farm,13529.4,31,19793.4,-31.65
+2013Q3,Fyn & islands,Farm,13835.9,36,19793.4,-30.1
+2013Q4,Fyn & islands,Farm,9165.6,39,19793.4,-53.69
+2014Q1,Fyn & islands,Farm,12363.7,42,19793.4,-37.54
+2014Q2,Fyn & islands,Farm,11205.3,34,19793.4,-43.39
+2014Q3,Fyn & islands,Farm,12043.0,40,19793.4,-39.16
+2014Q4,Fyn & islands,Farm,11969.0,43,19793.4,-39.53
+2015Q1,Fyn & islands,Farm,11824.3,32,19793.4,-40.26
+2015Q2,Fyn & islands,Farm,12933.4,42,19793.4,-34.66
+2015Q3,Fyn & islands,Farm,10772.4,43,19793.4,-45.58
+2015Q4,Fyn & islands,Farm,11821.1,36,19793.4,-40.28
+2016Q1,Fyn & islands,Farm,8888.2,37,19793.4,-55.1
+2016Q2,Fyn & islands,Farm,9195.6,43,19793.4,-53.54
+2016Q3,Fyn & islands,Farm,10776.6,53,19793.4,-45.55
+2016Q4,Fyn & islands,Farm,10599.0,19,19793.4,-46.45
+2017Q3,Fyn & islands,Farm,11565.3,56,19793.4,-41.57
+2017Q4,Fyn & islands,Farm,11289.4,54,19793.4,-42.96
+2018Q1,Fyn & islands,Farm,11049.2,57,19793.4,-44.18
+2018Q2,Fyn & islands,Farm,12458.5,59,19793.4,-37.06
+2018Q3,Fyn & islands,Farm,12509.8,65,19793.4,-36.8
+2018Q4,Fyn & islands,Farm,13398.6,62,19793.4,-32.31
+2019Q1,Fyn & islands,Farm,11603.0,54,19793.4,-41.38
+2019Q2,Fyn & islands,Farm,12099.4,70,19793.4,-38.87
+2019Q3,Fyn & islands,Farm,13005.0,68,19793.4,-34.3
+2019Q4,Fyn & islands,Farm,15479.8,55,19793.4,-21.79
+2020Q1,Fyn & islands,Farm,12317.8,60,19793.4,-37.77
+2020Q2,Fyn & islands,Farm,12729.6,69,19793.4,-35.69
+2020Q3,Fyn & islands,Farm,12849.9,84,19793.4,-35.08
+2020Q4,Fyn & islands,Farm,12638.0,84,19793.4,-36.15
+2021Q1,Fyn & islands,Farm,15326.4,87,19793.4,-22.57
+2021Q2,Fyn & islands,Farm,12886.2,95,19793.4,-34.9
+2021Q3,Fyn & islands,Farm,13232.5,103,19793.4,-33.15
+2021Q4,Fyn & islands,Farm,14434.7,76,19793.4,-27.07
+2022Q1,Fyn & islands,Farm,15059.8,75,19793.4,-23.91
+2022Q2,Fyn & islands,Farm,14482.0,75,19793.4,-26.83
+2022Q3,Fyn & islands,Farm,13045.2,77,19793.4,-34.09
+2022Q4,Fyn & islands,Farm,14156.5,58,19793.4,-28.48
+2023Q1,Fyn & islands,Farm,13918.5,74,19793.4,-29.68
+2023Q2,Fyn & islands,Farm,11250.5,83,19793.4,-43.16
+2023Q3,Fyn & islands,Farm,10146.6,67,19793.4,-48.74
+2023Q4,Fyn & islands,Farm,12176.5,75,19793.4,-38.48
+2024Q1,Fyn & islands,Farm,14535.1,54,19793.4,-26.57
+2024Q2,Fyn & islands,Farm,13324.4,73,19793.4,-32.68
+2024Q3,Fyn & islands,Farm,11545.6,63,19793.4,-41.67
+1992Q1,Fyn & islands,Summerhouse,10824.3,11,10824.3,0.0
+1992Q2,Fyn & islands,Summerhouse,10350.3,14,10824.3,-4.38
+1992Q3,Fyn & islands,Summerhouse,13177.6,23,13177.6,0.0
+1992Q4,Fyn & islands,Summerhouse,8894.1,13,13177.6,-32.51
+1993Q1,Fyn & islands,Summerhouse,10657.6,13,13177.6,-19.12
+1993Q2,Fyn & islands,Summerhouse,10197.2,11,13177.6,-22.62
+1993Q3,Fyn & islands,Summerhouse,12122.5,16,13177.6,-8.01
+1993Q4,Fyn & islands,Summerhouse,12937.5,14,13177.6,-1.82
+1994Q1,Fyn & islands,Summerhouse,10107.3,9,13177.6,-23.3
+1994Q2,Fyn & islands,Summerhouse,9167.6,16,13177.6,-30.43
+1994Q3,Fyn & islands,Summerhouse,12548.2,20,13177.6,-4.78
+1994Q4,Fyn & islands,Summerhouse,13208.7,13,13208.7,0.0
+1995Q1,Fyn & islands,Summerhouse,8997.6,18,13208.7,-31.88
+1995Q2,Fyn & islands,Summerhouse,11638.8,31,13208.7,-11.89
+1995Q3,Fyn & islands,Summerhouse,11505.3,28,13208.7,-12.9
+1995Q4,Fyn & islands,Summerhouse,10180.2,18,13208.7,-22.93
+1996Q1,Fyn & islands,Summerhouse,10205.6,15,13208.7,-22.74
+1996Q2,Fyn & islands,Summerhouse,13005.3,33,13208.7,-1.54
+1996Q3,Fyn & islands,Summerhouse,10919.2,28,13208.7,-17.33
+1996Q4,Fyn & islands,Summerhouse,15024.7,31,15024.7,0.0
+1997Q1,Fyn & islands,Summerhouse,14115.7,18,15024.7,-6.05
+1997Q2,Fyn & islands,Summerhouse,14475.0,37,15024.7,-3.66
+1997Q3,Fyn & islands,Summerhouse,15709.7,30,15709.7,0.0
+1997Q4,Fyn & islands,Summerhouse,15312.1,16,15709.7,-2.53
+1998Q1,Fyn & islands,Summerhouse,14796.4,17,15709.7,-5.81
+1998Q2,Fyn & islands,Summerhouse,13216.1,34,15709.7,-15.87
+1998Q3,Fyn & islands,Summerhouse,13573.5,27,15709.7,-13.6
+1998Q4,Fyn & islands,Summerhouse,14369.2,23,15709.7,-8.53
+1999Q1,Fyn & islands,Summerhouse,12348.0,33,15709.7,-21.4
+1999Q2,Fyn & islands,Summerhouse,14366.1,45,15709.7,-8.55
+1999Q3,Fyn & islands,Summerhouse,15597.2,42,15709.7,-0.72
+1999Q4,Fyn & islands,Summerhouse,13937.7,27,15709.7,-11.28
+2000Q1,Fyn & islands,Summerhouse,16151.9,24,16151.9,0.0
+2000Q2,Fyn & islands,Summerhouse,18827.7,41,18827.7,0.0
+2000Q3,Fyn & islands,Summerhouse,15162.1,31,18827.7,-19.47
+2000Q4,Fyn & islands,Summerhouse,19570.6,23,19570.6,0.0
+2001Q1,Fyn & islands,Summerhouse,15913.2,25,19570.6,-18.69
+2001Q2,Fyn & islands,Summerhouse,16128.1,27,19570.6,-17.59
+2001Q3,Fyn & islands,Summerhouse,16188.8,26,19570.6,-17.28
+2001Q4,Fyn & islands,Summerhouse,18222.2,17,19570.6,-6.89
+2002Q1,Fyn & islands,Summerhouse,17274.7,23,19570.6,-11.73
+2002Q2,Fyn & islands,Summerhouse,17140.2,46,19570.6,-12.42
+2002Q3,Fyn & islands,Summerhouse,17230.0,50,19570.6,-11.96
+2002Q4,Fyn & islands,Summerhouse,15269.2,26,19570.6,-21.98
+2003Q1,Fyn & islands,Summerhouse,16131.6,28,19570.6,-17.57
+2003Q2,Fyn & islands,Summerhouse,17700.4,58,19570.6,-9.56
+2003Q3,Fyn & islands,Summerhouse,16055.4,58,19570.6,-17.96
+2003Q4,Fyn & islands,Summerhouse,17685.9,55,19570.6,-9.63
+2004Q1,Fyn & islands,Summerhouse,17469.8,47,19570.6,-10.73
+2004Q2,Fyn & islands,Summerhouse,17082.3,77,19570.6,-12.71
+2004Q3,Fyn & islands,Summerhouse,18996.7,37,19570.6,-2.93
+2004Q4,Fyn & islands,Summerhouse,18270.9,45,19570.6,-6.64
+2005Q1,Fyn & islands,Summerhouse,22893.7,37,22893.7,0.0
+2005Q2,Fyn & islands,Summerhouse,20326.3,96,22893.7,-11.21
+2005Q3,Fyn & islands,Summerhouse,22221.6,76,22893.7,-2.94
+2005Q4,Fyn & islands,Summerhouse,22192.0,67,22893.7,-3.06
+2006Q1,Fyn & islands,Summerhouse,19318.1,37,22893.7,-15.62
+2006Q2,Fyn & islands,Summerhouse,24199.2,79,24199.2,0.0
+2006Q3,Fyn & islands,Summerhouse,24059.2,57,24199.2,-0.58
+2006Q4,Fyn & islands,Summerhouse,24517.1,32,24517.1,0.0
+2007Q1,Fyn & islands,Summerhouse,23019.2,45,24517.1,-6.11
+2007Q2,Fyn & islands,Summerhouse,24701.0,59,24701.0,0.0
+2007Q3,Fyn & islands,Summerhouse,28560.8,69,28560.8,0.0
+2007Q4,Fyn & islands,Summerhouse,27094.0,37,28560.8,-5.14
+2008Q1,Fyn & islands,Summerhouse,22043.8,33,28560.8,-22.82
+2008Q2,Fyn & islands,Summerhouse,27842.6,45,28560.8,-2.51
+2008Q3,Fyn & islands,Summerhouse,24725.2,44,28560.8,-13.43
+2008Q4,Fyn & islands,Summerhouse,22739.1,24,28560.8,-20.38
+2009Q1,Fyn & islands,Summerhouse,25822.3,25,28560.8,-9.59
+2009Q2,Fyn & islands,Summerhouse,25226.8,56,28560.8,-11.67
+2009Q3,Fyn & islands,Summerhouse,22668.1,33,28560.8,-20.63
+2009Q4,Fyn & islands,Summerhouse,25509.3,33,28560.8,-10.68
+2010Q1,Fyn & islands,Summerhouse,30174.8,18,30174.8,0.0
+2010Q2,Fyn & islands,Summerhouse,23345.7,44,30174.8,-22.63
+2010Q3,Fyn & islands,Summerhouse,22330.9,54,30174.8,-25.99
+2010Q4,Fyn & islands,Summerhouse,23156.8,35,30174.8,-23.26
+2011Q1,Fyn & islands,Summerhouse,21494.8,19,30174.8,-28.77
+2011Q2,Fyn & islands,Summerhouse,20257.6,33,30174.8,-32.87
+2011Q3,Fyn & islands,Summerhouse,22052.8,38,30174.8,-26.92
+2011Q4,Fyn & islands,Summerhouse,18946.4,33,30174.8,-37.21
+2012Q1,Fyn & islands,Summerhouse,18528.9,30,30174.8,-38.59
+2012Q2,Fyn & islands,Summerhouse,21261.8,49,30174.8,-29.54
+2012Q3,Fyn & islands,Summerhouse,18869.2,50,30174.8,-37.47
+2012Q4,Fyn & islands,Summerhouse,21614.3,34,30174.8,-28.37
+2013Q1,Fyn & islands,Summerhouse,19792.6,38,30174.8,-34.41
+2013Q2,Fyn & islands,Summerhouse,21828.0,51,30174.8,-27.66
+2013Q3,Fyn & islands,Summerhouse,20864.7,47,30174.8,-30.85
+2013Q4,Fyn & islands,Summerhouse,15307.1,37,30174.8,-49.27
+2014Q1,Fyn & islands,Summerhouse,17592.3,26,30174.8,-41.7
+2014Q2,Fyn & islands,Summerhouse,18978.4,54,30174.8,-37.11
+2014Q3,Fyn & islands,Summerhouse,18448.3,70,30174.8,-38.86
+2014Q4,Fyn & islands,Summerhouse,18871.1,48,30174.8,-37.46
+2015Q1,Fyn & islands,Summerhouse,16053.1,36,30174.8,-46.8
+2015Q2,Fyn & islands,Summerhouse,20671.7,72,30174.8,-31.49
+2015Q3,Fyn & islands,Summerhouse,20875.5,54,30174.8,-30.82
+2015Q4,Fyn & islands,Summerhouse,16391.9,53,30174.8,-45.68
+2016Q1,Fyn & islands,Summerhouse,18321.3,42,30174.8,-39.28
+2016Q2,Fyn & islands,Summerhouse,18487.3,96,30174.8,-38.73
+2016Q3,Fyn & islands,Summerhouse,17830.7,85,30174.8,-40.91
+2016Q4,Fyn & islands,Summerhouse,19070.3,35,30174.8,-36.8
+2017Q3,Fyn & islands,Summerhouse,21082.0,81,30174.8,-30.13
+2017Q4,Fyn & islands,Summerhouse,21086.5,58,30174.8,-30.12
+2018Q1,Fyn & islands,Summerhouse,16381.5,69,30174.8,-45.71
+2018Q2,Fyn & islands,Summerhouse,21708.7,119,30174.8,-28.06
+2018Q3,Fyn & islands,Summerhouse,19523.5,94,30174.8,-35.3
+2018Q4,Fyn & islands,Summerhouse,20237.8,66,30174.8,-32.93
+2019Q1,Fyn & islands,Summerhouse,19657.1,72,30174.8,-34.86
+2019Q2,Fyn & islands,Summerhouse,21100.6,119,30174.8,-30.07
+2019Q3,Fyn & islands,Summerhouse,21101.4,140,30174.8,-30.07
+2019Q4,Fyn & islands,Summerhouse,19835.4,91,30174.8,-34.26
+2020Q1,Fyn & islands,Summerhouse,19960.6,78,30174.8,-33.85
+2020Q2,Fyn & islands,Summerhouse,22024.7,252,30174.8,-27.01
+2020Q3,Fyn & islands,Summerhouse,22787.0,212,30174.8,-24.48
+2020Q4,Fyn & islands,Summerhouse,21712.9,158,30174.8,-28.04
+2021Q1,Fyn & islands,Summerhouse,22661.3,220,30174.8,-24.9
+2021Q2,Fyn & islands,Summerhouse,24837.9,238,30174.8,-17.69
+2021Q3,Fyn & islands,Summerhouse,24209.0,134,30174.8,-19.77
+2021Q4,Fyn & islands,Summerhouse,25052.4,86,30174.8,-16.98
+2022Q1,Fyn & islands,Summerhouse,22850.5,88,30174.8,-24.27
+2022Q2,Fyn & islands,Summerhouse,23932.8,122,30174.8,-20.69
+2022Q3,Fyn & islands,Summerhouse,25016.0,123,30174.8,-17.1
+2022Q4,Fyn & islands,Summerhouse,23071.4,51,30174.8,-23.54
+2023Q1,Fyn & islands,Summerhouse,25039.0,71,30174.8,-17.02
+2023Q2,Fyn & islands,Summerhouse,24119.2,129,30174.8,-20.07
+2023Q3,Fyn & islands,Summerhouse,25389.6,91,30174.8,-15.86
+2023Q4,Fyn & islands,Summerhouse,23438.8,95,30174.8,-22.32
+2024Q1,Fyn & islands,Summerhouse,25750.7,108,30174.8,-14.66
+2024Q2,Fyn & islands,Summerhouse,24850.5,145,30174.8,-17.64
+2024Q3,Fyn & islands,Summerhouse,25073.7,137,30174.8,-16.91
+2024Q4,Fyn & islands,Summerhouse,27244.7,10,30174.8,-9.71
+1992Q1,Fyn & islands,Townhouse,8819.2,41,8819.2,0.0
+1992Q2,Fyn & islands,Townhouse,8980.7,27,8980.7,0.0
+1992Q3,Fyn & islands,Townhouse,10374.3,66,10374.3,0.0
+1992Q4,Fyn & islands,Townhouse,15695.0,92,15695.0,0.0
+1993Q1,Fyn & islands,Townhouse,10007.2,41,15695.0,-36.24
+1993Q2,Fyn & islands,Townhouse,8217.2,33,15695.0,-47.64
+1993Q3,Fyn & islands,Townhouse,9566.6,43,15695.0,-39.05
+1993Q4,Fyn & islands,Townhouse,10655.7,52,15695.0,-32.11
+1994Q1,Fyn & islands,Townhouse,8420.0,35,15695.0,-46.35
+1994Q2,Fyn & islands,Townhouse,10324.6,61,15695.0,-34.22
+1994Q3,Fyn & islands,Townhouse,12648.1,44,15695.0,-19.41
+1994Q4,Fyn & islands,Townhouse,18680.2,45,18680.2,0.0
+1995Q1,Fyn & islands,Townhouse,9685.7,38,18680.2,-48.15
+1995Q2,Fyn & islands,Townhouse,9842.8,58,18680.2,-47.31
+1995Q3,Fyn & islands,Townhouse,9596.9,46,18680.2,-48.63
+1995Q4,Fyn & islands,Townhouse,10738.1,53,18680.2,-42.52
+1996Q1,Fyn & islands,Townhouse,10819.8,52,18680.2,-42.08
+1996Q2,Fyn & islands,Townhouse,11505.4,60,18680.2,-38.41
+1996Q3,Fyn & islands,Townhouse,12752.6,58,18680.2,-31.73
+1996Q4,Fyn & islands,Townhouse,12935.5,64,18680.2,-30.75
+1997Q1,Fyn & islands,Townhouse,11009.6,43,18680.2,-41.06
+1997Q2,Fyn & islands,Townhouse,12295.4,47,18680.2,-34.18
+1997Q3,Fyn & islands,Townhouse,11928.3,77,18680.2,-36.14
+1997Q4,Fyn & islands,Townhouse,11677.8,55,18680.2,-37.49
+1998Q1,Fyn & islands,Townhouse,13221.7,83,18680.2,-29.22
+1998Q2,Fyn & islands,Townhouse,12688.0,64,18680.2,-32.08
+1998Q3,Fyn & islands,Townhouse,32038.1,112,32038.1,0.0
+1998Q4,Fyn & islands,Townhouse,19111.3,107,32038.1,-40.35
+1999Q1,Fyn & islands,Townhouse,14354.3,49,32038.1,-55.2
+1999Q2,Fyn & islands,Townhouse,20804.7,111,32038.1,-35.06
+1999Q3,Fyn & islands,Townhouse,12203.1,89,32038.1,-61.91
+1999Q4,Fyn & islands,Townhouse,25314.7,93,32038.1,-20.99
+2000Q1,Fyn & islands,Townhouse,15878.5,55,32038.1,-50.44
+2000Q2,Fyn & islands,Townhouse,12694.2,79,32038.1,-60.38
+2000Q3,Fyn & islands,Townhouse,14133.4,58,32038.1,-55.89
+2000Q4,Fyn & islands,Townhouse,12042.1,61,32038.1,-62.41
+2001Q1,Fyn & islands,Townhouse,13236.9,56,32038.1,-58.68
+2001Q2,Fyn & islands,Townhouse,25589.4,115,32038.1,-20.13
+2001Q3,Fyn & islands,Townhouse,13008.8,63,32038.1,-59.4
+2001Q4,Fyn & islands,Townhouse,12455.4,59,32038.1,-61.12
+2002Q1,Fyn & islands,Townhouse,15723.8,91,32038.1,-50.92
+2002Q2,Fyn & islands,Townhouse,17113.1,113,32038.1,-46.59
+2002Q3,Fyn & islands,Townhouse,25504.9,132,32038.1,-20.39
+2002Q4,Fyn & islands,Townhouse,13398.3,62,32038.1,-58.18
+2003Q1,Fyn & islands,Townhouse,18296.0,72,32038.1,-42.89
+2003Q2,Fyn & islands,Townhouse,16110.0,98,32038.1,-49.72
+2003Q3,Fyn & islands,Townhouse,43199.5,203,43199.5,0.0
+2003Q4,Fyn & islands,Townhouse,23344.9,117,43199.5,-45.96
+2004Q1,Fyn & islands,Townhouse,33780.1,148,43199.5,-21.8
+2004Q2,Fyn & islands,Townhouse,42095.7,188,43199.5,-2.56
+2004Q3,Fyn & islands,Townhouse,13160.1,61,43199.5,-69.54
+2004Q4,Fyn & islands,Townhouse,40755.4,165,43199.5,-5.66
+2005Q1,Fyn & islands,Townhouse,12703.3,103,43199.5,-70.59
+2005Q2,Fyn & islands,Townhouse,25303.0,153,43199.5,-41.43
+2005Q3,Fyn & islands,Townhouse,15051.1,104,43199.5,-65.16
+2005Q4,Fyn & islands,Townhouse,17684.4,117,43199.5,-59.06
+2006Q1,Fyn & islands,Townhouse,16796.3,98,43199.5,-61.12
+2006Q2,Fyn & islands,Townhouse,23936.0,150,43199.5,-44.59
+2006Q3,Fyn & islands,Townhouse,19224.1,102,43199.5,-55.5
+2006Q4,Fyn & islands,Townhouse,21535.1,130,43199.5,-50.15
+2007Q1,Fyn & islands,Townhouse,21249.0,125,43199.5,-50.81
+2007Q2,Fyn & islands,Townhouse,21878.8,159,43199.5,-49.35
+2007Q3,Fyn & islands,Townhouse,19850.7,106,43199.5,-54.05
+2007Q4,Fyn & islands,Townhouse,20787.7,113,43199.5,-51.88
+2008Q1,Fyn & islands,Townhouse,24524.0,127,43199.5,-43.23
+2008Q2,Fyn & islands,Townhouse,24734.8,138,43199.5,-42.74
+2008Q3,Fyn & islands,Townhouse,18041.4,66,43199.5,-58.24
+2008Q4,Fyn & islands,Townhouse,18140.1,48,43199.5,-58.01
+2009Q1,Fyn & islands,Townhouse,22791.9,65,43199.5,-47.24
+2009Q2,Fyn & islands,Townhouse,22248.9,65,43199.5,-48.5
+2009Q3,Fyn & islands,Townhouse,18286.5,84,43199.5,-57.67
+2009Q4,Fyn & islands,Townhouse,15983.9,69,43199.5,-63.0
+2010Q1,Fyn & islands,Townhouse,26952.4,104,43199.5,-37.61
+2010Q2,Fyn & islands,Townhouse,17069.1,119,43199.5,-60.49
+2010Q3,Fyn & islands,Townhouse,15672.0,84,43199.5,-63.72
+2010Q4,Fyn & islands,Townhouse,19163.1,111,43199.5,-55.64
+2011Q1,Fyn & islands,Townhouse,17142.4,134,43199.5,-60.32
+2011Q2,Fyn & islands,Townhouse,13917.0,96,43199.5,-67.78
+2011Q3,Fyn & islands,Townhouse,19251.6,61,43199.5,-55.44
+2011Q4,Fyn & islands,Townhouse,16319.3,64,43199.5,-62.22
+2012Q1,Fyn & islands,Townhouse,17790.3,66,43199.5,-58.82
+2012Q2,Fyn & islands,Townhouse,25370.2,151,43199.5,-41.27
+2012Q3,Fyn & islands,Townhouse,16073.9,83,43199.5,-62.79
+2012Q4,Fyn & islands,Townhouse,18850.3,69,43199.5,-56.36
+2013Q1,Fyn & islands,Townhouse,17171.7,87,43199.5,-60.25
+2013Q2,Fyn & islands,Townhouse,17612.1,103,43199.5,-59.23
+2013Q3,Fyn & islands,Townhouse,15710.3,84,43199.5,-63.63
+2013Q4,Fyn & islands,Townhouse,22011.4,96,43199.5,-49.05
+2014Q1,Fyn & islands,Townhouse,22572.6,97,43199.5,-47.75
+2014Q2,Fyn & islands,Townhouse,17615.4,94,43199.5,-59.22
+2014Q3,Fyn & islands,Townhouse,14252.8,123,43199.5,-67.01
+2014Q4,Fyn & islands,Townhouse,17486.2,113,43199.5,-59.52
+2015Q1,Fyn & islands,Townhouse,17124.6,108,43199.5,-60.36
+2015Q2,Fyn & islands,Townhouse,17526.9,174,43199.5,-59.43
+2015Q3,Fyn & islands,Townhouse,16634.2,137,43199.5,-61.49
+2015Q4,Fyn & islands,Townhouse,27088.2,140,43199.5,-37.3
+2016Q1,Fyn & islands,Townhouse,16881.7,107,43199.5,-60.92
+2016Q2,Fyn & islands,Townhouse,17505.4,144,43199.5,-59.48
+2016Q3,Fyn & islands,Townhouse,22891.7,211,43199.5,-47.01
+2016Q4,Fyn & islands,Townhouse,16523.4,88,43199.5,-61.75
+2017Q3,Fyn & islands,Townhouse,22563.6,218,43199.5,-47.77
+2017Q4,Fyn & islands,Townhouse,16742.3,165,43199.5,-61.24
+2018Q1,Fyn & islands,Townhouse,18426.3,155,43199.5,-57.35
+2018Q2,Fyn & islands,Townhouse,18447.3,232,43199.5,-57.3
+2018Q3,Fyn & islands,Townhouse,18155.6,167,43199.5,-57.97
+2018Q4,Fyn & islands,Townhouse,19283.9,240,43199.5,-55.36
+2019Q1,Fyn & islands,Townhouse,19553.2,210,43199.5,-54.74
+2019Q2,Fyn & islands,Townhouse,19323.8,212,43199.5,-55.27
+2019Q3,Fyn & islands,Townhouse,23435.8,291,43199.5,-45.75
+2019Q4,Fyn & islands,Townhouse,19165.8,166,43199.5,-55.63
+2020Q1,Fyn & islands,Townhouse,19976.7,197,43199.5,-53.76
+2020Q2,Fyn & islands,Townhouse,18644.5,251,43199.5,-56.84
+2020Q3,Fyn & islands,Townhouse,19326.4,253,43199.5,-55.26
+2020Q4,Fyn & islands,Townhouse,24849.4,254,43199.5,-42.48
+2021Q1,Fyn & islands,Townhouse,20083.7,290,43199.5,-53.51
+2021Q2,Fyn & islands,Townhouse,27026.1,386,43199.5,-37.44
+2021Q3,Fyn & islands,Townhouse,25256.8,325,43199.5,-41.53
+2021Q4,Fyn & islands,Townhouse,22241.2,296,43199.5,-48.52
+2022Q1,Fyn & islands,Townhouse,19922.5,250,43199.5,-53.88
+2022Q2,Fyn & islands,Townhouse,23286.4,288,43199.5,-46.1
+2022Q3,Fyn & islands,Townhouse,20360.5,200,43199.5,-52.87
+2022Q4,Fyn & islands,Townhouse,18919.2,161,43199.5,-56.21
+2023Q1,Fyn & islands,Townhouse,18992.2,202,43199.5,-56.04
+2023Q2,Fyn & islands,Townhouse,17907.3,238,43199.5,-58.55
+2023Q3,Fyn & islands,Townhouse,17897.5,177,43199.5,-58.57
+2023Q4,Fyn & islands,Townhouse,18437.3,243,43199.5,-57.32
+2024Q1,Fyn & islands,Townhouse,18971.9,228,43199.5,-56.08
+2024Q2,Fyn & islands,Townhouse,19092.1,235,43199.5,-55.8
+2024Q3,Fyn & islands,Townhouse,17083.4,195,43199.5,-60.45
+2024Q4,Fyn & islands,Townhouse,13546.9,10,43199.5,-68.64
+1992Q1,Fyn & islands,Villa,7663.5,234,7663.5,0.0
+1992Q2,Fyn & islands,Villa,7580.3,249,7663.5,-1.09
+1992Q3,Fyn & islands,Villa,7213.1,227,7663.5,-5.88
+1992Q4,Fyn & islands,Villa,7073.9,194,7663.5,-7.69
+1993Q1,Fyn & islands,Villa,8626.1,191,8626.1,0.0
+1993Q2,Fyn & islands,Villa,7388.6,263,8626.1,-14.35
+1993Q3,Fyn & islands,Villa,8109.8,318,8626.1,-5.99
+1993Q4,Fyn & islands,Villa,8178.4,263,8626.1,-5.19
+1994Q1,Fyn & islands,Villa,7462.5,305,8626.1,-13.49
+1994Q2,Fyn & islands,Villa,8315.1,355,8626.1,-3.61
+1994Q3,Fyn & islands,Villa,8132.4,279,8626.1,-5.72
+1994Q4,Fyn & islands,Villa,7874.6,268,8626.1,-8.71
+1995Q1,Fyn & islands,Villa,7772.3,283,8626.1,-9.9
+1995Q2,Fyn & islands,Villa,8107.3,362,8626.1,-6.01
+1995Q3,Fyn & islands,Villa,8304.0,328,8626.1,-3.73
+1995Q4,Fyn & islands,Villa,8769.1,313,8769.1,0.0
+1996Q1,Fyn & islands,Villa,8260.7,242,8769.1,-5.8
+1996Q2,Fyn & islands,Villa,8806.1,397,8806.1,0.0
+1996Q3,Fyn & islands,Villa,9040.9,319,9040.9,0.0
+1996Q4,Fyn & islands,Villa,8888.3,303,9040.9,-1.69
+1997Q1,Fyn & islands,Villa,8643.6,282,9040.9,-4.39
+1997Q2,Fyn & islands,Villa,9002.3,444,9040.9,-0.43
+1997Q3,Fyn & islands,Villa,9637.0,419,9637.0,0.0
+1997Q4,Fyn & islands,Villa,9846.7,384,9846.7,0.0
+1998Q1,Fyn & islands,Villa,9443.4,344,9846.7,-4.1
+1998Q2,Fyn & islands,Villa,9899.3,460,9899.3,0.0
+1998Q3,Fyn & islands,Villa,9820.2,358,9899.3,-0.8
+1998Q4,Fyn & islands,Villa,10210.4,318,10210.4,0.0
+1999Q1,Fyn & islands,Villa,9642.9,343,10210.4,-5.56
+1999Q2,Fyn & islands,Villa,10410.4,456,10410.4,0.0
+1999Q3,Fyn & islands,Villa,10084.5,363,10410.4,-3.13
+1999Q4,Fyn & islands,Villa,10259.1,328,10410.4,-1.45
+2000Q1,Fyn & islands,Villa,10213.5,357,10410.4,-1.89
+2000Q2,Fyn & islands,Villa,10777.6,412,10777.6,0.0
+2000Q3,Fyn & islands,Villa,9884.6,396,10777.6,-8.29
+2000Q4,Fyn & islands,Villa,10484.4,331,10777.6,-2.72
+2001Q1,Fyn & islands,Villa,10553.4,361,10777.6,-2.08
+2001Q2,Fyn & islands,Villa,10554.4,412,10777.6,-2.07
+2001Q3,Fyn & islands,Villa,10002.7,411,10777.6,-7.19
+2001Q4,Fyn & islands,Villa,9914.7,364,10777.6,-8.01
+2002Q1,Fyn & islands,Villa,10485.4,389,10777.6,-2.71
+2002Q2,Fyn & islands,Villa,10380.4,463,10777.6,-3.69
+2002Q3,Fyn & islands,Villa,10164.9,395,10777.6,-5.69
+2002Q4,Fyn & islands,Villa,10491.3,379,10777.6,-2.66
+2003Q1,Fyn & islands,Villa,10008.0,407,10777.6,-7.14
+2003Q2,Fyn & islands,Villa,10001.1,476,10777.6,-7.21
+2003Q3,Fyn & islands,Villa,10155.1,479,10777.6,-5.78
+2003Q4,Fyn & islands,Villa,10404.8,412,10777.6,-3.46
+2004Q1,Fyn & islands,Villa,10339.0,482,10777.6,-4.07
+2004Q2,Fyn & islands,Villa,10644.4,595,10777.6,-1.24
+2004Q3,Fyn & islands,Villa,10654.3,339,10777.6,-1.14
+2004Q4,Fyn & islands,Villa,10870.3,500,10870.3,0.0
+2005Q1,Fyn & islands,Villa,10707.2,568,10870.3,-1.5
+2005Q2,Fyn & islands,Villa,11587.7,756,11587.7,0.0
+2005Q3,Fyn & islands,Villa,11821.2,621,11821.2,0.0
+2005Q4,Fyn & islands,Villa,11284.9,647,11821.2,-4.54
+2006Q1,Fyn & islands,Villa,12361.4,588,12361.4,0.0
+2006Q2,Fyn & islands,Villa,13011.5,702,13011.5,0.0
+2006Q3,Fyn & islands,Villa,12941.4,613,13011.5,-0.54
+2006Q4,Fyn & islands,Villa,13378.5,599,13378.5,0.0
+2007Q1,Fyn & islands,Villa,14849.6,622,14849.6,0.0
+2007Q2,Fyn & islands,Villa,14456.8,721,14849.6,-2.65
+2007Q3,Fyn & islands,Villa,14105.9,589,14849.6,-5.01
+2007Q4,Fyn & islands,Villa,14570.5,594,14849.6,-1.88
+2008Q1,Fyn & islands,Villa,13709.7,595,14849.6,-7.68
+2008Q2,Fyn & islands,Villa,14866.6,640,14866.6,0.0
+2008Q3,Fyn & islands,Villa,13961.5,447,14866.6,-6.09
+2008Q4,Fyn & islands,Villa,13217.9,300,14866.6,-11.09
+2009Q1,Fyn & islands,Villa,14121.4,291,14866.6,-5.01
+2009Q2,Fyn & islands,Villa,13855.3,407,14866.6,-6.8
+2009Q3,Fyn & islands,Villa,13435.5,405,14866.6,-9.63
+2009Q4,Fyn & islands,Villa,12884.4,366,14866.6,-13.33
+2010Q1,Fyn & islands,Villa,12806.6,420,14866.6,-13.86
+2010Q2,Fyn & islands,Villa,13150.5,449,14866.6,-11.54
+2010Q3,Fyn & islands,Villa,12531.8,521,14866.6,-15.71
+2010Q4,Fyn & islands,Villa,12525.7,479,14866.6,-15.75
+2011Q1,Fyn & islands,Villa,12419.7,364,14866.6,-16.46
+2011Q2,Fyn & islands,Villa,12395.2,402,14866.6,-16.62
+2011Q3,Fyn & islands,Villa,11953.5,406,14866.6,-19.6
+2011Q4,Fyn & islands,Villa,12697.6,343,14866.6,-14.59
+2012Q1,Fyn & islands,Villa,11370.1,344,14866.6,-23.52
+2012Q2,Fyn & islands,Villa,11736.9,443,14866.6,-21.05
+2012Q3,Fyn & islands,Villa,11754.1,418,14866.6,-20.94
+2012Q4,Fyn & islands,Villa,11166.1,403,14866.6,-24.89
+2013Q1,Fyn & islands,Villa,11632.9,344,14866.6,-21.75
+2013Q2,Fyn & islands,Villa,11930.7,460,14866.6,-19.75
+2013Q3,Fyn & islands,Villa,12303.5,404,14866.6,-17.24
+2013Q4,Fyn & islands,Villa,11718.7,395,14866.6,-21.17
+2014Q1,Fyn & islands,Villa,11764.5,414,14866.6,-20.87
+2014Q2,Fyn & islands,Villa,12221.1,520,14866.6,-17.8
+2014Q3,Fyn & islands,Villa,11231.4,510,14866.6,-24.45
+2014Q4,Fyn & islands,Villa,12164.4,510,14866.6,-18.18
+2015Q1,Fyn & islands,Villa,11664.8,568,14866.6,-21.54
+2015Q2,Fyn & islands,Villa,13233.9,710,14866.6,-10.98
+2015Q3,Fyn & islands,Villa,11814.2,657,14866.6,-20.53
+2015Q4,Fyn & islands,Villa,12128.4,547,14866.6,-18.42
+2016Q1,Fyn & islands,Villa,11887.1,588,14866.6,-20.04
+2016Q2,Fyn & islands,Villa,13992.5,799,14866.6,-5.88
+2016Q3,Fyn & islands,Villa,12516.2,688,14866.6,-15.81
+2016Q4,Fyn & islands,Villa,12814.0,469,14866.6,-13.81
+2017Q3,Fyn & islands,Villa,12430.5,767,14866.6,-16.39
+2017Q4,Fyn & islands,Villa,12711.7,834,14866.6,-14.5
+2018Q1,Fyn & islands,Villa,13416.1,841,14866.6,-9.76
+2018Q2,Fyn & islands,Villa,12987.1,960,14866.6,-12.64
+2018Q3,Fyn & islands,Villa,14991.8,970,14991.8,0.0
+2018Q4,Fyn & islands,Villa,13457.1,870,14991.8,-10.24
+2019Q1,Fyn & islands,Villa,13115.2,858,14991.8,-12.52
+2019Q2,Fyn & islands,Villa,13706.3,1083,14991.8,-8.57
+2019Q3,Fyn & islands,Villa,13767.5,1048,14991.8,-8.17
+2019Q4,Fyn & islands,Villa,13646.2,948,14991.8,-8.98
+2020Q1,Fyn & islands,Villa,13762.1,992,14991.8,-8.2
+2020Q2,Fyn & islands,Villa,13792.5,1190,14991.8,-8.0
+2020Q3,Fyn & islands,Villa,14332.6,1289,14991.8,-4.4
+2020Q4,Fyn & islands,Villa,14103.0,1370,14991.8,-5.93
+2021Q1,Fyn & islands,Villa,14015.3,1602,14991.8,-6.51
+2021Q2,Fyn & islands,Villa,14370.7,1658,14991.8,-4.14
+2021Q3,Fyn & islands,Villa,14704.2,1331,14991.8,-1.92
+2021Q4,Fyn & islands,Villa,15226.1,1218,15226.1,0.0
+2022Q1,Fyn & islands,Villa,13899.3,1248,15226.1,-8.71
+2022Q2,Fyn & islands,Villa,14182.1,1266,15226.1,-6.86
+2022Q3,Fyn & islands,Villa,13385.2,1010,15226.1,-12.09
+2022Q4,Fyn & islands,Villa,13206.9,741,15226.1,-13.26
+2023Q1,Fyn & islands,Villa,12854.8,936,15226.1,-15.57
+2023Q2,Fyn & islands,Villa,13885.3,1142,15226.1,-8.81
+2023Q3,Fyn & islands,Villa,14200.7,869,15226.1,-6.73
+2023Q4,Fyn & islands,Villa,13810.5,957,15226.1,-9.3
+2024Q1,Fyn & islands,Villa,14238.3,1045,15226.1,-6.49
+2024Q2,Fyn & islands,Villa,14451.6,1217,15226.1,-5.09
+2024Q3,Fyn & islands,Villa,13785.0,819,15226.1,-9.46
+2024Q4,Fyn & islands,Villa,11852.6,45,15226.1,-22.16
+1992Q1,Jutland,Apartment,36207.9,307,36207.9,0.0
+1992Q2,Jutland,Apartment,35313.0,390,36207.9,-2.47
+1992Q3,Jutland,Apartment,35438.2,216,36207.9,-2.13
+1992Q4,Jutland,Apartment,37910.3,330,37910.3,0.0
+1993Q1,Jutland,Apartment,48341.2,355,48341.2,0.0
+1993Q2,Jutland,Apartment,53735.6,410,53735.6,0.0
+1993Q3,Jutland,Apartment,31173.9,289,53735.6,-41.99
+1993Q4,Jutland,Apartment,36391.5,303,53735.6,-32.28
+1994Q1,Jutland,Apartment,33489.3,302,53735.6,-37.68
+1994Q2,Jutland,Apartment,35909.2,501,53735.6,-33.17
+1994Q3,Jutland,Apartment,33241.4,261,53735.6,-38.14
+1994Q4,Jutland,Apartment,45169.7,506,53735.6,-15.94
+1995Q1,Jutland,Apartment,33174.1,343,53735.6,-38.26
+1995Q2,Jutland,Apartment,29213.8,359,53735.6,-45.63
+1995Q3,Jutland,Apartment,26694.9,309,53735.6,-50.32
+1995Q4,Jutland,Apartment,31060.4,405,53735.6,-42.2
+1996Q1,Jutland,Apartment,40889.1,535,53735.6,-23.91
+1996Q2,Jutland,Apartment,36177.1,356,53735.6,-32.68
+1996Q3,Jutland,Apartment,27919.1,351,53735.6,-48.04
+1996Q4,Jutland,Apartment,26715.9,393,53735.6,-50.28
+1997Q1,Jutland,Apartment,30345.4,376,53735.6,-43.53
+1997Q2,Jutland,Apartment,35657.5,458,53735.6,-33.64
+1997Q3,Jutland,Apartment,40434.0,797,53735.6,-24.75
+1997Q4,Jutland,Apartment,37180.2,511,53735.6,-30.81
+1998Q1,Jutland,Apartment,30125.9,458,53735.6,-43.94
+1998Q2,Jutland,Apartment,36689.7,524,53735.6,-31.72
+1998Q3,Jutland,Apartment,30281.8,413,53735.6,-43.65
+1998Q4,Jutland,Apartment,47382.1,729,53735.6,-11.82
+1999Q1,Jutland,Apartment,34905.6,495,53735.6,-35.04
+1999Q2,Jutland,Apartment,36624.7,537,53735.6,-31.84
+1999Q3,Jutland,Apartment,26024.3,441,53735.6,-51.57
+1999Q4,Jutland,Apartment,30403.7,476,53735.6,-43.42
+2000Q1,Jutland,Apartment,36596.4,522,53735.6,-31.9
+2000Q2,Jutland,Apartment,35848.9,541,53735.6,-33.29
+2000Q3,Jutland,Apartment,33585.6,327,53735.6,-37.5
+2000Q4,Jutland,Apartment,30155.4,432,53735.6,-43.88
+2001Q1,Jutland,Apartment,32379.0,583,53735.6,-39.74
+2001Q2,Jutland,Apartment,34703.5,544,53735.6,-35.42
+2001Q3,Jutland,Apartment,28741.5,448,53735.6,-46.51
+2001Q4,Jutland,Apartment,35781.9,519,53735.6,-33.41
+2002Q1,Jutland,Apartment,27953.5,428,53735.6,-47.98
+2002Q2,Jutland,Apartment,34206.2,549,53735.6,-36.34
+2002Q3,Jutland,Apartment,27627.4,487,53735.6,-48.59
+2002Q4,Jutland,Apartment,30685.5,458,53735.6,-42.9
+2003Q1,Jutland,Apartment,28337.1,428,53735.6,-47.27
+2003Q2,Jutland,Apartment,27188.1,430,53735.6,-49.4
+2003Q3,Jutland,Apartment,24423.2,510,53735.6,-54.55
+2003Q4,Jutland,Apartment,30782.5,742,53735.6,-42.71
+2004Q1,Jutland,Apartment,30696.6,529,53735.6,-42.87
+2004Q2,Jutland,Apartment,30010.7,531,53735.6,-44.15
+2004Q3,Jutland,Apartment,25979.0,316,53735.6,-51.65
+2004Q4,Jutland,Apartment,29320.4,528,53735.6,-45.44
+2005Q1,Jutland,Apartment,29423.1,597,53735.6,-45.24
+2005Q2,Jutland,Apartment,35132.6,796,53735.6,-34.62
+2005Q3,Jutland,Apartment,30747.4,715,53735.6,-42.78
+2005Q4,Jutland,Apartment,34064.9,873,53735.6,-36.61
+2006Q1,Jutland,Apartment,33715.7,876,53735.6,-37.26
+2006Q2,Jutland,Apartment,31434.4,675,53735.6,-41.5
+2006Q3,Jutland,Apartment,34340.4,655,53735.6,-36.09
+2006Q4,Jutland,Apartment,33372.7,567,53735.6,-37.89
+2007Q1,Jutland,Apartment,37418.2,819,53735.6,-30.37
+2007Q2,Jutland,Apartment,35159.7,780,53735.6,-34.57
+2007Q3,Jutland,Apartment,32042.7,676,53735.6,-40.37
+2007Q4,Jutland,Apartment,30877.9,719,53735.6,-42.54
+2008Q1,Jutland,Apartment,33928.9,692,53735.6,-36.86
+2008Q2,Jutland,Apartment,36074.6,771,53735.6,-32.87
+2008Q3,Jutland,Apartment,29010.8,467,53735.6,-46.01
+2008Q4,Jutland,Apartment,31529.1,535,53735.6,-41.33
+2009Q1,Jutland,Apartment,25689.4,401,53735.6,-52.19
+2009Q2,Jutland,Apartment,30902.2,566,53735.6,-42.49
+2009Q3,Jutland,Apartment,38522.2,393,53735.6,-28.31
+2009Q4,Jutland,Apartment,28739.5,548,53735.6,-46.52
+2010Q1,Jutland,Apartment,30418.3,606,53735.6,-43.39
+2010Q2,Jutland,Apartment,34289.6,651,53735.6,-36.19
+2010Q3,Jutland,Apartment,28495.2,610,53735.6,-46.97
+2010Q4,Jutland,Apartment,32005.9,706,53735.6,-40.44
+2011Q1,Jutland,Apartment,33891.6,691,53735.6,-36.93
+2011Q2,Jutland,Apartment,35476.7,627,53735.6,-33.98
+2011Q3,Jutland,Apartment,31298.2,600,53735.6,-41.76
+2011Q4,Jutland,Apartment,27774.1,592,53735.6,-48.31
+2012Q1,Jutland,Apartment,29008.4,584,53735.6,-46.02
+2012Q2,Jutland,Apartment,25842.0,537,53735.6,-51.91
+2012Q3,Jutland,Apartment,26322.6,506,53735.6,-51.01
+2012Q4,Jutland,Apartment,33943.9,600,53735.6,-36.83
+2013Q1,Jutland,Apartment,29696.6,630,53735.6,-44.74
+2013Q2,Jutland,Apartment,31380.7,617,53735.6,-41.6
+2013Q3,Jutland,Apartment,29804.9,551,53735.6,-44.53
+2013Q4,Jutland,Apartment,29783.4,659,53735.6,-44.57
+2014Q1,Jutland,Apartment,28583.2,761,53735.6,-46.81
+2014Q2,Jutland,Apartment,29470.9,627,53735.6,-45.16
+2014Q3,Jutland,Apartment,26523.0,629,53735.6,-50.64
+2014Q4,Jutland,Apartment,28326.7,834,53735.6,-47.29
+2015Q1,Jutland,Apartment,29953.7,953,53735.6,-44.26
+2015Q2,Jutland,Apartment,29462.8,1036,53735.6,-45.17
+2015Q3,Jutland,Apartment,27334.9,845,53735.6,-49.13
+2015Q4,Jutland,Apartment,30255.6,962,53735.6,-43.7
+2016Q1,Jutland,Apartment,31476.2,1032,53735.6,-41.42
+2016Q2,Jutland,Apartment,30653.5,1163,53735.6,-42.95
+2016Q3,Jutland,Apartment,32262.3,1077,53735.6,-39.96
+2016Q4,Jutland,Apartment,30657.3,757,53735.6,-42.95
+2017Q3,Jutland,Apartment,29578.0,1191,53735.6,-44.96
+2017Q4,Jutland,Apartment,31136.9,1558,53735.6,-42.06
+2018Q1,Jutland,Apartment,30568.5,1373,53735.6,-43.11
+2018Q2,Jutland,Apartment,32282.9,1543,53735.6,-39.92
+2018Q3,Jutland,Apartment,28865.3,1218,53735.6,-46.28
+2018Q4,Jutland,Apartment,28918.9,1352,53735.6,-46.18
+2019Q1,Jutland,Apartment,28251.9,1507,53735.6,-47.42
+2019Q2,Jutland,Apartment,30040.8,1480,53735.6,-44.1
+2019Q3,Jutland,Apartment,32782.8,1538,53735.6,-38.99
+2019Q4,Jutland,Apartment,29239.7,1440,53735.6,-45.59
+2020Q1,Jutland,Apartment,31108.5,1537,53735.6,-42.11
+2020Q2,Jutland,Apartment,28969.0,1461,53735.6,-46.09
+2020Q3,Jutland,Apartment,30433.4,1830,53735.6,-43.36
+2020Q4,Jutland,Apartment,33064.0,2240,53735.6,-38.47
+2021Q1,Jutland,Apartment,31535.8,2504,53735.6,-41.31
+2021Q2,Jutland,Apartment,33073.6,2518,53735.6,-38.45
+2021Q3,Jutland,Apartment,32460.9,1893,53735.6,-39.59
+2021Q4,Jutland,Apartment,32097.9,1881,53735.6,-40.27
+2022Q1,Jutland,Apartment,29584.4,1931,53735.6,-44.94
+2022Q2,Jutland,Apartment,29174.4,1615,53735.6,-45.71
+2022Q3,Jutland,Apartment,26886.6,1137,53735.6,-49.97
+2022Q4,Jutland,Apartment,28908.4,1074,53735.6,-46.2
+2023Q1,Jutland,Apartment,25914.1,1205,53735.6,-51.77
+2023Q2,Jutland,Apartment,26967.9,1332,53735.6,-49.81
+2023Q3,Jutland,Apartment,26794.1,1047,53735.6,-50.14
+2023Q4,Jutland,Apartment,27107.8,1410,53735.6,-49.55
+2024Q1,Jutland,Apartment,27190.0,1274,53735.6,-49.4
+2024Q2,Jutland,Apartment,28688.3,1437,53735.6,-46.61
+2024Q3,Jutland,Apartment,25629.4,1002,53735.6,-52.3
+2024Q4,Jutland,Apartment,23139.2,72,53735.6,-56.94
+1992Q1,Jutland,Farm,9254.9,163,9254.9,0.0
+1992Q2,Jutland,Farm,11201.5,154,11201.5,0.0
+1992Q3,Jutland,Farm,9908.6,157,11201.5,-11.54
+1992Q4,Jutland,Farm,9040.8,116,11201.5,-19.29
+1993Q1,Jutland,Farm,10223.4,139,11201.5,-8.73
+1993Q2,Jutland,Farm,8584.2,172,11201.5,-23.37
+1993Q3,Jutland,Farm,10531.3,200,11201.5,-5.98
+1993Q4,Jutland,Farm,9331.9,161,11201.5,-16.69
+1994Q1,Jutland,Farm,9889.6,184,11201.5,-11.71
+1994Q2,Jutland,Farm,9551.7,226,11201.5,-14.73
+1994Q3,Jutland,Farm,10665.1,206,11201.5,-4.79
+1994Q4,Jutland,Farm,10033.5,166,11201.5,-10.43
+1995Q1,Jutland,Farm,11093.7,219,11201.5,-0.96
+1995Q2,Jutland,Farm,9510.7,219,11201.5,-15.09
+1995Q3,Jutland,Farm,10479.6,216,11201.5,-6.44
+1995Q4,Jutland,Farm,10874.2,158,11201.5,-2.92
+1996Q1,Jutland,Farm,10750.0,172,11201.5,-4.03
+1996Q2,Jutland,Farm,9997.3,234,11201.5,-10.75
+1996Q3,Jutland,Farm,9903.5,237,11201.5,-11.59
+1996Q4,Jutland,Farm,10598.2,186,11201.5,-5.39
+1997Q1,Jutland,Farm,10249.8,211,11201.5,-8.5
+1997Q2,Jutland,Farm,10581.9,240,11201.5,-5.53
+1997Q3,Jutland,Farm,10897.3,196,11201.5,-2.72
+1997Q4,Jutland,Farm,9956.0,219,11201.5,-11.12
+1998Q1,Jutland,Farm,12447.2,237,12447.2,0.0
+1998Q2,Jutland,Farm,11417.7,258,12447.2,-8.27
+1998Q3,Jutland,Farm,12710.1,207,12710.1,0.0
+1998Q4,Jutland,Farm,12756.9,145,12756.9,0.0
+1999Q1,Jutland,Farm,12061.3,188,12756.9,-5.45
+1999Q2,Jutland,Farm,12404.1,240,12756.9,-2.77
+1999Q3,Jutland,Farm,12497.7,221,12756.9,-2.03
+1999Q4,Jutland,Farm,10853.1,180,12756.9,-14.92
+2000Q1,Jutland,Farm,13654.5,192,13654.5,0.0
+2000Q2,Jutland,Farm,12600.7,201,13654.5,-7.72
+2000Q3,Jutland,Farm,11901.0,206,13654.5,-12.84
+2000Q4,Jutland,Farm,11274.0,192,13654.5,-17.43
+2001Q1,Jutland,Farm,11232.1,194,13654.5,-17.74
+2001Q2,Jutland,Farm,11459.3,223,13654.5,-16.08
+2001Q3,Jutland,Farm,13354.6,239,13654.5,-2.2
+2001Q4,Jutland,Farm,12829.0,193,13654.5,-6.05
+2002Q1,Jutland,Farm,13500.8,215,13654.5,-1.13
+2002Q2,Jutland,Farm,12266.2,248,13654.5,-10.17
+2002Q3,Jutland,Farm,11343.7,214,13654.5,-16.92
+2002Q4,Jutland,Farm,13005.8,212,13654.5,-4.75
+2003Q1,Jutland,Farm,13768.2,232,13768.2,0.0
+2003Q2,Jutland,Farm,12540.9,260,13768.2,-8.91
+2003Q3,Jutland,Farm,11667.5,224,13768.2,-15.26
+2003Q4,Jutland,Farm,12620.0,246,13768.2,-8.34
+2004Q1,Jutland,Farm,12382.6,244,13768.2,-10.06
+2004Q2,Jutland,Farm,12310.1,277,13768.2,-10.59
+2004Q3,Jutland,Farm,13832.3,202,13832.3,0.0
+2004Q4,Jutland,Farm,12230.2,292,13832.3,-11.58
+2005Q1,Jutland,Farm,14120.7,316,14120.7,0.0
+2005Q2,Jutland,Farm,12836.9,336,14120.7,-9.09
+2005Q3,Jutland,Farm,14020.7,300,14120.7,-0.71
+2005Q4,Jutland,Farm,13695.4,241,14120.7,-3.01
+2006Q1,Jutland,Farm,15878.6,289,15878.6,0.0
+2006Q2,Jutland,Farm,13458.1,277,15878.6,-15.24
+2006Q3,Jutland,Farm,15248.8,275,15878.6,-3.97
+2006Q4,Jutland,Farm,13596.9,250,15878.6,-14.37
+2007Q1,Jutland,Farm,15304.1,266,15878.6,-3.62
+2007Q2,Jutland,Farm,14225.0,286,15878.6,-10.41
+2007Q3,Jutland,Farm,17773.2,260,17773.2,0.0
+2007Q4,Jutland,Farm,14820.4,263,17773.2,-16.61
+2008Q1,Jutland,Farm,17386.0,317,17773.2,-2.18
+2008Q2,Jutland,Farm,16818.5,270,17773.2,-5.37
+2008Q3,Jutland,Farm,17027.0,212,17773.2,-4.2
+2008Q4,Jutland,Farm,15365.0,172,17773.2,-13.55
+2009Q1,Jutland,Farm,16602.1,202,17773.2,-6.59
+2009Q2,Jutland,Farm,14412.5,150,17773.2,-18.91
+2009Q3,Jutland,Farm,15029.8,138,17773.2,-15.44
+2009Q4,Jutland,Farm,12236.4,172,17773.2,-31.15
+2010Q1,Jutland,Farm,12756.5,276,17773.2,-28.23
+2010Q2,Jutland,Farm,13804.9,256,17773.2,-22.33
+2010Q3,Jutland,Farm,14677.6,205,17773.2,-17.42
+2010Q4,Jutland,Farm,13991.0,217,17773.2,-21.28
+2011Q1,Jutland,Farm,13507.0,188,17773.2,-24.0
+2011Q2,Jutland,Farm,14668.4,223,17773.2,-17.47
+2011Q3,Jutland,Farm,13712.6,198,17773.2,-22.85
+2011Q4,Jutland,Farm,13746.6,170,17773.2,-22.66
+2012Q1,Jutland,Farm,12723.3,209,17773.2,-28.41
+2012Q2,Jutland,Farm,12994.3,219,17773.2,-26.89
+2012Q3,Jutland,Farm,12657.8,182,17773.2,-28.78
+2012Q4,Jutland,Farm,14256.4,188,17773.2,-19.79
+2013Q1,Jutland,Farm,14460.9,186,17773.2,-18.64
+2013Q2,Jutland,Farm,13340.6,223,17773.2,-24.94
+2013Q3,Jutland,Farm,12512.4,223,17773.2,-29.6
+2013Q4,Jutland,Farm,13670.4,222,17773.2,-23.08
+2014Q1,Jutland,Farm,14592.4,221,17773.2,-17.9
+2014Q2,Jutland,Farm,13610.9,250,17773.2,-23.42
+2014Q3,Jutland,Farm,12069.3,251,17773.2,-32.09
+2014Q4,Jutland,Farm,12706.5,236,17773.2,-28.51
+2015Q1,Jutland,Farm,14455.0,252,17773.2,-18.67
+2015Q2,Jutland,Farm,14103.1,288,17773.2,-20.65
+2015Q3,Jutland,Farm,12831.0,257,17773.2,-27.81
+2015Q4,Jutland,Farm,12536.9,229,17773.2,-29.46
+2016Q1,Jutland,Farm,13111.1,231,17773.2,-26.23
+2016Q2,Jutland,Farm,12377.4,318,17773.2,-30.36
+2016Q3,Jutland,Farm,13302.2,282,17773.2,-25.16
+2016Q4,Jutland,Farm,13690.9,192,17773.2,-22.97
+2017Q3,Jutland,Farm,13363.1,325,17773.2,-24.81
+2017Q4,Jutland,Farm,13540.5,350,17773.2,-23.82
+2018Q1,Jutland,Farm,13479.8,326,17773.2,-24.16
+2018Q2,Jutland,Farm,13130.5,389,17773.2,-26.12
+2018Q3,Jutland,Farm,12245.3,333,17773.2,-31.1
+2018Q4,Jutland,Farm,13315.2,390,17773.2,-25.08
+2019Q1,Jutland,Farm,13730.5,380,17773.2,-22.75
+2019Q2,Jutland,Farm,13547.6,400,17773.2,-23.78
+2019Q3,Jutland,Farm,14473.9,407,17773.2,-18.56
+2019Q4,Jutland,Farm,14225.0,318,17773.2,-19.96
+2020Q1,Jutland,Farm,16508.2,289,17773.2,-7.12
+2020Q2,Jutland,Farm,15738.6,432,17773.2,-11.45
+2020Q3,Jutland,Farm,14468.1,470,17773.2,-18.6
+2020Q4,Jutland,Farm,15218.2,519,17773.2,-14.38
+2021Q1,Jutland,Farm,15338.6,568,17773.2,-13.7
+2021Q2,Jutland,Farm,15376.2,595,17773.2,-13.49
+2021Q3,Jutland,Farm,14963.2,482,17773.2,-15.81
+2021Q4,Jutland,Farm,16203.7,454,17773.2,-8.83
+2022Q1,Jutland,Farm,14895.2,468,17773.2,-16.19
+2022Q2,Jutland,Farm,14233.1,459,17773.2,-19.92
+2022Q3,Jutland,Farm,15403.9,446,17773.2,-13.33
+2022Q4,Jutland,Farm,14915.5,378,17773.2,-16.08
+2023Q1,Jutland,Farm,15753.7,421,17773.2,-11.36
+2023Q2,Jutland,Farm,13587.2,480,17773.2,-23.55
+2023Q3,Jutland,Farm,14450.3,445,17773.2,-18.7
+2023Q4,Jutland,Farm,13547.4,555,17773.2,-23.78
+2024Q1,Jutland,Farm,14522.2,479,17773.2,-18.29
+2024Q2,Jutland,Farm,14463.2,508,17773.2,-18.62
+2024Q3,Jutland,Farm,14514.8,268,17773.2,-18.33
+2024Q4,Jutland,Farm,10844.7,17,17773.2,-38.98
+1992Q1,Jutland,Summerhouse,10420.2,68,10420.2,0.0
+1992Q2,Jutland,Summerhouse,10255.5,109,10420.2,-1.58
+1992Q3,Jutland,Summerhouse,10450.0,79,10450.0,0.0
+1992Q4,Jutland,Summerhouse,9756.6,67,10450.0,-6.64
+1993Q1,Jutland,Summerhouse,10964.1,66,10964.1,0.0
+1993Q2,Jutland,Summerhouse,9386.7,130,10964.1,-14.39
+1993Q3,Jutland,Summerhouse,10743.0,117,10964.1,-2.02
+1993Q4,Jutland,Summerhouse,10593.4,91,10964.1,-3.38
+1994Q1,Jutland,Summerhouse,10483.6,105,10964.1,-4.38
+1994Q2,Jutland,Summerhouse,10387.7,160,10964.1,-5.26
+1994Q3,Jutland,Summerhouse,10389.9,120,10964.1,-5.24
+1994Q4,Jutland,Summerhouse,10518.1,83,10964.1,-4.07
+1995Q1,Jutland,Summerhouse,10464.8,114,10964.1,-4.55
+1995Q2,Jutland,Summerhouse,10824.1,174,10964.1,-1.28
+1995Q3,Jutland,Summerhouse,10988.7,152,10988.7,0.0
+1995Q4,Jutland,Summerhouse,9957.9,119,10988.7,-9.38
+1996Q1,Jutland,Summerhouse,10669.7,106,10988.7,-2.9
+1996Q2,Jutland,Summerhouse,10979.2,230,10988.7,-0.09
+1996Q3,Jutland,Summerhouse,10529.4,197,10988.7,-4.18
+1996Q4,Jutland,Summerhouse,10796.0,161,10988.7,-1.75
+1997Q1,Jutland,Summerhouse,11472.3,190,11472.3,0.0
+1997Q2,Jutland,Summerhouse,10897.0,269,11472.3,-5.01
+1997Q3,Jutland,Summerhouse,11574.7,215,11574.7,0.0
+1997Q4,Jutland,Summerhouse,11519.7,166,11574.7,-0.47
+1998Q1,Jutland,Summerhouse,11763.6,171,11763.6,0.0
+1998Q2,Jutland,Summerhouse,11785.4,309,11785.4,0.0
+1998Q3,Jutland,Summerhouse,11639.6,239,11785.4,-1.24
+1998Q4,Jutland,Summerhouse,12397.1,180,12397.1,0.0
+1999Q1,Jutland,Summerhouse,11656.8,222,12397.1,-5.97
+1999Q2,Jutland,Summerhouse,11772.3,354,12397.1,-5.04
+1999Q3,Jutland,Summerhouse,12724.0,241,12724.0,0.0
+1999Q4,Jutland,Summerhouse,12527.4,192,12724.0,-1.54
+2000Q1,Jutland,Summerhouse,12498.4,214,12724.0,-1.77
+2000Q2,Jutland,Summerhouse,12016.2,303,12724.0,-5.56
+2000Q3,Jutland,Summerhouse,12277.7,267,12724.0,-3.51
+2000Q4,Jutland,Summerhouse,14283.8,220,14283.8,0.0
+2001Q1,Jutland,Summerhouse,12886.7,189,14283.8,-9.78
+2001Q2,Jutland,Summerhouse,12881.5,321,14283.8,-9.82
+2001Q3,Jutland,Summerhouse,13123.8,264,14283.8,-8.12
+2001Q4,Jutland,Summerhouse,14481.5,476,14481.5,0.0
+2002Q1,Jutland,Summerhouse,12977.2,254,14481.5,-10.39
+2002Q2,Jutland,Summerhouse,13312.5,380,14481.5,-8.07
+2002Q3,Jutland,Summerhouse,13745.0,401,14481.5,-5.09
+2002Q4,Jutland,Summerhouse,13048.3,249,14481.5,-9.9
+2003Q1,Jutland,Summerhouse,13039.1,301,14481.5,-9.96
+2003Q2,Jutland,Summerhouse,13826.8,521,14481.5,-4.52
+2003Q3,Jutland,Summerhouse,13633.6,465,14481.5,-5.86
+2003Q4,Jutland,Summerhouse,14436.2,429,14481.5,-0.31
+2004Q1,Jutland,Summerhouse,14835.2,477,14835.2,0.0
+2004Q2,Jutland,Summerhouse,16148.9,626,16148.9,0.0
+2004Q3,Jutland,Summerhouse,16640.5,293,16640.5,0.0
+2004Q4,Jutland,Summerhouse,17628.8,363,17628.8,0.0
+2005Q1,Jutland,Summerhouse,16914.8,406,17628.8,-4.05
+2005Q2,Jutland,Summerhouse,18281.5,676,18281.5,0.0
+2005Q3,Jutland,Summerhouse,19546.8,499,19546.8,0.0
+2005Q4,Jutland,Summerhouse,19570.5,386,19570.5,0.0
+2006Q1,Jutland,Summerhouse,19519.5,371,19570.5,-0.26
+2006Q2,Jutland,Summerhouse,20612.2,537,20612.2,0.0
+2006Q3,Jutland,Summerhouse,20576.0,476,20612.2,-0.18
+2006Q4,Jutland,Summerhouse,20534.7,301,20612.2,-0.38
+2007Q1,Jutland,Summerhouse,24304.4,452,24304.4,0.0
+2007Q2,Jutland,Summerhouse,22746.8,577,24304.4,-6.41
+2007Q3,Jutland,Summerhouse,21971.8,449,24304.4,-9.6
+2007Q4,Jutland,Summerhouse,21694.3,328,24304.4,-10.74
+2008Q1,Jutland,Summerhouse,21951.9,317,24304.4,-9.68
+2008Q2,Jutland,Summerhouse,21766.0,436,24304.4,-10.44
+2008Q3,Jutland,Summerhouse,21679.5,317,24304.4,-10.8
+2008Q4,Jutland,Summerhouse,20207.6,186,24304.4,-16.86
+2009Q1,Jutland,Summerhouse,18421.2,181,24304.4,-24.21
+2009Q2,Jutland,Summerhouse,19032.4,353,24304.4,-21.69
+2009Q3,Jutland,Summerhouse,20375.2,359,24304.4,-16.17
+2009Q4,Jutland,Summerhouse,18983.9,345,24304.4,-21.89
+2010Q1,Jutland,Summerhouse,17416.0,263,24304.4,-28.34
+2010Q2,Jutland,Summerhouse,19340.2,518,24304.4,-20.43
+2010Q3,Jutland,Summerhouse,19183.7,452,24304.4,-21.07
+2010Q4,Jutland,Summerhouse,18070.8,407,24304.4,-25.65
+2011Q1,Jutland,Summerhouse,17884.2,300,24304.4,-26.42
+2011Q2,Jutland,Summerhouse,17524.6,404,24304.4,-27.9
+2011Q3,Jutland,Summerhouse,17470.8,392,24304.4,-28.12
+2011Q4,Jutland,Summerhouse,17516.7,282,24304.4,-27.93
+2012Q1,Jutland,Summerhouse,16937.1,286,24304.4,-30.31
+2012Q2,Jutland,Summerhouse,15656.9,557,24304.4,-35.58
+2012Q3,Jutland,Summerhouse,17392.0,436,24304.4,-28.44
+2012Q4,Jutland,Summerhouse,16037.9,315,24304.4,-34.01
+2013Q1,Jutland,Summerhouse,16327.1,282,24304.4,-32.82
+2013Q2,Jutland,Summerhouse,17014.6,565,24304.4,-29.99
+2013Q3,Jutland,Summerhouse,16309.4,484,24304.4,-32.9
+2013Q4,Jutland,Summerhouse,16620.4,339,24304.4,-31.62
+2014Q1,Jutland,Summerhouse,16762.2,270,24304.4,-31.03
+2014Q2,Jutland,Summerhouse,16582.6,527,24304.4,-31.77
+2014Q3,Jutland,Summerhouse,16501.6,522,24304.4,-32.1
+2014Q4,Jutland,Summerhouse,16088.3,381,24304.4,-33.8
+2015Q1,Jutland,Summerhouse,16187.6,418,24304.4,-33.4
+2015Q2,Jutland,Summerhouse,16699.6,593,24304.4,-31.29
+2015Q3,Jutland,Summerhouse,16570.6,571,24304.4,-31.82
+2015Q4,Jutland,Summerhouse,16471.8,430,24304.4,-32.23
+2016Q1,Jutland,Summerhouse,15912.2,426,24304.4,-34.53
+2016Q2,Jutland,Summerhouse,17015.0,768,24304.4,-29.99
+2016Q3,Jutland,Summerhouse,16695.0,703,24304.4,-31.31
+2016Q4,Jutland,Summerhouse,16773.6,381,24304.4,-30.99
+2017Q3,Jutland,Summerhouse,16451.4,847,24304.4,-32.31
+2017Q4,Jutland,Summerhouse,16763.3,756,24304.4,-31.03
+2018Q1,Jutland,Summerhouse,16683.6,651,24304.4,-31.36
+2018Q2,Jutland,Summerhouse,17214.6,1039,24304.4,-29.17
+2018Q3,Jutland,Summerhouse,16773.4,963,24304.4,-30.99
+2018Q4,Jutland,Summerhouse,16974.6,709,24304.4,-30.16
+2019Q1,Jutland,Summerhouse,16952.3,778,24304.4,-30.25
+2019Q2,Jutland,Summerhouse,19503.5,1391,24304.4,-19.75
+2019Q3,Jutland,Summerhouse,18064.7,1277,24304.4,-25.67
+2019Q4,Jutland,Summerhouse,18076.3,927,24304.4,-25.63
+2020Q1,Jutland,Summerhouse,18214.5,1071,24304.4,-25.06
+2020Q2,Jutland,Summerhouse,17760.7,2376,24304.4,-26.92
+2020Q3,Jutland,Summerhouse,18396.8,1964,24304.4,-24.31
+2020Q4,Jutland,Summerhouse,18570.2,1671,24304.4,-23.59
+2021Q1,Jutland,Summerhouse,18596.8,2516,24304.4,-23.48
+2021Q2,Jutland,Summerhouse,20516.7,2164,24304.4,-15.58
+2021Q3,Jutland,Summerhouse,20802.1,1323,24304.4,-14.41
+2021Q4,Jutland,Summerhouse,21145.9,1006,24304.4,-13.0
+2022Q1,Jutland,Summerhouse,19855.0,1111,24304.4,-18.31
+2022Q2,Jutland,Summerhouse,20274.5,1242,24304.4,-16.58
+2022Q3,Jutland,Summerhouse,20166.0,978,24304.4,-17.03
+2022Q4,Jutland,Summerhouse,20139.8,641,24304.4,-17.14
+2023Q1,Jutland,Summerhouse,20059.0,824,24304.4,-17.47
+2023Q2,Jutland,Summerhouse,20231.6,1244,24304.4,-16.76
+2023Q3,Jutland,Summerhouse,20040.6,936,24304.4,-17.54
+2023Q4,Jutland,Summerhouse,20387.4,989,24304.4,-16.12
+2024Q1,Jutland,Summerhouse,20176.8,921,24304.4,-16.98
+2024Q2,Jutland,Summerhouse,20830.4,1381,24304.4,-14.29
+2024Q3,Jutland,Summerhouse,20639.8,1171,24304.4,-15.08
+2024Q4,Jutland,Summerhouse,18526.7,77,24304.4,-23.77
+1992Q1,Jutland,Townhouse,14389.2,117,14389.2,0.0
+1992Q2,Jutland,Townhouse,11592.5,148,14389.2,-19.44
+1992Q3,Jutland,Townhouse,9727.7,114,14389.2,-32.4
+1992Q4,Jutland,Townhouse,10048.6,76,14389.2,-30.17
+1993Q1,Jutland,Townhouse,19946.1,87,19946.1,0.0
+1993Q2,Jutland,Townhouse,10248.8,94,19946.1,-48.62
+1993Q3,Jutland,Townhouse,12089.4,129,19946.1,-39.39
+1993Q4,Jutland,Townhouse,10277.2,127,19946.1,-48.48
+1994Q1,Jutland,Townhouse,9825.3,131,19946.1,-50.74
+1994Q2,Jutland,Townhouse,11106.0,165,19946.1,-44.32
+1994Q3,Jutland,Townhouse,10948.0,130,19946.1,-45.11
+1994Q4,Jutland,Townhouse,11069.5,136,19946.1,-44.5
+1995Q1,Jutland,Townhouse,10788.7,178,19946.1,-45.91
+1995Q2,Jutland,Townhouse,10710.1,192,19946.1,-46.3
+1995Q3,Jutland,Townhouse,15102.9,197,19946.1,-24.28
+1995Q4,Jutland,Townhouse,11990.0,167,19946.1,-39.89
+1996Q1,Jutland,Townhouse,12667.4,145,19946.1,-36.49
+1996Q2,Jutland,Townhouse,11175.7,197,19946.1,-43.97
+1996Q3,Jutland,Townhouse,12137.7,195,19946.1,-39.15
+1996Q4,Jutland,Townhouse,11957.0,190,19946.1,-40.05
+1997Q1,Jutland,Townhouse,11591.8,175,19946.1,-41.88
+1997Q2,Jutland,Townhouse,13088.3,224,19946.1,-34.38
+1997Q3,Jutland,Townhouse,12709.0,193,19946.1,-36.28
+1997Q4,Jutland,Townhouse,13307.0,175,19946.1,-33.29
+1998Q1,Jutland,Townhouse,14683.8,236,19946.1,-26.38
+1998Q2,Jutland,Townhouse,14515.0,205,19946.1,-27.23
+1998Q3,Jutland,Townhouse,12156.7,174,19946.1,-39.05
+1998Q4,Jutland,Townhouse,17177.7,192,19946.1,-13.88
+1999Q1,Jutland,Townhouse,14577.8,198,19946.1,-26.91
+1999Q2,Jutland,Townhouse,15060.9,214,19946.1,-24.49
+1999Q3,Jutland,Townhouse,16344.4,236,19946.1,-18.06
+1999Q4,Jutland,Townhouse,13516.2,164,19946.1,-32.24
+2000Q1,Jutland,Townhouse,14260.5,191,19946.1,-28.5
+2000Q2,Jutland,Townhouse,14213.0,200,19946.1,-28.74
+2000Q3,Jutland,Townhouse,13861.3,234,19946.1,-30.51
+2000Q4,Jutland,Townhouse,13829.1,202,19946.1,-30.67
+2001Q1,Jutland,Townhouse,12883.2,216,19946.1,-35.41
+2001Q2,Jutland,Townhouse,14064.5,276,19946.1,-29.49
+2001Q3,Jutland,Townhouse,13804.6,197,19946.1,-30.79
+2001Q4,Jutland,Townhouse,19558.8,265,19946.1,-1.94
+2002Q1,Jutland,Townhouse,17574.6,238,19946.1,-11.89
+2002Q2,Jutland,Townhouse,17591.4,288,19946.1,-11.81
+2002Q3,Jutland,Townhouse,16636.4,238,19946.1,-16.59
+2002Q4,Jutland,Townhouse,14577.3,213,19946.1,-26.92
+2003Q1,Jutland,Townhouse,13166.4,246,19946.1,-33.99
+2003Q2,Jutland,Townhouse,16910.4,296,19946.1,-15.22
+2003Q3,Jutland,Townhouse,15296.2,238,19946.1,-23.31
+2003Q4,Jutland,Townhouse,32009.5,334,32009.5,0.0
+2004Q1,Jutland,Townhouse,14598.4,286,32009.5,-54.39
+2004Q2,Jutland,Townhouse,15647.5,281,32009.5,-51.12
+2004Q3,Jutland,Townhouse,20275.6,215,32009.5,-36.66
+2004Q4,Jutland,Townhouse,15042.3,244,32009.5,-53.01
+2005Q1,Jutland,Townhouse,30983.8,442,32009.5,-3.2
+2005Q2,Jutland,Townhouse,16209.1,423,32009.5,-49.36
+2005Q3,Jutland,Townhouse,17974.6,365,32009.5,-43.85
+2005Q4,Jutland,Townhouse,18829.0,364,32009.5,-41.18
+2006Q1,Jutland,Townhouse,18072.3,372,32009.5,-43.54
+2006Q2,Jutland,Townhouse,19488.6,403,32009.5,-39.12
+2006Q3,Jutland,Townhouse,18725.5,300,32009.5,-41.5
+2006Q4,Jutland,Townhouse,27337.1,313,32009.5,-14.6
+2007Q1,Jutland,Townhouse,24021.4,387,32009.5,-24.96
+2007Q2,Jutland,Townhouse,26259.9,508,32009.5,-17.96
+2007Q3,Jutland,Townhouse,20274.0,404,32009.5,-36.66
+2007Q4,Jutland,Townhouse,18967.8,349,32009.5,-40.74
+2008Q1,Jutland,Townhouse,21368.8,380,32009.5,-33.24
+2008Q2,Jutland,Townhouse,19655.8,404,32009.5,-38.59
+2008Q3,Jutland,Townhouse,19445.4,290,32009.5,-39.25
+2008Q4,Jutland,Townhouse,16656.2,163,32009.5,-47.96
+2009Q1,Jutland,Townhouse,19641.3,266,32009.5,-38.64
+2009Q2,Jutland,Townhouse,17035.5,300,32009.5,-46.78
+2009Q3,Jutland,Townhouse,19130.0,284,32009.5,-40.24
+2009Q4,Jutland,Townhouse,18165.6,317,32009.5,-43.25
+2010Q1,Jutland,Townhouse,18037.9,346,32009.5,-43.65
+2010Q2,Jutland,Townhouse,17362.6,347,32009.5,-45.76
+2010Q3,Jutland,Townhouse,22121.0,410,32009.5,-30.89
+2010Q4,Jutland,Townhouse,22698.5,483,32009.5,-29.09
+2011Q1,Jutland,Townhouse,17141.4,338,32009.5,-46.45
+2011Q2,Jutland,Townhouse,19527.9,407,32009.5,-38.99
+2011Q3,Jutland,Townhouse,23636.5,316,32009.5,-26.16
+2011Q4,Jutland,Townhouse,16039.2,305,32009.5,-49.89
+2012Q1,Jutland,Townhouse,18141.2,308,32009.5,-43.33
+2012Q2,Jutland,Townhouse,17724.9,340,32009.5,-44.63
+2012Q3,Jutland,Townhouse,20242.8,344,32009.5,-36.76
+2012Q4,Jutland,Townhouse,17509.9,304,32009.5,-45.3
+2013Q1,Jutland,Townhouse,16672.8,348,32009.5,-47.91
+2013Q2,Jutland,Townhouse,24916.3,485,32009.5,-22.16
+2013Q3,Jutland,Townhouse,16771.3,319,32009.5,-47.61
+2013Q4,Jutland,Townhouse,17104.2,301,32009.5,-46.57
+2014Q1,Jutland,Townhouse,17398.7,355,32009.5,-45.65
+2014Q2,Jutland,Townhouse,17803.4,423,32009.5,-44.38
+2014Q3,Jutland,Townhouse,17199.8,424,32009.5,-46.27
+2014Q4,Jutland,Townhouse,17451.9,407,32009.5,-45.48
+2015Q1,Jutland,Townhouse,18806.7,494,32009.5,-41.25
+2015Q2,Jutland,Townhouse,20659.2,631,32009.5,-35.46
+2015Q3,Jutland,Townhouse,21295.3,557,32009.5,-33.47
+2015Q4,Jutland,Townhouse,21319.2,515,32009.5,-33.4
+2016Q1,Jutland,Townhouse,23191.9,521,32009.5,-27.55
+2016Q2,Jutland,Townhouse,20980.0,664,32009.5,-34.46
+2016Q3,Jutland,Townhouse,19546.3,567,32009.5,-38.94
+2016Q4,Jutland,Townhouse,19171.9,397,32009.5,-40.11
+2017Q3,Jutland,Townhouse,23256.2,713,32009.5,-27.35
+2017Q4,Jutland,Townhouse,20685.7,746,32009.5,-35.38
+2018Q1,Jutland,Townhouse,19348.6,584,32009.5,-39.55
+2018Q2,Jutland,Townhouse,23754.3,818,32009.5,-25.79
+2018Q3,Jutland,Townhouse,23900.1,762,32009.5,-25.33
+2018Q4,Jutland,Townhouse,21282.4,766,32009.5,-33.51
+2019Q1,Jutland,Townhouse,23841.9,762,32009.5,-25.52
+2019Q2,Jutland,Townhouse,21165.4,937,32009.5,-33.88
+2019Q3,Jutland,Townhouse,24264.3,961,32009.5,-24.2
+2019Q4,Jutland,Townhouse,22891.8,893,32009.5,-28.48
+2020Q1,Jutland,Townhouse,23712.1,1024,32009.5,-25.92
+2020Q2,Jutland,Townhouse,20899.3,972,32009.5,-34.71
+2020Q3,Jutland,Townhouse,24341.6,1165,32009.5,-23.96
+2020Q4,Jutland,Townhouse,26652.9,1411,32009.5,-16.73
+2021Q1,Jutland,Townhouse,25848.9,1498,32009.5,-19.25
+2021Q2,Jutland,Townhouse,24703.7,1424,32009.5,-22.82
+2021Q3,Jutland,Townhouse,22591.8,1072,32009.5,-29.42
+2021Q4,Jutland,Townhouse,26226.3,1067,32009.5,-18.07
+2022Q1,Jutland,Townhouse,22261.7,1028,32009.5,-30.45
+2022Q2,Jutland,Townhouse,22455.7,978,32009.5,-29.85
+2022Q3,Jutland,Townhouse,19494.5,701,32009.5,-39.1
+2022Q4,Jutland,Townhouse,22285.1,613,32009.5,-30.38
+2023Q1,Jutland,Townhouse,20837.9,741,32009.5,-34.9
+2023Q2,Jutland,Townhouse,20405.7,860,32009.5,-36.25
+2023Q3,Jutland,Townhouse,19031.8,596,32009.5,-40.54
+2023Q4,Jutland,Townhouse,20045.8,751,32009.5,-37.38
+2024Q1,Jutland,Townhouse,20197.4,770,32009.5,-36.9
+2024Q2,Jutland,Townhouse,19945.6,809,32009.5,-37.69
+2024Q3,Jutland,Townhouse,18974.9,633,32009.5,-40.72
+2024Q4,Jutland,Townhouse,12842.3,44,32009.5,-59.88
+1992Q1,Jutland,Villa,7616.0,1189,7616.0,0.0
+1992Q2,Jutland,Villa,7552.2,1262,7616.0,-0.84
+1992Q3,Jutland,Villa,7528.4,1198,7616.0,-1.15
+1992Q4,Jutland,Villa,7498.0,983,7616.0,-1.55
+1993Q1,Jutland,Villa,7422.4,1016,7616.0,-2.54
+1993Q2,Jutland,Villa,7564.0,1268,7616.0,-0.68
+1993Q3,Jutland,Villa,7919.1,1561,7919.1,0.0
+1993Q4,Jutland,Villa,7909.8,1404,7919.1,-0.12
+1994Q1,Jutland,Villa,7835.9,1487,7919.1,-1.05
+1994Q2,Jutland,Villa,8183.0,1835,8183.0,0.0
+1994Q3,Jutland,Villa,8058.8,1419,8183.0,-1.52
+1994Q4,Jutland,Villa,8171.9,1364,8183.0,-0.14
+1995Q1,Jutland,Villa,8312.7,1614,8312.7,0.0
+1995Q2,Jutland,Villa,8024.6,1875,8312.7,-3.47
+1995Q3,Jutland,Villa,8194.2,1722,8312.7,-1.43
+1995Q4,Jutland,Villa,8402.5,1605,8402.5,0.0
+1996Q1,Jutland,Villa,8218.6,1569,8402.5,-2.19
+1996Q2,Jutland,Villa,8568.1,2030,8568.1,0.0
+1996Q3,Jutland,Villa,8376.9,1786,8568.1,-2.23
+1996Q4,Jutland,Villa,8621.9,1724,8621.9,0.0
+1997Q1,Jutland,Villa,8722.0,1809,8722.0,0.0
+1997Q2,Jutland,Villa,9305.0,2229,9305.0,0.0
+1997Q3,Jutland,Villa,8976.8,1951,9305.0,-3.53
+1997Q4,Jutland,Villa,9141.1,1740,9305.0,-1.76
+1998Q1,Jutland,Villa,9221.3,2055,9305.0,-0.9
+1998Q2,Jutland,Villa,9381.8,2432,9381.8,0.0
+1998Q3,Jutland,Villa,9306.0,1873,9381.8,-0.81
+1998Q4,Jutland,Villa,9571.8,1636,9571.8,0.0
+1999Q1,Jutland,Villa,9577.1,1901,9577.1,0.0
+1999Q2,Jutland,Villa,9629.1,2360,9629.1,0.0
+1999Q3,Jutland,Villa,9803.0,2135,9803.0,0.0
+1999Q4,Jutland,Villa,9565.7,1697,9803.0,-2.42
+2000Q1,Jutland,Villa,9786.6,1860,9803.0,-0.17
+2000Q2,Jutland,Villa,9636.7,2252,9803.0,-1.7
+2000Q3,Jutland,Villa,9751.1,2028,9803.0,-0.53
+2000Q4,Jutland,Villa,9781.7,1709,9803.0,-0.22
+2001Q1,Jutland,Villa,9857.0,1910,9857.0,0.0
+2001Q2,Jutland,Villa,9817.3,2246,9857.0,-0.4
+2001Q3,Jutland,Villa,9852.8,2058,9857.0,-0.04
+2001Q4,Jutland,Villa,9776.1,1804,9857.0,-0.82
+2002Q1,Jutland,Villa,9583.8,1978,9857.0,-2.77
+2002Q2,Jutland,Villa,9643.8,2534,9857.0,-2.16
+2002Q3,Jutland,Villa,9641.7,2205,9857.0,-2.18
+2002Q4,Jutland,Villa,9643.4,2001,9857.0,-2.17
+2003Q1,Jutland,Villa,9680.8,2158,9857.0,-1.79
+2003Q2,Jutland,Villa,9967.9,2533,9967.9,0.0
+2003Q3,Jutland,Villa,9906.1,2545,9967.9,-0.62
+2003Q4,Jutland,Villa,9858.6,2263,9967.9,-1.1
+2004Q1,Jutland,Villa,9790.1,2724,9967.9,-1.78
+2004Q2,Jutland,Villa,10220.6,3189,10220.6,0.0
+2004Q3,Jutland,Villa,10189.0,1908,10220.6,-0.31
+2004Q4,Jutland,Villa,10155.9,2608,10220.6,-0.63
+2005Q1,Jutland,Villa,10370.0,2914,10370.0,0.0
+2005Q2,Jutland,Villa,10792.2,3899,10792.2,0.0
+2005Q3,Jutland,Villa,10985.7,3373,10985.7,0.0
+2005Q4,Jutland,Villa,11468.5,3154,11468.5,0.0
+2006Q1,Jutland,Villa,11388.1,3461,11468.5,-0.7
+2006Q2,Jutland,Villa,11946.8,3718,11946.8,0.0
+2006Q3,Jutland,Villa,12297.5,3212,12297.5,0.0
+2006Q4,Jutland,Villa,12008.5,2691,12297.5,-2.35
+2007Q1,Jutland,Villa,12872.3,3232,12872.3,0.0
+2007Q2,Jutland,Villa,13230.9,3906,13230.9,0.0
+2007Q3,Jutland,Villa,13277.0,3386,13277.0,0.0
+2007Q4,Jutland,Villa,13138.0,3150,13277.0,-1.05
+2008Q1,Jutland,Villa,12697.4,3008,13277.0,-4.37
+2008Q2,Jutland,Villa,13069.3,3479,13277.0,-1.56
+2008Q3,Jutland,Villa,13088.3,2710,13277.0,-1.42
+2008Q4,Jutland,Villa,12239.9,1723,13277.0,-7.81
+2009Q1,Jutland,Villa,12110.1,1802,13277.0,-8.79
+2009Q2,Jutland,Villa,12371.2,2385,13277.0,-6.82
+2009Q3,Jutland,Villa,12602.2,2209,13277.0,-5.08
+2009Q4,Jutland,Villa,12317.9,2225,13277.0,-7.22
+2010Q1,Jutland,Villa,12179.5,2490,13277.0,-8.27
+2010Q2,Jutland,Villa,12320.3,3020,13277.0,-7.21
+2010Q3,Jutland,Villa,11821.5,2808,13277.0,-10.96
+2010Q4,Jutland,Villa,11214.5,2932,13277.0,-15.53
+2011Q1,Jutland,Villa,12222.4,2198,13277.0,-7.94
+2011Q2,Jutland,Villa,11952.1,2498,13277.0,-9.98
+2011Q3,Jutland,Villa,11694.0,2249,13277.0,-11.92
+2011Q4,Jutland,Villa,11446.4,2148,13277.0,-13.79
+2012Q1,Jutland,Villa,11432.6,2206,13277.0,-13.89
+2012Q2,Jutland,Villa,11437.2,2605,13277.0,-13.86
+2012Q3,Jutland,Villa,11333.1,2605,13277.0,-14.64
+2012Q4,Jutland,Villa,11318.2,2277,13277.0,-14.75
+2013Q1,Jutland,Villa,11388.2,2086,13277.0,-14.23
+2013Q2,Jutland,Villa,11750.0,2787,13277.0,-11.5
+2013Q3,Jutland,Villa,11645.0,2543,13277.0,-12.29
+2013Q4,Jutland,Villa,11608.5,2325,13277.0,-12.57
+2014Q1,Jutland,Villa,11282.5,2362,13277.0,-15.02
+2014Q2,Jutland,Villa,11602.1,2968,13277.0,-12.62
+2014Q3,Jutland,Villa,11702.9,2837,13277.0,-11.86
+2014Q4,Jutland,Villa,11750.9,2716,13277.0,-11.49
+2015Q1,Jutland,Villa,12256.3,3265,13277.0,-7.69
+2015Q2,Jutland,Villa,12576.7,3889,13277.0,-5.27
+2015Q3,Jutland,Villa,11918.5,3547,13277.0,-10.23
+2015Q4,Jutland,Villa,11710.9,3196,13277.0,-11.8
+2016Q1,Jutland,Villa,11989.6,3346,13277.0,-9.7
+2016Q2,Jutland,Villa,12323.5,4173,13277.0,-7.18
+2016Q3,Jutland,Villa,12470.5,3851,13277.0,-6.07
+2016Q4,Jutland,Villa,12298.5,2458,13277.0,-7.37
+2017Q3,Jutland,Villa,12602.7,4220,13277.0,-5.08
+2017Q4,Jutland,Villa,12443.6,4495,13277.0,-6.28
+2018Q1,Jutland,Villa,12693.5,4499,13277.0,-4.39
+2018Q2,Jutland,Villa,12728.5,5595,13277.0,-4.13
+2018Q3,Jutland,Villa,12974.1,5056,13277.0,-2.28
+2018Q4,Jutland,Villa,12725.3,4798,13277.0,-4.16
+2019Q1,Jutland,Villa,12526.4,5007,13277.0,-5.65
+2019Q2,Jutland,Villa,13176.5,5800,13277.0,-0.76
+2019Q3,Jutland,Villa,13282.4,5505,13282.4,0.0
+2019Q4,Jutland,Villa,13450.2,4979,13450.2,0.0
+2020Q1,Jutland,Villa,13585.9,5347,13585.9,0.0
+2020Q2,Jutland,Villa,13547.6,6416,13585.9,-0.28
+2020Q3,Jutland,Villa,13867.5,6958,13867.5,0.0
+2020Q4,Jutland,Villa,14157.2,7043,14157.2,0.0
+2021Q1,Jutland,Villa,13892.8,8550,14157.2,-1.87
+2021Q2,Jutland,Villa,14246.5,8833,14246.5,0.0
+2021Q3,Jutland,Villa,14131.2,7017,14246.5,-0.81
+2021Q4,Jutland,Villa,14581.7,6328,14581.7,0.0
+2022Q1,Jutland,Villa,13640.3,6725,14581.7,-6.46
+2022Q2,Jutland,Villa,13866.1,6583,14581.7,-4.91
+2022Q3,Jutland,Villa,13387.6,5286,14581.7,-8.19
+2022Q4,Jutland,Villa,12894.9,4018,14581.7,-11.57
+2023Q1,Jutland,Villa,13014.3,4940,14581.7,-10.75
+2023Q2,Jutland,Villa,13268.3,5717,14581.7,-9.01
+2023Q3,Jutland,Villa,13649.7,4467,14581.7,-6.39
+2023Q4,Jutland,Villa,13157.9,5207,14581.7,-9.76
+2024Q1,Jutland,Villa,13337.9,5349,14581.7,-8.53
+2024Q2,Jutland,Villa,13672.5,6198,14581.7,-6.24
+2024Q3,Jutland,Villa,12690.4,4226,14581.7,-12.97
+2024Q4,Jutland,Villa,10758.3,230,14581.7,-26.22
+1992Q1,Zealand,Apartment,34525.9,310,34525.9,0.0
+1992Q2,Zealand,Apartment,25479.2,241,34525.9,-26.2
+1992Q3,Zealand,Apartment,28577.0,223,34525.9,-17.23
+1992Q4,Zealand,Apartment,27676.9,222,34525.9,-19.84
+1993Q1,Zealand,Apartment,21019.9,219,34525.9,-39.12
+1993Q2,Zealand,Apartment,29375.1,260,34525.9,-14.92
+1993Q3,Zealand,Apartment,27078.2,297,34525.9,-21.57
+1993Q4,Zealand,Apartment,31333.8,313,34525.9,-9.25
+1994Q1,Zealand,Apartment,28945.0,333,34525.9,-16.16
+1994Q2,Zealand,Apartment,24551.4,317,34525.9,-28.89
+1994Q3,Zealand,Apartment,29729.5,313,34525.9,-13.89
+1994Q4,Zealand,Apartment,30603.1,350,34525.9,-11.36
+1995Q1,Zealand,Apartment,24439.7,304,34525.9,-29.21
+1995Q2,Zealand,Apartment,15260.5,267,34525.9,-55.8
+1995Q3,Zealand,Apartment,29955.9,316,34525.9,-13.24
+1995Q4,Zealand,Apartment,27155.1,333,34525.9,-21.35
+1996Q1,Zealand,Apartment,21223.4,320,34525.9,-38.53
+1996Q2,Zealand,Apartment,26805.8,347,34525.9,-22.36
+1996Q3,Zealand,Apartment,27100.4,467,34525.9,-21.51
+1996Q4,Zealand,Apartment,22462.9,312,34525.9,-34.94
+1997Q1,Zealand,Apartment,26403.9,329,34525.9,-23.52
+1997Q2,Zealand,Apartment,27487.6,462,34525.9,-20.39
+1997Q3,Zealand,Apartment,31474.9,412,34525.9,-8.84
+1997Q4,Zealand,Apartment,26253.5,419,34525.9,-23.96
+1998Q1,Zealand,Apartment,28098.4,487,34525.9,-18.62
+1998Q2,Zealand,Apartment,21870.8,350,34525.9,-36.65
+1998Q3,Zealand,Apartment,23823.8,395,34525.9,-31.0
+1998Q4,Zealand,Apartment,22657.1,356,34525.9,-34.38
+1999Q1,Zealand,Apartment,21837.6,373,34525.9,-36.75
+1999Q2,Zealand,Apartment,31043.5,536,34525.9,-10.09
+1999Q3,Zealand,Apartment,22904.4,335,34525.9,-33.66
+1999Q4,Zealand,Apartment,29303.0,420,34525.9,-15.13
+2000Q1,Zealand,Apartment,25409.0,345,34525.9,-26.41
+2000Q2,Zealand,Apartment,29547.2,437,34525.9,-14.42
+2000Q3,Zealand,Apartment,26756.3,411,34525.9,-22.5
+2000Q4,Zealand,Apartment,26757.7,415,34525.9,-22.5
+2001Q1,Zealand,Apartment,28450.6,406,34525.9,-17.6
+2001Q2,Zealand,Apartment,27475.1,460,34525.9,-20.42
+2001Q3,Zealand,Apartment,34978.2,473,34978.2,0.0
+2001Q4,Zealand,Apartment,29447.9,415,34978.2,-15.81
+2002Q1,Zealand,Apartment,25774.3,493,34978.2,-26.31
+2002Q2,Zealand,Apartment,31205.5,519,34978.2,-10.79
+2002Q3,Zealand,Apartment,24372.8,472,34978.2,-30.32
+2002Q4,Zealand,Apartment,30315.7,449,34978.2,-13.33
+2003Q1,Zealand,Apartment,28136.5,476,34978.2,-19.56
+2003Q2,Zealand,Apartment,32258.2,580,34978.2,-7.78
+2003Q3,Zealand,Apartment,28313.0,555,34978.2,-19.06
+2003Q4,Zealand,Apartment,27067.1,485,34978.2,-22.62
+2004Q1,Zealand,Apartment,27130.8,611,34978.2,-22.44
+2004Q2,Zealand,Apartment,30113.2,672,34978.2,-13.91
+2004Q3,Zealand,Apartment,29641.8,442,34978.2,-15.26
+2004Q4,Zealand,Apartment,33070.4,608,34978.2,-5.45
+2005Q1,Zealand,Apartment,32218.8,738,34978.2,-7.89
+2005Q2,Zealand,Apartment,32422.0,822,34978.2,-7.31
+2005Q3,Zealand,Apartment,33052.2,746,34978.2,-5.51
+2005Q4,Zealand,Apartment,36955.3,681,36955.3,0.0
+2006Q1,Zealand,Apartment,36982.9,770,36982.9,0.0
+2006Q2,Zealand,Apartment,40084.9,721,40084.9,0.0
+2006Q3,Zealand,Apartment,40380.3,587,40380.3,0.0
+2006Q4,Zealand,Apartment,40459.3,668,40459.3,0.0
+2007Q1,Zealand,Apartment,38410.5,595,40459.3,-5.06
+2007Q2,Zealand,Apartment,38511.7,667,40459.3,-4.81
+2007Q3,Zealand,Apartment,36084.0,631,40459.3,-10.81
+2007Q4,Zealand,Apartment,35251.8,612,40459.3,-12.87
+2008Q1,Zealand,Apartment,35143.2,644,40459.3,-13.14
+2008Q2,Zealand,Apartment,34940.1,554,40459.3,-13.64
+2008Q3,Zealand,Apartment,30762.4,376,40459.3,-23.97
+2008Q4,Zealand,Apartment,32234.9,339,40459.3,-20.33
+2009Q1,Zealand,Apartment,28242.1,356,40459.3,-30.2
+2009Q2,Zealand,Apartment,28100.1,464,40459.3,-30.55
+2009Q3,Zealand,Apartment,26745.1,428,40459.3,-33.9
+2009Q4,Zealand,Apartment,27490.7,513,40459.3,-32.05
+2010Q1,Zealand,Apartment,27965.2,574,40459.3,-30.88
+2010Q2,Zealand,Apartment,28228.1,612,40459.3,-30.23
+2010Q3,Zealand,Apartment,28802.7,659,40459.3,-28.81
+2010Q4,Zealand,Apartment,29480.3,652,40459.3,-27.14
+2011Q1,Zealand,Apartment,28464.8,631,40459.3,-29.65
+2011Q2,Zealand,Apartment,28438.9,634,40459.3,-29.71
+2011Q3,Zealand,Apartment,28129.7,628,40459.3,-30.47
+2011Q4,Zealand,Apartment,27664.0,604,40459.3,-31.63
+2012Q1,Zealand,Apartment,28998.1,758,40459.3,-28.33
+2012Q2,Zealand,Apartment,29145.6,783,40459.3,-27.96
+2012Q3,Zealand,Apartment,27411.3,812,40459.3,-32.25
+2012Q4,Zealand,Apartment,27836.5,770,40459.3,-31.2
+2013Q1,Zealand,Apartment,32275.6,823,40459.3,-20.23
+2013Q2,Zealand,Apartment,29797.7,896,40459.3,-26.35
+2013Q3,Zealand,Apartment,29488.5,964,40459.3,-27.12
+2013Q4,Zealand,Apartment,30528.3,993,40459.3,-24.55
+2014Q1,Zealand,Apartment,32943.7,1030,40459.3,-18.58
+2014Q2,Zealand,Apartment,31592.5,1191,40459.3,-21.92
+2014Q3,Zealand,Apartment,31576.7,1177,40459.3,-21.95
+2014Q4,Zealand,Apartment,32743.4,1221,40459.3,-19.07
+2015Q1,Zealand,Apartment,32699.5,1503,40459.3,-19.18
+2015Q2,Zealand,Apartment,34623.5,1698,40459.3,-14.42
+2015Q3,Zealand,Apartment,33481.5,1454,40459.3,-17.25
+2015Q4,Zealand,Apartment,33515.7,1389,40459.3,-17.16
+2016Q1,Zealand,Apartment,35225.3,1440,40459.3,-12.94
+2016Q2,Zealand,Apartment,37217.0,1851,40459.3,-8.01
+2016Q3,Zealand,Apartment,35886.4,1624,40459.3,-11.3
+2016Q4,Zealand,Apartment,35903.8,1068,40459.3,-11.26
+2017Q3,Zealand,Apartment,39299.4,1856,40459.3,-2.87
+2017Q4,Zealand,Apartment,37436.1,1923,40459.3,-7.47
+2018Q1,Zealand,Apartment,38627.9,2013,40459.3,-4.53
+2018Q2,Zealand,Apartment,39838.1,2174,40459.3,-1.54
+2018Q3,Zealand,Apartment,39747.7,2042,40459.3,-1.76
+2018Q4,Zealand,Apartment,39499.5,1823,40459.3,-2.37
+2019Q1,Zealand,Apartment,38166.4,2034,40459.3,-5.67
+2019Q2,Zealand,Apartment,38867.7,2350,40459.3,-3.93
+2019Q3,Zealand,Apartment,39624.9,2450,40459.3,-2.06
+2019Q4,Zealand,Apartment,38503.5,2282,40459.3,-4.83
+2020Q1,Zealand,Apartment,40249.9,2216,40459.3,-0.52
+2020Q2,Zealand,Apartment,40719.3,2519,40719.3,0.0
+2020Q3,Zealand,Apartment,42127.2,3050,42127.2,0.0
+2020Q4,Zealand,Apartment,44954.4,3295,44954.4,0.0
+2021Q1,Zealand,Apartment,45929.8,4033,45929.8,0.0
+2021Q2,Zealand,Apartment,46686.7,3486,46686.7,0.0
+2021Q3,Zealand,Apartment,45596.0,2701,46686.7,-2.34
+2021Q4,Zealand,Apartment,45369.0,2938,46686.7,-2.82
+2022Q1,Zealand,Apartment,43454.1,2933,46686.7,-6.92
+2022Q2,Zealand,Apartment,42478.2,2326,46686.7,-9.01
+2022Q3,Zealand,Apartment,40595.2,1812,46686.7,-13.05
+2022Q4,Zealand,Apartment,38723.4,1665,46686.7,-17.06
+2023Q1,Zealand,Apartment,38450.0,2418,46686.7,-17.64
+2023Q2,Zealand,Apartment,40348.5,2644,46686.7,-13.58
+2023Q3,Zealand,Apartment,40830.1,2285,46686.7,-12.54
+2023Q4,Zealand,Apartment,41570.1,3156,46686.7,-10.96
+2024Q1,Zealand,Apartment,39998.0,2453,46686.7,-14.33
+2024Q2,Zealand,Apartment,41691.7,2700,46686.7,-10.7
+2024Q3,Zealand,Apartment,40736.5,2112,46686.7,-12.74
+2024Q4,Zealand,Apartment,43422.2,135,46686.7,-6.99
+1992Q1,Zealand,Farm,11863.6,58,11863.6,0.0
+1992Q2,Zealand,Farm,12432.7,61,12432.7,0.0
+1992Q3,Zealand,Farm,12287.8,51,12432.7,-1.17
+1992Q4,Zealand,Farm,13547.3,45,13547.3,0.0
+1993Q1,Zealand,Farm,10576.9,41,13547.3,-21.93
+1993Q2,Zealand,Farm,10752.0,61,13547.3,-20.63
+1993Q3,Zealand,Farm,12455.6,59,13547.3,-8.06
+1993Q4,Zealand,Farm,11674.1,54,13547.3,-13.83
+1994Q1,Zealand,Farm,11267.4,76,13547.3,-16.83
+1994Q2,Zealand,Farm,12229.7,71,13547.3,-9.73
+1994Q3,Zealand,Farm,11909.3,75,13547.3,-12.09
+1994Q4,Zealand,Farm,11861.6,58,13547.3,-12.44
+1995Q1,Zealand,Farm,13167.6,53,13547.3,-2.8
+1995Q2,Zealand,Farm,11399.7,71,13547.3,-15.85
+1995Q3,Zealand,Farm,12015.5,81,13547.3,-11.31
+1995Q4,Zealand,Farm,10055.5,68,13547.3,-25.78
+1996Q1,Zealand,Farm,11193.4,60,13547.3,-17.38
+1996Q2,Zealand,Farm,14236.3,93,14236.3,0.0
+1996Q3,Zealand,Farm,12029.8,83,14236.3,-15.5
+1996Q4,Zealand,Farm,12545.5,67,14236.3,-11.88
+1997Q1,Zealand,Farm,12616.6,60,14236.3,-11.38
+1997Q2,Zealand,Farm,13346.9,75,14236.3,-6.25
+1997Q3,Zealand,Farm,15231.5,72,15231.5,0.0
+1997Q4,Zealand,Farm,14010.5,72,15231.5,-8.02
+1998Q1,Zealand,Farm,11486.3,79,15231.5,-24.59
+1998Q2,Zealand,Farm,13901.6,89,15231.5,-8.73
+1998Q3,Zealand,Farm,13697.9,74,15231.5,-10.07
+1998Q4,Zealand,Farm,14615.6,63,15231.5,-4.04
+1999Q1,Zealand,Farm,14070.7,62,15231.5,-7.62
+1999Q2,Zealand,Farm,13706.6,79,15231.5,-10.01
+1999Q3,Zealand,Farm,14232.2,94,15231.5,-6.56
+1999Q4,Zealand,Farm,14820.3,57,15231.5,-2.7
+2000Q1,Zealand,Farm,14207.8,64,15231.5,-6.72
+2000Q2,Zealand,Farm,15255.7,86,15255.7,0.0
+2000Q3,Zealand,Farm,16588.4,78,16588.4,0.0
+2000Q4,Zealand,Farm,16749.3,62,16749.3,0.0
+2001Q1,Zealand,Farm,16890.9,61,16890.9,0.0
+2001Q2,Zealand,Farm,16566.8,89,16890.9,-1.92
+2001Q3,Zealand,Farm,16829.1,75,16890.9,-0.37
+2001Q4,Zealand,Farm,15759.1,67,16890.9,-6.7
+2002Q1,Zealand,Farm,19501.4,50,19501.4,0.0
+2002Q2,Zealand,Farm,15985.3,88,19501.4,-18.03
+2002Q3,Zealand,Farm,15825.3,90,19501.4,-18.85
+2002Q4,Zealand,Farm,18051.8,63,19501.4,-7.43
+2003Q1,Zealand,Farm,15538.9,74,19501.4,-20.32
+2003Q2,Zealand,Farm,17668.3,75,19501.4,-9.4
+2003Q3,Zealand,Farm,18222.8,75,19501.4,-6.56
+2003Q4,Zealand,Farm,16375.7,84,19501.4,-16.03
+2004Q1,Zealand,Farm,14365.0,59,19501.4,-26.34
+2004Q2,Zealand,Farm,16557.7,84,19501.4,-15.09
+2004Q3,Zealand,Farm,18325.9,62,19501.4,-6.03
+2004Q4,Zealand,Farm,17114.4,75,19501.4,-12.24
+2005Q1,Zealand,Farm,19327.7,88,19501.4,-0.89
+2005Q2,Zealand,Farm,19531.9,97,19531.9,0.0
+2005Q3,Zealand,Farm,21050.6,92,21050.6,0.0
+2005Q4,Zealand,Farm,21913.7,86,21913.7,0.0
+2006Q1,Zealand,Farm,21198.3,82,21913.7,-3.26
+2006Q2,Zealand,Farm,24415.8,74,24415.8,0.0
+2006Q3,Zealand,Farm,23051.8,79,24415.8,-5.59
+2006Q4,Zealand,Farm,24346.4,71,24415.8,-0.28
+2007Q1,Zealand,Farm,24629.6,69,24629.6,0.0
+2007Q2,Zealand,Farm,24693.6,74,24693.6,0.0
+2007Q3,Zealand,Farm,27415.7,66,27415.7,0.0
+2007Q4,Zealand,Farm,25188.2,59,27415.7,-8.12
+2008Q1,Zealand,Farm,21334.8,68,27415.7,-22.18
+2008Q2,Zealand,Farm,24199.4,69,27415.7,-11.73
+2008Q3,Zealand,Farm,18085.3,46,27415.7,-34.03
+2008Q4,Zealand,Farm,20885.3,56,27415.7,-23.82
+2009Q1,Zealand,Farm,18355.6,37,27415.7,-33.05
+2009Q2,Zealand,Farm,19430.5,41,27415.7,-29.13
+2009Q3,Zealand,Farm,19488.4,50,27415.7,-28.92
+2009Q4,Zealand,Farm,17060.6,49,27415.7,-37.77
+2010Q1,Zealand,Farm,18070.7,88,27415.7,-34.09
+2010Q2,Zealand,Farm,17295.4,61,27415.7,-36.91
+2010Q3,Zealand,Farm,19698.1,60,27415.7,-28.15
+2010Q4,Zealand,Farm,17392.0,59,27415.7,-36.56
+2011Q1,Zealand,Farm,16225.0,52,27415.7,-40.82
+2011Q2,Zealand,Farm,18781.6,70,27415.7,-31.49
+2011Q3,Zealand,Farm,19564.8,64,27415.7,-28.64
+2011Q4,Zealand,Farm,15458.4,54,27415.7,-43.61
+2012Q1,Zealand,Farm,17773.2,51,27415.7,-35.17
+2012Q2,Zealand,Farm,16732.4,61,27415.7,-38.97
+2012Q3,Zealand,Farm,16214.0,71,27415.7,-40.86
+2012Q4,Zealand,Farm,17587.0,54,27415.7,-35.85
+2013Q1,Zealand,Farm,19923.3,78,27415.7,-27.33
+2013Q2,Zealand,Farm,15422.8,62,27415.7,-43.74
+2013Q3,Zealand,Farm,16501.0,88,27415.7,-39.81
+2013Q4,Zealand,Farm,18952.2,70,27415.7,-30.87
+2014Q1,Zealand,Farm,16680.7,96,27415.7,-39.16
+2014Q2,Zealand,Farm,17863.7,72,27415.7,-34.84
+2014Q3,Zealand,Farm,19883.8,72,27415.7,-27.47
+2014Q4,Zealand,Farm,15310.7,82,27415.7,-44.15
+2015Q1,Zealand,Farm,16340.6,91,27415.7,-40.4
+2015Q2,Zealand,Farm,16663.3,98,27415.7,-39.22
+2015Q3,Zealand,Farm,17705.1,98,27415.7,-35.42
+2015Q4,Zealand,Farm,16623.2,97,27415.7,-39.37
+2016Q1,Zealand,Farm,17303.8,80,27415.7,-36.88
+2016Q2,Zealand,Farm,16039.7,105,27415.7,-41.49
+2016Q3,Zealand,Farm,18612.0,100,27415.7,-32.11
+2016Q4,Zealand,Farm,16868.5,61,27415.7,-38.47
+2017Q3,Zealand,Farm,19851.3,108,27415.7,-27.59
+2017Q4,Zealand,Farm,16999.4,116,27415.7,-37.99
+2018Q1,Zealand,Farm,17830.2,112,27415.7,-34.96
+2018Q2,Zealand,Farm,16948.1,121,27415.7,-38.18
+2018Q3,Zealand,Farm,18432.5,110,27415.7,-32.77
+2018Q4,Zealand,Farm,16133.1,132,27415.7,-41.15
+2019Q1,Zealand,Farm,18900.2,133,27415.7,-31.06
+2019Q2,Zealand,Farm,18904.9,140,27415.7,-31.04
+2019Q3,Zealand,Farm,18807.7,146,27415.7,-31.4
+2019Q4,Zealand,Farm,17535.4,109,27415.7,-36.04
+2020Q1,Zealand,Farm,19684.0,109,27415.7,-28.2
+2020Q2,Zealand,Farm,18911.1,145,27415.7,-31.02
+2020Q3,Zealand,Farm,18927.2,176,27415.7,-30.96
+2020Q4,Zealand,Farm,18890.2,159,27415.7,-31.1
+2021Q1,Zealand,Farm,20472.7,184,27415.7,-25.32
+2021Q2,Zealand,Farm,20456.7,215,27415.7,-25.38
+2021Q3,Zealand,Farm,20965.8,130,27415.7,-23.53
+2021Q4,Zealand,Farm,20530.3,123,27415.7,-25.11
+2022Q1,Zealand,Farm,20026.8,135,27415.7,-26.95
+2022Q2,Zealand,Farm,20713.7,123,27415.7,-24.45
+2022Q3,Zealand,Farm,21535.6,106,27415.7,-21.45
+2022Q4,Zealand,Farm,19242.9,103,27415.7,-29.81
+2023Q1,Zealand,Farm,19285.3,107,27415.7,-29.66
+2023Q2,Zealand,Farm,18621.7,130,27415.7,-32.08
+2023Q3,Zealand,Farm,20343.0,117,27415.7,-25.8
+2023Q4,Zealand,Farm,19858.7,154,27415.7,-27.56
+2024Q1,Zealand,Farm,18414.9,114,27415.7,-32.83
+2024Q2,Zealand,Farm,17732.7,151,27415.7,-35.32
+2024Q3,Zealand,Farm,19588.8,107,27415.7,-28.55
+2024Q4,Zealand,Farm,9841.6,5,27415.7,-64.1
+1992Q1,Zealand,Summerhouse,9803.4,42,9803.4,0.0
+1992Q2,Zealand,Summerhouse,10030.3,93,10030.3,0.0
+1992Q3,Zealand,Summerhouse,8398.0,83,10030.3,-16.27
+1992Q4,Zealand,Summerhouse,9430.2,49,10030.3,-5.98
+1993Q1,Zealand,Summerhouse,8421.8,47,10030.3,-16.04
+1993Q2,Zealand,Summerhouse,10148.4,98,10148.4,0.0
+1993Q3,Zealand,Summerhouse,8833.6,88,10148.4,-12.96
+1993Q4,Zealand,Summerhouse,9194.6,65,10148.4,-9.4
+1994Q1,Zealand,Summerhouse,9032.7,66,10148.4,-10.99
+1994Q2,Zealand,Summerhouse,8316.9,106,10148.4,-18.05
+1994Q3,Zealand,Summerhouse,9209.7,107,10148.4,-9.25
+1994Q4,Zealand,Summerhouse,9022.7,67,10148.4,-11.09
+1995Q1,Zealand,Summerhouse,7691.9,63,10148.4,-24.21
+1995Q2,Zealand,Summerhouse,8765.7,148,10148.4,-13.63
+1995Q3,Zealand,Summerhouse,8925.8,148,10148.4,-12.05
+1995Q4,Zealand,Summerhouse,9378.2,100,10148.4,-7.59
+1996Q1,Zealand,Summerhouse,8664.0,100,10148.4,-14.63
+1996Q2,Zealand,Summerhouse,9030.1,203,10148.4,-11.02
+1996Q3,Zealand,Summerhouse,9721.8,194,10148.4,-4.2
+1996Q4,Zealand,Summerhouse,9668.5,134,10148.4,-4.73
+1997Q1,Zealand,Summerhouse,10209.8,128,10209.8,0.0
+1997Q2,Zealand,Summerhouse,9643.8,248,10209.8,-5.54
+1997Q3,Zealand,Summerhouse,9734.1,206,10209.8,-4.66
+1997Q4,Zealand,Summerhouse,10615.9,168,10615.9,0.0
+1998Q1,Zealand,Summerhouse,10336.5,200,10615.9,-2.63
+1998Q2,Zealand,Summerhouse,10698.6,281,10698.6,0.0
+1998Q3,Zealand,Summerhouse,11328.6,201,11328.6,0.0
+1998Q4,Zealand,Summerhouse,9632.8,153,11328.6,-14.97
+1999Q1,Zealand,Summerhouse,11019.6,169,11328.6,-2.73
+1999Q2,Zealand,Summerhouse,11905.8,302,11905.8,0.0
+1999Q3,Zealand,Summerhouse,11665.0,267,11905.8,-2.02
+1999Q4,Zealand,Summerhouse,11664.9,183,11905.8,-2.02
+2000Q1,Zealand,Summerhouse,10777.8,198,11905.8,-9.47
+2000Q2,Zealand,Summerhouse,12602.1,326,12602.1,0.0
+2000Q3,Zealand,Summerhouse,12102.7,335,12602.1,-3.96
+2000Q4,Zealand,Summerhouse,12843.6,205,12843.6,0.0
+2001Q1,Zealand,Summerhouse,11840.4,220,12843.6,-7.81
+2001Q2,Zealand,Summerhouse,12770.6,335,12843.6,-0.57
+2001Q3,Zealand,Summerhouse,12828.7,306,12843.6,-0.12
+2001Q4,Zealand,Summerhouse,13417.3,210,13417.3,0.0
+2002Q1,Zealand,Summerhouse,13202.0,249,13417.3,-1.6
+2002Q2,Zealand,Summerhouse,14539.9,443,14539.9,0.0
+2002Q3,Zealand,Summerhouse,14144.2,438,14539.9,-2.72
+2002Q4,Zealand,Summerhouse,14791.1,291,14791.1,0.0
+2003Q1,Zealand,Summerhouse,14983.5,278,14983.5,0.0
+2003Q2,Zealand,Summerhouse,14971.0,471,14983.5,-0.08
+2003Q3,Zealand,Summerhouse,15688.8,487,15688.8,0.0
+2003Q4,Zealand,Summerhouse,15638.8,358,15688.8,-0.32
+2004Q1,Zealand,Summerhouse,16761.4,414,16761.4,0.0
+2004Q2,Zealand,Summerhouse,17640.9,561,17640.9,0.0
+2004Q3,Zealand,Summerhouse,17528.8,368,17640.9,-0.64
+2004Q4,Zealand,Summerhouse,18352.3,367,18352.3,0.0
+2005Q1,Zealand,Summerhouse,19865.0,354,19865.0,0.0
+2005Q2,Zealand,Summerhouse,21370.9,731,21370.9,0.0
+2005Q3,Zealand,Summerhouse,23522.4,521,23522.4,0.0
+2005Q4,Zealand,Summerhouse,23742.3,418,23742.3,0.0
+2006Q1,Zealand,Summerhouse,23474.5,372,23742.3,-1.13
+2006Q2,Zealand,Summerhouse,24808.8,553,24808.8,0.0
+2006Q3,Zealand,Summerhouse,24170.1,431,24808.8,-2.57
+2006Q4,Zealand,Summerhouse,25872.9,250,25872.9,0.0
+2007Q1,Zealand,Summerhouse,22821.0,276,25872.9,-11.8
+2007Q2,Zealand,Summerhouse,25349.1,437,25872.9,-2.02
+2007Q3,Zealand,Summerhouse,26502.0,412,26502.0,0.0
+2007Q4,Zealand,Summerhouse,24583.6,258,26502.0,-7.24
+2008Q1,Zealand,Summerhouse,23333.1,213,26502.0,-11.96
+2008Q2,Zealand,Summerhouse,23832.6,364,26502.0,-10.07
+2008Q3,Zealand,Summerhouse,23130.3,260,26502.0,-12.72
+2008Q4,Zealand,Summerhouse,20020.9,165,26502.0,-24.46
+2009Q1,Zealand,Summerhouse,19505.4,160,26502.0,-26.4
+2009Q2,Zealand,Summerhouse,19366.4,396,26502.0,-26.92
+2009Q3,Zealand,Summerhouse,19331.9,349,26502.0,-27.05
+2009Q4,Zealand,Summerhouse,20121.1,290,26502.0,-24.08
+2010Q1,Zealand,Summerhouse,18917.3,245,26502.0,-28.62
+2010Q2,Zealand,Summerhouse,19526.8,398,26502.0,-26.32
+2010Q3,Zealand,Summerhouse,19815.6,399,26502.0,-25.23
+2010Q4,Zealand,Summerhouse,18532.9,331,26502.0,-30.07
+2011Q1,Zealand,Summerhouse,18051.0,233,26502.0,-31.89
+2011Q2,Zealand,Summerhouse,17824.4,303,26502.0,-32.74
+2011Q3,Zealand,Summerhouse,17747.4,340,26502.0,-33.03
+2011Q4,Zealand,Summerhouse,17203.1,217,26502.0,-35.09
+2012Q1,Zealand,Summerhouse,16336.0,249,26502.0,-38.36
+2012Q2,Zealand,Summerhouse,16901.3,431,26502.0,-36.23
+2012Q3,Zealand,Summerhouse,17011.5,444,26502.0,-35.81
+2012Q4,Zealand,Summerhouse,16151.9,304,26502.0,-39.05
+2013Q1,Zealand,Summerhouse,15865.6,251,26502.0,-40.13
+2013Q2,Zealand,Summerhouse,17046.7,491,26502.0,-35.68
+2013Q3,Zealand,Summerhouse,16436.8,494,26502.0,-37.98
+2013Q4,Zealand,Summerhouse,15547.3,299,26502.0,-41.34
+2014Q1,Zealand,Summerhouse,16145.1,304,26502.0,-39.08
+2014Q2,Zealand,Summerhouse,16533.6,569,26502.0,-37.61
+2014Q3,Zealand,Summerhouse,15956.7,574,26502.0,-39.79
+2014Q4,Zealand,Summerhouse,16028.0,360,26502.0,-39.52
+2015Q1,Zealand,Summerhouse,17207.0,421,26502.0,-35.07
+2015Q2,Zealand,Summerhouse,17871.0,722,26502.0,-32.57
+2015Q3,Zealand,Summerhouse,17284.2,672,26502.0,-34.78
+2015Q4,Zealand,Summerhouse,15499.3,429,26502.0,-41.52
+2016Q1,Zealand,Summerhouse,16289.2,408,26502.0,-38.54
+2016Q2,Zealand,Summerhouse,17948.4,733,26502.0,-32.28
+2016Q3,Zealand,Summerhouse,17589.7,734,26502.0,-33.63
+2016Q4,Zealand,Summerhouse,17249.5,380,26502.0,-34.91
+2017Q3,Zealand,Summerhouse,18092.9,890,26502.0,-31.73
+2017Q4,Zealand,Summerhouse,17170.6,659,26502.0,-35.21
+2018Q1,Zealand,Summerhouse,18011.7,605,26502.0,-32.04
+2018Q2,Zealand,Summerhouse,19672.0,1012,26502.0,-25.77
+2018Q3,Zealand,Summerhouse,18441.1,982,26502.0,-30.42
+2018Q4,Zealand,Summerhouse,18023.0,716,26502.0,-31.99
+2019Q1,Zealand,Summerhouse,18282.5,711,26502.0,-31.01
+2019Q2,Zealand,Summerhouse,19754.9,1132,26502.0,-25.46
+2019Q3,Zealand,Summerhouse,18965.6,1187,26502.0,-28.44
+2019Q4,Zealand,Summerhouse,18784.2,787,26502.0,-29.12
+2020Q1,Zealand,Summerhouse,19981.8,861,26502.0,-24.6
+2020Q2,Zealand,Summerhouse,20885.1,2230,26502.0,-21.19
+2020Q3,Zealand,Summerhouse,21566.2,1640,26502.0,-18.62
+2020Q4,Zealand,Summerhouse,21931.2,1386,26502.0,-17.25
+2021Q1,Zealand,Summerhouse,23599.9,1594,26502.0,-10.95
+2021Q2,Zealand,Summerhouse,25604.7,1649,26502.0,-3.39
+2021Q3,Zealand,Summerhouse,26287.0,1146,26502.0,-0.81
+2021Q4,Zealand,Summerhouse,26021.4,775,26502.0,-1.81
+2022Q1,Zealand,Summerhouse,24993.2,870,26502.0,-5.69
+2022Q2,Zealand,Summerhouse,25127.2,1074,26502.0,-5.19
+2022Q3,Zealand,Summerhouse,25039.9,785,26502.0,-5.52
+2022Q4,Zealand,Summerhouse,23955.6,461,26502.0,-9.61
+2023Q1,Zealand,Summerhouse,23253.8,625,26502.0,-12.26
+2023Q2,Zealand,Summerhouse,24507.5,1107,26502.0,-7.53
+2023Q3,Zealand,Summerhouse,24528.4,777,26502.0,-7.45
+2023Q4,Zealand,Summerhouse,24180.2,816,26502.0,-8.76
+2024Q1,Zealand,Summerhouse,24105.8,649,26502.0,-9.04
+2024Q2,Zealand,Summerhouse,25611.6,1152,26502.0,-3.36
+2024Q3,Zealand,Summerhouse,24536.8,1073,26502.0,-7.42
+2024Q4,Zealand,Summerhouse,24786.5,73,26502.0,-6.47
+1992Q1,Zealand,Townhouse,12044.3,135,12044.3,0.0
+1992Q2,Zealand,Townhouse,13290.7,174,13290.7,0.0
+1992Q3,Zealand,Townhouse,12422.4,128,13290.7,-6.53
+1992Q4,Zealand,Townhouse,11827.8,118,13290.7,-11.01
+1993Q1,Zealand,Townhouse,11690.8,116,13290.7,-12.04
+1993Q2,Zealand,Townhouse,12068.0,168,13290.7,-9.2
+1993Q3,Zealand,Townhouse,12512.5,224,13290.7,-5.86
+1993Q4,Zealand,Townhouse,12642.3,200,13290.7,-4.88
+1994Q1,Zealand,Townhouse,13072.6,190,13290.7,-1.64
+1994Q2,Zealand,Townhouse,12791.7,244,13290.7,-3.75
+1994Q3,Zealand,Townhouse,12807.7,218,13290.7,-3.63
+1994Q4,Zealand,Townhouse,27272.8,183,27272.8,0.0
+1995Q1,Zealand,Townhouse,12454.2,181,27272.8,-54.33
+1995Q2,Zealand,Townhouse,12827.8,216,27272.8,-52.96
+1995Q3,Zealand,Townhouse,14046.5,213,27272.8,-48.5
+1995Q4,Zealand,Townhouse,13383.2,194,27272.8,-50.93
+1996Q1,Zealand,Townhouse,13808.5,201,27272.8,-49.37
+1996Q2,Zealand,Townhouse,13937.6,270,27272.8,-48.9
+1996Q3,Zealand,Townhouse,14497.4,236,27272.8,-46.84
+1996Q4,Zealand,Townhouse,15024.2,197,27272.8,-44.91
+1997Q1,Zealand,Townhouse,14521.6,206,27272.8,-46.75
+1997Q2,Zealand,Townhouse,16382.1,288,27272.8,-39.93
+1997Q3,Zealand,Townhouse,16024.5,222,27272.8,-41.24
+1997Q4,Zealand,Townhouse,16537.4,215,27272.8,-39.36
+1998Q1,Zealand,Townhouse,20758.8,288,27272.8,-23.88
+1998Q2,Zealand,Townhouse,17494.3,282,27272.8,-35.85
+1998Q3,Zealand,Townhouse,18173.3,250,27272.8,-33.36
+1998Q4,Zealand,Townhouse,18281.1,194,27272.8,-32.97
+1999Q1,Zealand,Townhouse,17372.1,221,27272.8,-36.3
+1999Q2,Zealand,Townhouse,20101.8,308,27272.8,-26.29
+1999Q3,Zealand,Townhouse,18834.2,249,27272.8,-30.94
+1999Q4,Zealand,Townhouse,19474.6,251,27272.8,-28.59
+2000Q1,Zealand,Townhouse,18967.8,253,27272.8,-30.45
+2000Q2,Zealand,Townhouse,18922.4,299,27272.8,-30.62
+2000Q3,Zealand,Townhouse,19252.4,271,27272.8,-29.41
+2000Q4,Zealand,Townhouse,18976.8,278,27272.8,-30.42
+2001Q1,Zealand,Townhouse,19206.4,282,27272.8,-29.58
+2001Q2,Zealand,Townhouse,20404.2,344,27272.8,-25.18
+2001Q3,Zealand,Townhouse,20030.6,286,27272.8,-26.55
+2001Q4,Zealand,Townhouse,20925.6,276,27272.8,-23.27
+2002Q1,Zealand,Townhouse,20284.4,281,27272.8,-25.62
+2002Q2,Zealand,Townhouse,19926.9,319,27272.8,-26.93
+2002Q3,Zealand,Townhouse,20688.8,323,27272.8,-24.14
+2002Q4,Zealand,Townhouse,22063.5,271,27272.8,-19.1
+2003Q1,Zealand,Townhouse,20429.3,296,27272.8,-25.09
+2003Q2,Zealand,Townhouse,22407.4,337,27272.8,-17.84
+2003Q3,Zealand,Townhouse,28857.7,415,28857.7,0.0
+2003Q4,Zealand,Townhouse,21267.0,365,28857.7,-26.3
+2004Q1,Zealand,Townhouse,21674.6,445,28857.7,-24.89
+2004Q2,Zealand,Townhouse,22530.0,406,28857.7,-21.93
+2004Q3,Zealand,Townhouse,25324.2,300,28857.7,-12.24
+2004Q4,Zealand,Townhouse,22923.6,364,28857.7,-20.56
+2005Q1,Zealand,Townhouse,24673.1,453,28857.7,-14.5
+2005Q2,Zealand,Townhouse,24837.0,521,28857.7,-13.93
+2005Q3,Zealand,Townhouse,25513.1,473,28857.7,-11.59
+2005Q4,Zealand,Townhouse,27356.3,481,28857.7,-5.2
+2006Q1,Zealand,Townhouse,29559.8,455,29559.8,0.0
+2006Q2,Zealand,Townhouse,31801.0,531,31801.0,0.0
+2006Q3,Zealand,Townhouse,31210.0,424,31801.0,-1.86
+2006Q4,Zealand,Townhouse,33021.5,354,33021.5,0.0
+2007Q1,Zealand,Townhouse,28914.3,396,33021.5,-12.44
+2007Q2,Zealand,Townhouse,31161.0,524,33021.5,-5.63
+2007Q3,Zealand,Townhouse,30675.0,427,33021.5,-7.11
+2007Q4,Zealand,Townhouse,30733.6,373,33021.5,-6.93
+2008Q1,Zealand,Townhouse,28991.2,399,33021.5,-12.21
+2008Q2,Zealand,Townhouse,28796.0,376,33021.5,-12.8
+2008Q3,Zealand,Townhouse,27960.0,336,33021.5,-15.33
+2008Q4,Zealand,Townhouse,25446.3,212,33021.5,-22.94
+2009Q1,Zealand,Townhouse,23264.8,271,33021.5,-29.55
+2009Q2,Zealand,Townhouse,24019.3,360,33021.5,-27.26
+2009Q3,Zealand,Townhouse,24101.9,363,33021.5,-27.01
+2009Q4,Zealand,Townhouse,23934.9,379,33021.5,-27.52
+2010Q1,Zealand,Townhouse,30489.7,416,33021.5,-7.67
+2010Q2,Zealand,Townhouse,26718.7,418,33021.5,-19.09
+2010Q3,Zealand,Townhouse,25959.4,423,33021.5,-21.39
+2010Q4,Zealand,Townhouse,25144.3,408,33021.5,-23.85
+2011Q1,Zealand,Townhouse,24054.2,368,33021.5,-27.16
+2011Q2,Zealand,Townhouse,26232.6,418,33021.5,-20.56
+2011Q3,Zealand,Townhouse,25510.0,371,33021.5,-22.75
+2011Q4,Zealand,Townhouse,24693.8,347,33021.5,-25.22
+2012Q1,Zealand,Townhouse,24130.1,349,33021.5,-26.93
+2012Q2,Zealand,Townhouse,23939.5,395,33021.5,-27.5
+2012Q3,Zealand,Townhouse,23931.7,402,33021.5,-27.53
+2012Q4,Zealand,Townhouse,25034.5,448,33021.5,-24.19
+2013Q1,Zealand,Townhouse,24375.4,385,33021.5,-26.18
+2013Q2,Zealand,Townhouse,25524.8,506,33021.5,-22.7
+2013Q3,Zealand,Townhouse,25169.0,451,33021.5,-23.78
+2013Q4,Zealand,Townhouse,24339.7,459,33021.5,-26.29
+2014Q1,Zealand,Townhouse,25769.6,559,33021.5,-21.96
+2014Q2,Zealand,Townhouse,26264.7,635,33021.5,-20.46
+2014Q3,Zealand,Townhouse,27308.1,567,33021.5,-17.3
+2014Q4,Zealand,Townhouse,26539.6,566,33021.5,-19.63
+2015Q1,Zealand,Townhouse,27088.1,704,33021.5,-17.97
+2015Q2,Zealand,Townhouse,27816.8,848,33021.5,-15.76
+2015Q3,Zealand,Townhouse,28937.1,762,33021.5,-12.37
+2015Q4,Zealand,Townhouse,25003.6,697,33021.5,-24.28
+2016Q1,Zealand,Townhouse,27878.3,654,33021.5,-15.58
+2016Q2,Zealand,Townhouse,29186.0,932,33021.5,-11.62
+2016Q3,Zealand,Townhouse,27368.0,784,33021.5,-17.12
+2016Q4,Zealand,Townhouse,27921.8,512,33021.5,-15.44
+2017Q3,Zealand,Townhouse,29037.3,911,33021.5,-12.07
+2017Q4,Zealand,Townhouse,29453.0,903,33021.5,-10.81
+2018Q1,Zealand,Townhouse,29697.8,968,33021.5,-10.07
+2018Q2,Zealand,Townhouse,28996.0,1003,33021.5,-12.19
+2018Q3,Zealand,Townhouse,29524.7,993,33021.5,-10.59
+2018Q4,Zealand,Townhouse,28775.0,929,33021.5,-12.86
+2019Q1,Zealand,Townhouse,28956.6,919,33021.5,-12.31
+2019Q2,Zealand,Townhouse,28989.8,1095,33021.5,-12.21
+2019Q3,Zealand,Townhouse,30511.7,1093,33021.5,-7.6
+2019Q4,Zealand,Townhouse,29942.8,989,33021.5,-9.32
+2020Q1,Zealand,Townhouse,29383.3,985,33021.5,-11.02
+2020Q2,Zealand,Townhouse,30135.0,1192,33021.5,-8.74
+2020Q3,Zealand,Townhouse,30678.3,1434,33021.5,-7.1
+2020Q4,Zealand,Townhouse,32826.6,1491,33021.5,-0.59
+2021Q1,Zealand,Townhouse,31934.8,1804,33021.5,-3.29
+2021Q2,Zealand,Townhouse,32304.7,1765,33021.5,-2.17
+2021Q3,Zealand,Townhouse,32523.8,1200,33021.5,-1.51
+2021Q4,Zealand,Townhouse,33025.8,1255,33025.8,0.0
+2022Q1,Zealand,Townhouse,31364.3,1314,33025.8,-5.03
+2022Q2,Zealand,Townhouse,31820.6,1080,33025.8,-3.65
+2022Q3,Zealand,Townhouse,30264.0,760,33025.8,-8.36
+2022Q4,Zealand,Townhouse,28110.0,654,33025.8,-14.88
+2023Q1,Zealand,Townhouse,28342.9,935,33025.8,-14.18
+2023Q2,Zealand,Townhouse,30439.9,1110,33025.8,-7.83
+2023Q3,Zealand,Townhouse,30107.4,945,33025.8,-8.84
+2023Q4,Zealand,Townhouse,30771.8,1123,33025.8,-6.82
+2024Q1,Zealand,Townhouse,29200.8,995,33025.8,-11.58
+2024Q2,Zealand,Townhouse,30175.6,1189,33025.8,-8.63
+2024Q3,Zealand,Townhouse,28952.0,849,33025.8,-12.34
+2024Q4,Zealand,Townhouse,27237.1,38,33025.8,-17.53
+1992Q1,Zealand,Villa,10003.7,803,10003.7,0.0
+1992Q2,Zealand,Villa,10028.0,983,10028.0,0.0
+1992Q3,Zealand,Villa,10037.8,805,10037.8,0.0
+1992Q4,Zealand,Villa,9933.8,667,10037.8,-1.04
+1993Q1,Zealand,Villa,9484.4,617,10037.8,-5.51
+1993Q2,Zealand,Villa,9684.5,939,10037.8,-3.52
+1993Q3,Zealand,Villa,10279.2,1179,10279.2,0.0
+1993Q4,Zealand,Villa,10216.8,992,10279.2,-0.61
+1994Q1,Zealand,Villa,10461.2,928,10461.2,0.0
+1994Q2,Zealand,Villa,10354.1,1193,10461.2,-1.02
+1994Q3,Zealand,Villa,10390.8,1028,10461.2,-0.67
+1994Q4,Zealand,Villa,10375.6,966,10461.2,-0.82
+1995Q1,Zealand,Villa,10563.5,973,10563.5,0.0
+1995Q2,Zealand,Villa,10648.0,1316,10648.0,0.0
+1995Q3,Zealand,Villa,10553.7,1172,10648.0,-0.89
+1995Q4,Zealand,Villa,11001.4,1030,11001.4,0.0
+1996Q1,Zealand,Villa,10877.6,979,11001.4,-1.13
+1996Q2,Zealand,Villa,11745.7,1316,11745.7,0.0
+1996Q3,Zealand,Villa,11925.5,1265,11925.5,0.0
+1996Q4,Zealand,Villa,11928.8,1171,11928.8,0.0
+1997Q1,Zealand,Villa,12018.8,1146,12018.8,0.0
+1997Q2,Zealand,Villa,12355.9,1478,12355.9,0.0
+1997Q3,Zealand,Villa,12727.6,1390,12727.6,0.0
+1997Q4,Zealand,Villa,12854.6,1176,12854.6,0.0
+1998Q1,Zealand,Villa,13222.7,1266,13222.7,0.0
+1998Q2,Zealand,Villa,13481.7,1607,13481.7,0.0
+1998Q3,Zealand,Villa,13035.7,1220,13481.7,-3.31
+1998Q4,Zealand,Villa,13852.8,1028,13852.8,0.0
+1999Q1,Zealand,Villa,14071.1,1138,14071.1,0.0
+1999Q2,Zealand,Villa,14479.9,1558,14479.9,0.0
+1999Q3,Zealand,Villa,14547.9,1380,14547.9,0.0
+1999Q4,Zealand,Villa,14314.9,1154,14547.9,-1.6
+2000Q1,Zealand,Villa,14636.2,1175,14636.2,0.0
+2000Q2,Zealand,Villa,14971.3,1544,14971.3,0.0
+2000Q3,Zealand,Villa,14934.3,1488,14971.3,-0.25
+2000Q4,Zealand,Villa,15425.3,1250,15425.3,0.0
+2001Q1,Zealand,Villa,15387.2,1379,15425.3,-0.25
+2001Q2,Zealand,Villa,15682.5,1713,15682.5,0.0
+2001Q3,Zealand,Villa,15477.3,1500,15682.5,-1.31
+2001Q4,Zealand,Villa,15253.4,1311,15682.5,-2.74
+2002Q1,Zealand,Villa,15832.8,1377,15832.8,0.0
+2002Q2,Zealand,Villa,16007.6,1664,16007.6,0.0
+2002Q3,Zealand,Villa,15633.8,1672,16007.6,-2.34
+2002Q4,Zealand,Villa,15607.2,1322,16007.6,-2.5
+2003Q1,Zealand,Villa,16051.3,1465,16051.3,0.0
+2003Q2,Zealand,Villa,16325.4,1784,16325.4,0.0
+2003Q3,Zealand,Villa,16398.5,1780,16398.5,0.0
+2003Q4,Zealand,Villa,15969.0,1541,16398.5,-2.62
+2004Q1,Zealand,Villa,16905.3,1815,16905.3,0.0
+2004Q2,Zealand,Villa,17326.7,2100,17326.7,0.0
+2004Q3,Zealand,Villa,17691.3,1405,17691.3,0.0
+2004Q4,Zealand,Villa,17821.7,1747,17821.7,0.0
+2005Q1,Zealand,Villa,18934.5,1861,18934.5,0.0
+2005Q2,Zealand,Villa,19334.6,2287,19334.6,0.0
+2005Q3,Zealand,Villa,19994.8,2085,19994.8,0.0
+2005Q4,Zealand,Villa,21193.5,1780,21193.5,0.0
+2006Q1,Zealand,Villa,21339.2,1836,21339.2,0.0
+2006Q2,Zealand,Villa,22302.4,2089,22302.4,0.0
+2006Q3,Zealand,Villa,22166.0,1707,22302.4,-0.61
+2006Q4,Zealand,Villa,21623.8,1353,22302.4,-3.04
+2007Q1,Zealand,Villa,23005.8,1374,23005.8,0.0
+2007Q2,Zealand,Villa,23479.8,1878,23479.8,0.0
+2007Q3,Zealand,Villa,23229.9,1638,23479.8,-1.06
+2007Q4,Zealand,Villa,22799.7,1417,23479.8,-2.9
+2008Q1,Zealand,Villa,22064.2,1496,23479.8,-6.03
+2008Q2,Zealand,Villa,22741.8,1698,23479.8,-3.14
+2008Q3,Zealand,Villa,21962.4,1175,23479.8,-6.46
+2008Q4,Zealand,Villa,21376.3,839,23479.8,-8.96
+2009Q1,Zealand,Villa,19538.2,858,23479.8,-16.79
+2009Q2,Zealand,Villa,19725.0,1438,23479.8,-15.99
+2009Q3,Zealand,Villa,20135.2,1393,23479.8,-14.24
+2009Q4,Zealand,Villa,20336.3,1366,23479.8,-13.39
+2010Q1,Zealand,Villa,20176.0,1483,23479.8,-14.07
+2010Q2,Zealand,Villa,20496.0,1761,23479.8,-12.71
+2010Q3,Zealand,Villa,20083.8,1655,23479.8,-14.46
+2010Q4,Zealand,Villa,19592.5,1468,23479.8,-16.56
+2011Q1,Zealand,Villa,19659.3,1324,23479.8,-16.27
+2011Q2,Zealand,Villa,19809.1,1422,23479.8,-15.63
+2011Q3,Zealand,Villa,18744.4,1240,23479.8,-20.17
+2011Q4,Zealand,Villa,18133.7,1141,23479.8,-22.77
+2012Q1,Zealand,Villa,18316.1,1231,23479.8,-21.99
+2012Q2,Zealand,Villa,18529.4,1563,23479.8,-21.08
+2012Q3,Zealand,Villa,18920.5,1634,23479.8,-19.42
+2012Q4,Zealand,Villa,18805.2,1501,23479.8,-19.91
+2013Q1,Zealand,Villa,18989.5,1436,23479.8,-19.12
+2013Q2,Zealand,Villa,18955.2,1785,23479.8,-19.27
+2013Q3,Zealand,Villa,19447.7,1755,23479.8,-17.17
+2013Q4,Zealand,Villa,19041.7,1652,23479.8,-18.9
+2014Q1,Zealand,Villa,19059.1,1688,23479.8,-18.83
+2014Q2,Zealand,Villa,19496.7,1940,23479.8,-16.96
+2014Q3,Zealand,Villa,19294.6,2062,23479.8,-17.82
+2014Q4,Zealand,Villa,19568.7,1885,23479.8,-16.66
+2015Q1,Zealand,Villa,20594.0,2217,23479.8,-12.29
+2015Q2,Zealand,Villa,20541.0,2654,23479.8,-12.52
+2015Q3,Zealand,Villa,19668.4,2488,23479.8,-16.23
+2015Q4,Zealand,Villa,20126.1,1999,23479.8,-14.28
+2016Q1,Zealand,Villa,20370.3,2183,23479.8,-13.24
+2016Q2,Zealand,Villa,20888.6,2749,23479.8,-11.04
+2016Q3,Zealand,Villa,20546.4,2533,23479.8,-12.49
+2016Q4,Zealand,Villa,21224.5,1603,23479.8,-9.61
+2017Q3,Zealand,Villa,20852.8,2848,23479.8,-11.19
+2017Q4,Zealand,Villa,20907.2,2785,23479.8,-10.96
+2018Q1,Zealand,Villa,21232.1,2743,23479.8,-9.57
+2018Q2,Zealand,Villa,21633.7,3357,23479.8,-7.86
+2018Q3,Zealand,Villa,21776.2,3234,23479.8,-7.26
+2018Q4,Zealand,Villa,20826.7,2882,23479.8,-11.3
+2019Q1,Zealand,Villa,20907.8,3005,23479.8,-10.95
+2019Q2,Zealand,Villa,21829.0,3425,23479.8,-7.03
+2019Q3,Zealand,Villa,21901.4,3457,23479.8,-6.72
+2019Q4,Zealand,Villa,22106.2,3001,23479.8,-5.85
+2020Q1,Zealand,Villa,22197.3,3115,23479.8,-5.46
+2020Q2,Zealand,Villa,22287.4,3975,23479.8,-5.08
+2020Q3,Zealand,Villa,22737.4,4413,23479.8,-3.16
+2020Q4,Zealand,Villa,23150.3,4399,23479.8,-1.4
+2021Q1,Zealand,Villa,22682.4,5249,23479.8,-3.4
+2021Q2,Zealand,Villa,23204.5,5090,23479.8,-1.17
+2021Q3,Zealand,Villa,23114.7,4034,23479.8,-1.56
+2021Q4,Zealand,Villa,23888.7,3396,23888.7,0.0
+2022Q1,Zealand,Villa,22382.2,3609,23888.7,-6.31
+2022Q2,Zealand,Villa,21801.7,3236,23888.7,-8.74
+2022Q3,Zealand,Villa,21268.2,2592,23888.7,-10.97
+2022Q4,Zealand,Villa,21016.5,2044,23888.7,-12.02
+2023Q1,Zealand,Villa,21883.2,2746,23888.7,-8.4
+2023Q2,Zealand,Villa,22027.3,3373,23888.7,-7.79
+2023Q3,Zealand,Villa,22343.1,2813,23888.7,-6.47
+2023Q4,Zealand,Villa,22136.1,3346,23888.7,-7.34
+2024Q1,Zealand,Villa,22156.1,3030,23888.7,-7.25
+2024Q2,Zealand,Villa,22619.7,3773,23888.7,-5.31
+2024Q3,Zealand,Villa,20882.7,2682,23888.7,-12.58
+2024Q4,Zealand,Villa,21051.4,160,23888.7,-11.88

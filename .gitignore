@@ -1,8 +1,12 @@
 # Datos (nunca subir al repo — son >1GB)
-data/
-*.csv
+data/*
 *.parquet
 *.hyper
+
+# Excepcion: marts pequeños servidos por el dashboard HTML (<2 MB total)
+!data/marts/
+data/marts/*
+!data/marts/*.csv
 
 # Entornos Python
 .venv/
@@ -36,6 +40,8 @@ Thumbs.db
 # MLflow / experimentos
 mlruns/
 
-.venv
+# uv
+.uv-cache/
 
-data/
+# Claude Code (per-user, no organizacional)
+.claude/settings.local.json

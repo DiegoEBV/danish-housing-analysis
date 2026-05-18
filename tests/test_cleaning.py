@@ -12,12 +12,12 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from danish_housing.cleaning import (
     fix_city_nulls,
-    flag_macro_nulls,
-    flag_invalid_sales,
-    flag_old_year_build,
-    flag_price_outliers,
-    flag_preliminary_period,
     fix_zip_code,
+    flag_invalid_sales,
+    flag_macro_nulls,
+    flag_old_year_build,
+    flag_preliminary_period,
+    flag_price_outliers,
     rename_rate_columns,
     run_cleaning_pipeline,
 )
@@ -62,44 +62,45 @@ def test_flag_macro_nulls(sample_df):
     bitacora = []
     df = flag_macro_nulls(df, bitacora)
     # El último registro tiene nulos en macro
-    assert df.loc[4, "macro_nulo"] is True
-    assert df.loc[0, "macro_nulo"] is False
+    assert bool(df.loc[4, "macro_nulo"]) is True
+    assert bool(df.loc[0, "macro_nulo"]) is False
 
 
 def test_flag_invalid_sales(sample_df):
     bitacora = []
     df = flag_invalid_sales(sample_df.copy(), bitacora)
-    assert df.loc[1, "sales_type_valido"] is False  # "-"
-    assert df.loc[3, "sales_type_valido"] is False  # "Familiehandel"
-    assert df.loc[0, "sales_type_valido"] is True
+    assert bool(df.loc[1, "sales_type_valido"]) is False  # "-"
+    assert bool(df.loc[3, "sales_type_valido"]) is False  # "Familiehandel"
+    assert bool(df.loc[0, "sales_type_valido"]) is True
 
 
 def test_flag_old_year_build(sample_df):
     bitacora = []
     df = flag_old_year_build(sample_df.copy(), bitacora, min_year=1800)
-    assert df.loc[1, "year_build_flag"] is True  # 1750
-    assert df.loc[0, "year_build_flag"] is False  # 1990
+    assert bool(df.loc[1, "year_build_flag"]) is True  # 1750
+    assert bool(df.loc[0, "year_build_flag"]) is False  # 1990
 
 
 def test_flag_price_outliers(sample_df):
     bitacora = []
     df = flag_price_outliers(sample_df.copy(), bitacora, iqr_multiplier=3.0)
     # El registro con purchase_price=50_000_000 debería ser outlier
-    assert df.loc[3, "purchase_price_outlier"] is True
+    assert bool(df.loc[3, "purchase_price_outlier"]) is True
 
 
 def test_flag_preliminary_period(sample_df):
     bitacora = []
     df = flag_preliminary_period(sample_df.copy(), bitacora, before_year=1995)
     # Registro con date 1993-06-01 debe ser preliminar
-    assert df.loc[1, "periodo_preliminar"] is True
-    assert df.loc[0, "periodo_preliminar"] is False
+    assert bool(df.loc[1, "periodo_preliminar"]) is True
+    assert bool(df.loc[0, "periodo_preliminar"]) is False
 
 
 def test_fix_zip_code(sample_df):
     bitacora = []
     df = fix_zip_code(sample_df.copy(), bitacora, pad=4)
-    assert df["zip_code"].dtype == object
+    # En pandas 2.x con astype(str), el dtype puede ser object o StringDtype/str
+    assert str(df["zip_code"].dtype) in ("object", "string", "str")
     assert df.loc[0, "zip_code"] == "1050"
 
 

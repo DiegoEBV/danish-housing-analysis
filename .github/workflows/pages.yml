@@ -1,0 +1,64 @@
+name: Deploy dashboard a GitHub Pages
+
+on:
+  push:
+    branches:
+      - visualization
+    paths:
+      - "danish_housing_dashboard.html"
+      - "chart.umd.min.js"
+      - "data/marts/**"
+      - ".github/workflows/pages.yml"
+  workflow_dispatch:
+
+# Permisos requeridos por actions/deploy-pages (OIDC, sin secrets)
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 1 deploy a la vez; no cancelar in-flight (Pages tiene su propio lock)
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Build + deploy site
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      - name: Build site (copy assets to _site/)
+        run: |
+          set -euo pipefail
+          mkdir -p _site/data
+          # Pages sirve index.html por defecto; tambien dejamos el nombre original
+          cp danish_housing_dashboard.html _site/index.html
+          cp danish_housing_dashboard.html _site/danish_housing_dashboard.html
+          cp chart.umd.min.js _site/chart.umd.min.js
+          cp -r data/marts _site/data/marts
+          # Health check
+          echo "=== _site listing ==="
+          ls -la _site
+          echo "=== _site/data/marts ==="
+          ls -la _site/data/marts
+          echo "=== sizes ==="
+          du -sh _site _site/data
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

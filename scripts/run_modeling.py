@@ -1,0 +1,433 @@
+"""
+scripts/run_modeling.py — Fase 4 del plan TB3.
+
+Entrena 4 modelos (Lineal, Ridge, RandomForest, XGBoost+Optuna) sobre el
+Silver layer usando src/danish_housing/features.py. Reporta metricas SIEMPRE
+en escala nominal (purchase_price en DKK), nunca en log.
+
+Genera 3 marts en el Gold layer:
+- mart_model_comparison.csv: R²/MAE/MAPE/RMSE por modelo (train y test)
+- mart_predictions.csv: y_true, y_pred, residual por fila del test set
+- mart_feature_importance.csv: importancia por feature, top-K por modelo
+
+Uso:
+    uv run python scripts/run_modeling.py --config configs/analysis.yaml
+    uv run python scripts/run_modeling.py --config configs/analysis.yaml --no-optuna
+    uv run python scripts/run_modeling.py --config configs/analysis.yaml --optuna-trials 20
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import logging
+import sys
+import time
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+import yaml
+
+sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+
+from danish_housing.features import build_feature_matrix, temporal_train_test_split
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
+logger = logging.getLogger(__name__)
+
+
+def metrics(y_true: np.ndarray, y_pred: np.ndarray) -> dict:
+    from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+
+    mape = float(np.mean(np.abs((y_true - y_pred) / np.maximum(y_true, 1.0))) * 100)
+    return {
+        "r2": float(r2_score(y_true, y_pred)),
+        "mae": float(mean_absolute_error(y_true, y_pred)),
+        "mape_pct": mape,
+        "rmse": float(np.sqrt(mean_squared_error(y_true, y_pred))),
+    }
+
+
+def _fit_predict(m, X_train, y_train_log, X_test, name: str):
+    t0 = time.time()
+    m.fit(X_train, y_train_log)
+    fit_s = time.time() - t0
+    t0 = time.time()
+    pred_train = np.expm1(m.predict(X_train))
+    pred_test = np.expm1(m.predict(X_test))
+    predict_s = time.time() - t0
+    logger.info(f"  {name}: fit={fit_s:.1f}s, predict={predict_s:.1f}s")
+    return m, pred_train, pred_test
+
+
+def train_linear(X_train, y_train_log, X_test):
+    from sklearn.linear_model import LinearRegression
+    return _fit_predict(LinearRegression(), X_train, y_train_log, X_test, "M1_Linear")
+
+
+def train_ridge(X_train, y_train_log, X_test):
+    from sklearn.linear_model import Ridge
+    return _fit_predict(Ridge(alpha=1.0, random_state=42), X_train, y_train_log, X_test, "M2_Ridge")
+
+
+def train_rf(X_train, y_train_log, X_test):
+    from sklearn.ensemble import RandomForestRegressor
+    m = RandomForestRegressor(n_estimators=200, max_depth=12, n_jobs=-1, random_state=42)
+    return _fit_predict(m, X_train, y_train_log, X_test, "M3_RandomForest")
+
+
+def train_xgb(X_train, y_train_log, X_test, optuna_trials: int, device: str = "cpu"):
+    from xgboost import XGBRegressor
+
+    # Para GPU XGBoost 2.0+ usa device='cuda', tree_method='hist' (no 'gpu_hist' deprecado)
+    base_kwargs = {"n_jobs": -1, "random_state": 42, "verbosity": 0, "tree_method": "hist"}
+    if device == "cuda":
+        base_kwargs["device"] = "cuda"
+
+    if optuna_trials > 0:
+        import optuna
+        from sklearn.model_selection import KFold
+
+        def objective(trial):
+            params = {
+                "n_estimators": trial.suggest_int("n_estimators", 200, 800, step=100),
+                "max_depth": trial.suggest_int("max_depth", 3, 10),
+                "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.2, log=True),
+                "subsample": trial.suggest_float("subsample", 0.6, 1.0),
+                "colsample_bytree": trial.suggest_float("colsample_bytree", 0.6, 1.0),
+                "min_child_weight": trial.suggest_int("min_child_weight", 1, 10),
+                "reg_alpha": trial.suggest_float("reg_alpha", 0.0, 1.0),
+                "reg_lambda": trial.suggest_float("reg_lambda", 0.0, 2.0),
+                **base_kwargs,
+            }
+            # CV simple sobre train (3 folds para velocidad)
+            kf = KFold(n_splits=3, shuffle=True, random_state=42)
+            scores = []
+            for tr, va in kf.split(X_train):
+                model = XGBRegressor(**params)
+                model.fit(X_train.iloc[tr], y_train_log.iloc[tr])
+                p = model.predict(X_train.iloc[va])
+                # Optimizar sobre RMSE en escala log (estable)
+                scores.append(float(np.sqrt(np.mean((p - y_train_log.iloc[va]) ** 2))))
+            return float(np.mean(scores))
+
+        optuna.logging.set_verbosity(optuna.logging.WARNING)
+        study = optuna.create_study(direction="minimize", sampler=optuna.samplers.TPESampler(seed=42))
+        t0 = time.time()
+        study.optimize(objective, n_trials=optuna_trials, show_progress_bar=False)
+        logger.info(f"  Optuna {optuna_trials} trials en {time.time()-t0:.1f}s")
+        best_params = study.best_params
+        logger.info(f"XGB Optuna best params (device={device}): {best_params}")
+    else:
+        best_params = {
+            "n_estimators": 400, "max_depth": 6, "learning_rate": 0.05,
+            "subsample": 0.85, "colsample_bytree": 0.85,
+        }
+
+    logger.info(f"  Final XGB fit (n_estimators={best_params.get('n_estimators')}, device={device})...")
+    t0 = time.time()
+    m = XGBRegressor(**best_params, **base_kwargs)
+    m.fit(X_train, y_train_log)
+    logger.info(f"  Final XGB fit en {time.time()-t0:.1f}s")
+    t0 = time.time()
+    pred_train = np.expm1(m.predict(X_train))
+    pred_test = np.expm1(m.predict(X_test))
+    logger.info(f"  Predict train+test en {time.time()-t0:.1f}s")
+    # Adjunta best_params al modelo para que la corrida principal los persista en el audit
+    m._optuna_best_params = best_params  # type: ignore[attr-defined]
+    return m, pred_train, pred_test
+
+
+def feature_importance(
+    model, feature_names: list[str], X_train: pd.DataFrame | None = None,
+) -> pd.DataFrame:
+    """Importancia normalizada por modelo.
+
+    - Tree-based (RF, XGB): usa `feature_importances_` directo.
+    - Lineal (Linear, Ridge): `|coef * std(feature)|` (standardized coefficient).
+      Sin escalar, las magnitudes de coef no son comparables porque dependen del
+      rango de cada feature.
+    """
+    if hasattr(model, "feature_importances_"):
+        imp = pd.Series(model.feature_importances_, index=feature_names)
+    elif hasattr(model, "coef_"):
+        coef = np.abs(np.asarray(model.coef_).ravel())
+        if X_train is not None:
+            stds = X_train.std(numeric_only=True).reindex(feature_names).fillna(0.0).values
+            imp = pd.Series(coef * stds, index=feature_names)
+        else:
+            imp = pd.Series(coef, index=feature_names)
+    else:
+        return pd.DataFrame()
+    total = imp.sum()
+    if total > 0:
+        imp = imp / total
+    return imp.sort_values(ascending=False).to_frame("importance").reset_index().rename(columns={"index": "feature"})
+
+
+def parse_args():
+    p = argparse.ArgumentParser(description="Fase 4: entrenamiento M1-M4 + reporte de metricas")
+    p.add_argument("--config", default="configs/analysis.yaml")
+    p.add_argument("--no-optuna", action="store_true", help="Skip Optuna; usa XGB defaults")
+    p.add_argument("--optuna-trials", type=int, default=30, help="Numero de trials Optuna para M4")
+    p.add_argument("--top-k-importance", type=int, default=20)
+    p.add_argument("--train-end-year", type=int, default=2017)
+    p.add_argument("--test-start-year", type=int, default=2018)
+    p.add_argument("--device", choices=["cpu", "cuda"], default="cpu",
+                   help="Device para XGBoost (cuda requiere GPU NVIDIA + xgboost compilado con CUDA)")
+    p.add_argument("--cv-folds", type=int, default=0,
+                   help="Time-series CV folds dentro del train (>0 activa CV). Hyperparams fijos.")
+    p.add_argument("--predictions-sample-per-year", type=int, default=700,
+                   help="Max filas por año en mart_predictions_sample.csv (0 = no escribir sample)")
+    return p.parse_args()
+
+
+def cross_val_temporal(
+    train_df: pd.DataFrame,
+    feature_names: list[str],
+    n_splits: int,
+    best_xgb_params: dict,
+    device: str,
+) -> pd.DataFrame:
+    """Time-series CV con TimeSeriesSplit dentro del train portion.
+
+    Cada fold: train sobre periodo anterior expandido, test sobre la siguiente
+    ventana. Sin Optuna por fold (usa best_xgb_params encontrados en el train
+    completo). Metricas en escala NOMINAL de purchase_price.
+
+    Fold sklearn TimeSeriesSplit (n=5, train_end=2017):
+      F1: train 1992-2000, test 2001-2004
+      F2: train 1992-2004, test 2005-2008
+      F3: train 1992-2008, test 2009-2012
+      F4: train 1992-2012, test 2013-2014
+      F5: train 1992-2014, test 2015-2017
+    """
+    from sklearn.ensemble import RandomForestRegressor
+    from sklearn.linear_model import LinearRegression, Ridge
+    from sklearn.model_selection import TimeSeriesSplit
+    from xgboost import XGBRegressor
+
+    train_sorted = train_df.sort_values("year").reset_index(drop=True)
+    # NOTA: NO imputamos a nivel global aqui — la mediana se calcula DENTRO
+    # de cada fold sobre su propio X_tr para no leakear info de folds futuros
+    # hacia folds pasados (review de Copilot, follow-up al PR #5).
+    X_all_raw = train_sorted[feature_names]
+    y_all_log = np.log1p(train_sorted["purchase_price"])
+    y_all = train_sorted["purchase_price"].to_numpy(dtype=np.float64)
+    years_all = train_sorted["year"].to_numpy()
+
+    xgb_kwargs = {"n_jobs": -1, "random_state": 42, "verbosity": 0, "tree_method": "hist"}
+    if device == "cuda":
+        xgb_kwargs["device"] = "cuda"
+
+    tscv = TimeSeriesSplit(n_splits=n_splits)
+    rows = []
+    for fold_idx, (tr, va) in enumerate(tscv.split(X_all_raw), start=1):
+        # Imputar SOLO con medianas del train del fold (no del df completo)
+        X_tr_raw = X_all_raw.iloc[tr]
+        X_va_raw = X_all_raw.iloc[va]
+        medians_tr = X_tr_raw.median()
+        X_tr = X_tr_raw.fillna(medians_tr)
+        X_va = X_va_raw.fillna(medians_tr)
+        y_tr_log = y_all_log.iloc[tr]
+        y_va = y_all[va]
+        train_period = (int(years_all[tr].min()), int(years_all[tr].max()))
+        test_period = (int(years_all[va].min()), int(years_all[va].max()))
+        logger.info(f"  Fold {fold_idx}: train {train_period[0]}-{train_period[1]} (n={len(tr):,}), test {test_period[0]}-{test_period[1]} (n={len(va):,})")
+
+        # Fit + predict + metrics nominal
+        for mname, model in [
+            ("M1_Linear", LinearRegression()),
+            ("M2_Ridge", Ridge(alpha=1.0, random_state=42)),
+            ("M3_RandomForest", RandomForestRegressor(n_estimators=100, max_depth=10, n_jobs=-1, random_state=42)),
+            ("M4_XGBoost", XGBRegressor(**best_xgb_params, **xgb_kwargs)),
+        ]:
+            t0 = time.time()
+            model.fit(X_tr, y_tr_log)
+            y_pred = np.expm1(model.predict(X_va))
+            m = metrics(y_va, y_pred)
+            rows.append({
+                "fold": fold_idx, "model": mname,
+                "train_start": train_period[0], "train_end": train_period[1],
+                "test_start": test_period[0], "test_end": test_period[1],
+                "n_train": len(tr), "n_test": len(va),
+                "r2": m["r2"], "mae": m["mae"], "mape_pct": m["mape_pct"], "rmse": m["rmse"],
+                "fit_time_s": round(time.time() - t0, 1),
+            })
+            logger.info(f"    {mname}: r2={m['r2']:.3f} mae={m['mae']:,.0f} mape={m['mape_pct']:.1f}% ({time.time()-t0:.1f}s)")
+
+    return pd.DataFrame(rows)
+
+
+def main() -> None:
+    args = parse_args()
+    cfg = yaml.safe_load(open(args.config))
+
+    silver = Path(cfg["paths"]["silver_parquet"])
+    gold = Path(cfg["paths"]["gold_dir"])
+    marts = Path(cfg["paths"]["marts_dir"])
+    gold.mkdir(parents=True, exist_ok=True)
+    marts.mkdir(parents=True, exist_ok=True)
+
+    if not silver.exists():
+        logger.error(f"Silver no encontrado: {silver}. Corre run_cleaning.py primero.")
+        sys.exit(1)
+
+    logger.info(f"Cargando Silver desde {silver}")
+    df = pd.read_parquet(silver)
+    logger.info(f"  {len(df):,} filas")
+
+    # Construir features
+    df_feat, feature_names, audit = build_feature_matrix(
+        df, target_col="purchase_price",
+        window_years=12, min_obs_per_window=30,
+        include_causal_derived=False, use_log_target=True,
+    )
+    logger.info(f"Feature matrix: {audit['n_rows']:,} filas x {audit['n_features']} features")
+    logger.info(f"Anti-leak guard: {'PASS' if audit['leakage_check_passed'] else 'FAIL'}")
+
+    # Split temporal
+    train, test = temporal_train_test_split(
+        df_feat, train_end=args.train_end_year, test_start=args.test_start_year,
+    )
+    if len(train) < 100 or len(test) < 100:
+        logger.warning(f"Splits pequenos: train={len(train)}, test={len(test)}. Resultados poco confiables.")
+
+    # Imputar NaN con mediana del TRAIN (no del df completo)
+    medians = train[feature_names].median()
+    X_train = train[feature_names].fillna(medians)
+    X_test = test[feature_names].fillna(medians)
+    y_train_log = np.log1p(train["purchase_price"])
+    y_train = train["purchase_price"].values
+    y_test = test["purchase_price"].values
+
+    # Entrenamiento
+    trials = 0 if args.no_optuna else args.optuna_trials
+    models = {}
+    logger.info("Entrenando M1 Lineal...")
+    models["M1_Linear"] = train_linear(X_train, y_train_log, X_test)
+    logger.info("Entrenando M2 Ridge...")
+    models["M2_Ridge"] = train_ridge(X_train, y_train_log, X_test)
+    logger.info("Entrenando M3 RandomForest...")
+    models["M3_RandomForest"] = train_rf(X_train, y_train_log, X_test)
+    logger.info(f"Entrenando M4 XGBoost{' + Optuna ' + str(trials) + 'trials' if trials else ' (no Optuna)'} (device={args.device})...")
+    models["M4_XGBoost"] = train_xgb(X_train, y_train_log, X_test, optuna_trials=trials, device=args.device)
+
+    # Metricas + importance por modelo (vectorizado, sin iloc en loop)
+    test_years = test["year"].to_numpy()
+    test_y_f64 = y_test.astype(np.float64)
+    row_idx = np.arange(len(test), dtype=np.int32)
+
+    comparison_rows = []
+    importance_rows = []
+    per_model_pred = {}  # name -> pred_test (np.array) para luego elegir el campeon
+    for name, (model, pred_train, pred_test) in models.items():
+        train_m = metrics(y_train, pred_train)
+        test_m = metrics(y_test, pred_test)
+        comparison_rows.append({
+            "model": name,
+            "train_r2": train_m["r2"], "train_mae": train_m["mae"], "train_mape_pct": train_m["mape_pct"], "train_rmse": train_m["rmse"],
+            "test_r2": test_m["r2"], "test_mae": test_m["mae"], "test_mape_pct": test_m["mape_pct"], "test_rmse": test_m["rmse"],
+            "n_train": len(y_train), "n_test": len(y_test),
+        })
+        per_model_pred[name] = np.asarray(pred_test, dtype=np.float64)
+        imp_df = feature_importance(model, feature_names, X_train=X_train)
+        for _, row in imp_df.head(args.top_k_importance).iterrows():
+            importance_rows.append({"model": name, "feature": row["feature"], "importance": float(row["importance"])})
+
+    comparison_df = pd.DataFrame(comparison_rows)
+    importance_df = pd.DataFrame(importance_rows)
+
+    # Champion: mejor test_r2
+    champion = comparison_df.sort_values("test_r2", ascending=False).iloc[0]["model"]
+    pred_champ = per_model_pred[champion]
+    predictions_df = pd.DataFrame({
+        "model": champion,
+        "row_idx": row_idx,
+        "year": test_years,
+        "y_true": test_y_f64,
+        "y_pred": pred_champ,
+        "residual": test_y_f64 - pred_champ,
+    })
+    logger.info(f"Campeon: {champion} (test_r2={comparison_df['test_r2'].max():.4f})")
+    logger.info(f"mart_predictions: {len(predictions_df):,} filas del campeon ({champion})")
+
+    # Sample para el dashboard (CSV grande no se renderiza bien en browser)
+    sample_per_year = args.predictions_sample_per_year
+    if sample_per_year and sample_per_year > 0:
+        parts: list[pd.DataFrame] = []
+        for _year, grp in predictions_df.groupby("year", observed=True):
+            n = min(len(grp), sample_per_year)
+            parts.append(grp.sample(n=n, random_state=42) if n > 0 else grp)
+        predictions_sample_df = pd.concat(parts, ignore_index=True) if parts else predictions_df.head(0)
+        logger.info(f"mart_predictions_sample: {len(predictions_sample_df):,} filas (max {sample_per_year} por año)")
+    else:
+        predictions_sample_df = pd.DataFrame()
+
+    # CV temporal opcional (post-training, con best_params XGB ya conocidos)
+    cv_df = pd.DataFrame()
+    if args.cv_folds and args.cv_folds > 1:
+        logger.info(f"Time-series CV con {args.cv_folds} folds (hyperparams fijos)...")
+        best_xgb_params = getattr(models["M4_XGBoost"][0], "_optuna_best_params", None) or {
+            "n_estimators": 400, "max_depth": 6, "learning_rate": 0.05,
+            "subsample": 0.85, "colsample_bytree": 0.85,
+        }
+        t0 = time.time()
+        cv_df = cross_val_temporal(
+            train_df=train, feature_names=feature_names,
+            n_splits=args.cv_folds, best_xgb_params=best_xgb_params, device=args.device,
+        )
+        logger.info(f"CV completo en {time.time()-t0:.1f}s")
+
+        # Resumen agregado por modelo (mean ± std)
+        cv_summary = cv_df.groupby("model").agg(
+            r2_mean=("r2", "mean"), r2_std=("r2", "std"),
+            mae_mean=("mae", "mean"), mae_std=("mae", "std"),
+            mape_mean=("mape_pct", "mean"), mape_std=("mape_pct", "std"),
+            n_folds=("fold", "count"),
+        ).reset_index()
+        print("\n" + "=" * 60)
+        print("CV TIME-SERIES — metricas en escala NOMINAL (purchase_price DKK)")
+        print("=" * 60)
+        print(cv_summary.to_string(index=False))
+
+    logger.info("Escribiendo marts...")
+    for out_dir in (gold, marts):
+        comparison_df.to_csv(out_dir / "mart_model_comparison.csv", index=False)
+        predictions_df.to_csv(out_dir / "mart_predictions.csv", index=False)
+        importance_df.to_csv(out_dir / "mart_feature_importance.csv", index=False)
+        if not predictions_sample_df.empty:
+            predictions_sample_df.to_csv(out_dir / "mart_predictions_sample.csv", index=False)
+        if not cv_df.empty:
+            cv_df.to_csv(out_dir / "mart_model_cv.csv", index=False)
+    logger.info(f"  marts en {gold} y {marts}")
+
+    # Audit final
+    audit_path = gold / "modeling_audit.json"
+    optuna_best_params = getattr(models["M4_XGBoost"][0], "_optuna_best_params", None)
+    audit_path.write_text(json.dumps({
+        "feature_matrix": audit,
+        "split": {"train_end": args.train_end_year, "test_start": args.test_start_year,
+                  "n_train": len(train), "n_test": len(test)},
+        "metrics_scale": "nominal_purchase_price_dkk",
+        "log_target_used_for_training": True,
+        "back_transform": "np.expm1",
+        "optuna_trials": trials,
+        "optuna_best_params": optuna_best_params,
+        "device": args.device,
+        "champion": champion,
+        "cv_folds": args.cv_folds if args.cv_folds and args.cv_folds > 1 else None,
+    }, indent=2))
+
+    # Print resumen
+    print("\n" + "=" * 60)
+    print("RESULTADOS — metricas en escala NOMINAL (purchase_price DKK)")
+    print("=" * 60)
+    print(comparison_df[["model", "test_r2", "test_mae", "test_mape_pct", "test_rmse"]].to_string(index=False))
+    print("=" * 60)
+    print("Marts: mart_model_comparison.csv, mart_predictions.csv, mart_feature_importance.csv")
+    print(f"Audit: {audit_path}")
+
+
+if __name__ == "__main__":
+    main()
