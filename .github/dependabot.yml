@@ -1,0 +1,96 @@
+# Dependabot config para danish-housing-analysis
+#
+# Cubre:
+#   - Docker: actualiza el pin de ghcr.io/astral-sh/uv y python:3.12-slim en Dockerfile
+#   - uv:     actualiza dependencias del pyproject.toml + uv.lock
+#
+# Cadencia: semanal, lunes 09:00 (-05). Agrupado por minor/patch para reducir
+# ruido. PRs van a `visualization` (la rama por defecto del proyecto).
+#
+# Docs:
+#   https://docs.github.com/en/code-security/dependabot/working-with-dependabot
+#   https://docs.github.com/en/code-security/dependabot/ecosystems-supported-by-dependabot
+
+version: 2
+updates:
+  # ── Docker (Dockerfile + cualquier futuro Dockerfile.*) ──────────────────────
+  - package-ecosystem: "docker"
+    directory: "/"
+    target-branch: "visualization"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/Lima"
+    labels:
+      - "dependencies"
+      - "docker"
+    open-pull-requests-limit: 3
+    groups:
+      docker-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
+    commit-message:
+      prefix: "chore(docker)"
+      include: "scope"
+
+  # ── uv / pyproject.toml ──────────────────────────────────────────────────────
+  # Cuando se publique una version nueva de pandas, xgboost, optuna, etc. abre
+  # PR contra pyproject.toml y regenera uv.lock.
+  - package-ecosystem: "uv"
+    directory: "/"
+    target-branch: "visualization"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:30"
+      timezone: "America/Lima"
+    labels:
+      - "dependencies"
+      - "python"
+    open-pull-requests-limit: 5
+    groups:
+      # Agrupa minor/patch de dev tooling (ruff, black, mypy, pytest)
+      dev-tooling:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+      # Agrupa minor/patch de notebook (jupyter, ipykernel)
+      notebook:
+        patterns:
+          - "jupyter*"
+          - "ipykernel"
+          - "jupyterlab"
+        update-types:
+          - "minor"
+          - "patch"
+      # ML deps majors van separadas (pandas/xgboost/sklearn/optuna pueden
+      # romper el feature engineering — preferimos revisar una por una).
+    commit-message:
+      prefix: "chore(deps)"
+      include: "scope"
+    # Ignora majors de paquetes criticos para forzar review manual
+    ignore:
+      - dependency-name: "pandas"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "numpy"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "scikit-learn"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "xgboost"
+        update-types: ["version-update:semver-major"]
+
+  # ── GitHub Actions (cuando agreguemos CI) ────────────────────────────────────
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    target-branch: "visualization"
+    schedule:
+      interval: "monthly"
+    labels:
+      - "dependencies"
+      - "github-actions"
+    commit-message:
+      prefix: "chore(ci)"
+      include: "scope"
