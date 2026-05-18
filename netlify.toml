@@ -1,0 +1,10 @@
+[[redirects]]
+  from = "/"
+  to = "/danish_housing_dashboard.html"
+  status = 200
+
+[[redirects]]
+  from = "/marts/*"
+  to = "https://storage.googleapis.com/danish-housing-gold/marts/:splat"
+  status = 200
+  force = true
