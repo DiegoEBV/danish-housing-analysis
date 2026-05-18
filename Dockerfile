@@ -8,8 +8,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgomp1 \
     && rm -rf /var/lib/apt/lists/*
 
-# uv: tomamos el binario oficial (imagen distroless minima)
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+# uv: pin a version + digest para builds reproducibles (no `:latest`).
+# 0.9.26 es la version usada para generar uv.lock en este repo.
+# Renovar via Dependabot/Renovate o `docker manifest inspect ghcr.io/astral-sh/uv:<ver>`.
+COPY --from=ghcr.io/astral-sh/uv:0.9.26@sha256:08a7428e3daeb4ff634fe06d3d9aec278579e88f770b5d141e5a408cb998f40a \
+     /uv /uvx /bin/
 
 # Metadata primero para aprovechar layer caching
 COPY pyproject.toml uv.lock ./
