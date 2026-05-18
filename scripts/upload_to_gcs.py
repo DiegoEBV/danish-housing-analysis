@@ -20,6 +20,7 @@ Uso:
 
 import argparse
 import logging
+import os
 import sys
 from pathlib import Path
 
@@ -28,17 +29,11 @@ import yaml
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
 
-# ── Configuración GCP ─────────────────────────────────────────────────────────
-GCP_PROJECT  = "project-43d6b6df-15b5-4496-a5e"       # Cambiar por tu project ID
-BUCKET_BRONZE = "danish-housing-bronze"   # gs://danish-housing-bronze
-BUCKET_SILVER = "danish-housing-silver"   # gs://danish-housing-silver
-BUCKET_GOLD   = "danish-housing-gold"     # gs://danish-housing-gold
 
-
-def get_gcs_client():
+def get_gcs_client(project_id: str):
     try:
         from google.cloud import storage
-        return storage.Client(project=GCP_PROJECT)
+        return storage.Client(project=project_id)
     except ImportError:
         logger.error("google-cloud-storage no instalado. Ejecuta: pip install google-cloud-storage")
         sys.exit(1)
@@ -52,63 +47,61 @@ def upload_file(client, bucket_name: str, local_path: Path, gcs_path: str) -> No
 
 
 def upload_bronze(client, cfg: dict) -> None:
-    """
-    BRONZE: Datos crudos de Kaggle sin modificar.
-    Estructura en GCS: gs://danish-housing-bronze/raw/
-    """
+    """BRONZE: raw de Kaggle (CSV + Parquet) sin modificar."""
     logger.info("── BRONZE LAYER ──────────────────────────────────")
-    raw_path = Path(cfg["paths"]["raw_data"])
+    bucket = cfg["gcp"]["buckets"]["bronze"]
+    prefix = cfg["gcp"]["prefixes"]["bronze"]
 
-    if not raw_path.exists():
-        logger.warning(f"No encontrado: {raw_path}. Salta Bronze.")
-        return
-
-    upload_file(client, BUCKET_BRONZE, raw_path, f"raw/{raw_path.name}")
-    logger.info("Bronze: datos crudos subidos (append-only, sin modificar)")
+    candidates = [
+        Path(cfg["paths"].get("raw_csv", "")),
+        Path(cfg["paths"].get("raw_parquet", "")),
+    ]
+    subido = False
+    for p in candidates:
+        if str(p) and p.exists():
+            upload_file(client, bucket, p, f"{prefix}{p.name}")
+            subido = True
+        else:
+            logger.warning(f"No encontrado: {p}. Salta.")
+    if subido:
+        logger.info("Bronze: raws subidos (append-only)")
 
 
 def upload_silver(client, cfg: dict) -> None:
-    """
-    SILVER: Datos limpios con flags de calidad (output de TB2).
-    Estructura en GCS: gs://danish-housing-silver/processed/
-    """
+    """SILVER: dataset limpio + bitacora (output de TB2)."""
     logger.info("── SILVER LAYER ──────────────────────────────────")
-    processed_dir = Path(cfg["paths"]["processed_dir"])
+    bucket = cfg["gcp"]["buckets"]["silver"]
+    prefix = cfg["gcp"]["prefixes"]["silver"]
 
     silver_files = [
-        processed_dir / "danish_housing_clean.parquet",
-        processed_dir / "bitacora_limpieza.csv",
+        Path(cfg["paths"]["silver_parquet"]),
+        Path(cfg["paths"]["bitacora_csv"]),
     ]
 
     for f in silver_files:
         if f.exists():
-            upload_file(client, BUCKET_SILVER, f, f"processed/{f.name}")
+            upload_file(client, bucket, f, f"{prefix}{f.name}")
         else:
             logger.warning(f"No encontrado: {f}")
 
-    logger.info("Silver: datos validados y limpios subidos")
-
 
 def upload_gold(client, cfg: dict) -> None:
-    """
-    GOLD: Marts analíticos para Tableau (output de TB3).
-    Estructura en GCS: gs://danish-housing-gold/marts/
-    """
+    """GOLD: marts analiticos para Tableau (output de TB3)."""
     logger.info("── GOLD LAYER ────────────────────────────────────")
-    gold_dir = Path(cfg["paths"]["processed_dir"]) / "gold"
+    bucket = cfg["gcp"]["buckets"]["gold"]
+    prefix = cfg["gcp"]["prefixes"]["gold"]
 
-    if not gold_dir.exists():
-        logger.warning(f"Carpeta gold no encontrada: {gold_dir}")
-        logger.warning("Ejecuta primero el notebook TB3 para generar los marts.")
-        return
-
-    for f in gold_dir.glob("*.csv"):
-        upload_file(client, BUCKET_GOLD, f, f"marts/{f.name}")
-
-    for f in gold_dir.glob("*.parquet"):
-        upload_file(client, BUCKET_GOLD, f, f"marts/{f.name}")
-
-    logger.info("Gold: marts para Tableau subidos")
+    # Buscar marts en gold_dir y marts_dir (segun donde haya corrido el pipeline)
+    candidate_dirs = [Path(cfg["paths"]["gold_dir"]), Path(cfg["paths"]["marts_dir"])]
+    found_any = False
+    for d in candidate_dirs:
+        if not d.exists():
+            continue
+        for f in list(d.glob("*.csv")) + list(d.glob("*.parquet")):
+            upload_file(client, bucket, f, f"{prefix}{f.name}")
+            found_any = True
+    if not found_any:
+        logger.warning(f"Sin marts en {candidate_dirs}. Ejecuta export_marts.py o run_pipeline.py primero.")
 
 
 def parse_args():
@@ -124,8 +117,9 @@ def main():
     with open(args.config) as f:
         cfg = yaml.safe_load(f)
 
-    client = get_gcs_client()
-    logger.info(f"Conectado a GCP project: {GCP_PROJECT}")
+    project_id = os.environ.get("GCP_PROJECT") or cfg["gcp"]["project_id"]
+    client = get_gcs_client(project_id)
+    logger.info(f"Conectado a GCP project: {project_id}")
 
     if args.layer in ("bronze", "all"):
         upload_bronze(client, cfg)
@@ -135,9 +129,10 @@ def main():
         upload_gold(client, cfg)
 
     logger.info("✅ Upload completado")
-    logger.info(f"  Bronze: gs://{BUCKET_BRONZE}/raw/")
-    logger.info(f"  Silver: gs://{BUCKET_SILVER}/processed/")
-    logger.info(f"  Gold:   gs://{BUCKET_GOLD}/marts/")
+    for layer in ("bronze", "silver", "gold"):
+        b = cfg["gcp"]["buckets"][layer]
+        p = cfg["gcp"]["prefixes"][layer]
+        logger.info(f"  {layer.capitalize():<6}: gs://{b}/{p}")
 
 
 if __name__ == "__main__":

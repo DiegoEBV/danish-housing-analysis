@@ -48,20 +48,33 @@ def main() -> None:
     with open(args.config, encoding="utf-8") as f:
         cfg = yaml.safe_load(f)
 
-    raw_path = Path(cfg["paths"]["raw_data"])
-    processed_dir = Path(cfg["paths"]["processed_dir"])
-    processed_dir.mkdir(parents=True, exist_ok=True)
+    # Resolver paths: preferir parquet (1.2M) si existe, sino csv de Kaggle
+    raw_csv = Path(cfg["paths"].get("raw_csv", ""))
+    raw_parquet = Path(cfg["paths"].get("raw_parquet", ""))
 
-    # Cargar datos
-    logger.info(f"Cargando datos desde {raw_path}")
-    if not raw_path.exists():
+    if raw_parquet.exists():
+        raw_path = raw_parquet
+        loader = lambda p: pd.read_parquet(p)
+    elif raw_csv.exists():
+        raw_path = raw_csv
+        loader = lambda p: pd.read_csv(p, nrows=args.sample)
+    else:
         logger.error(
-            f"No se encontró el archivo: {raw_path}\n"
+            f"No se encontró raw_parquet ({raw_parquet}) ni raw_csv ({raw_csv}).\n"
             "Descarga el dataset desde Kaggle y colócalo en data/raw/"
         )
         sys.exit(1)
 
-    df_raw = pd.read_csv(raw_path, nrows=args.sample)
+    silver_path = Path(cfg["paths"]["silver_parquet"])
+    bitacora_path = Path(cfg["paths"]["bitacora_csv"])
+    silver_path.parent.mkdir(parents=True, exist_ok=True)
+    bitacora_path.parent.mkdir(parents=True, exist_ok=True)
+
+    # Cargar datos
+    logger.info(f"Cargando datos desde {raw_path}")
+    df_raw = loader(raw_path)
+    if args.sample and len(df_raw) > args.sample:
+        df_raw = df_raw.head(args.sample)
     logger.info(f"Datos cargados: {df_raw.shape[0]:,} filas × {df_raw.shape[1]} columnas")
 
     # Ejecutar limpieza
@@ -69,11 +82,9 @@ def main() -> None:
     df_clean, bitacora = run_cleaning_pipeline(df_raw, cleaning_cfg)
 
     # Guardar resultados
-    output_path = processed_dir / "danish_housing_clean.parquet"
-    df_clean.to_parquet(output_path, index=False)
-    logger.info(f"Dataset limpio guardado en {output_path}")
+    df_clean.to_parquet(silver_path, index=False, compression="snappy")
+    logger.info(f"Dataset limpio guardado en {silver_path}")
 
-    bitacora_path = processed_dir / "bitacora_limpieza.csv"
     bitacora.to_csv(bitacora_path, index=False)
     logger.info(f"Bitácora guardada en {bitacora_path}")
 
@@ -83,7 +94,7 @@ def main() -> None:
     print("=" * 60)
     print(bitacora.to_string(index=False))
     print("=" * 60)
-    print(f"Output: {output_path}")
+    print(f"Output: {silver_path}")
 
 
 if __name__ == "__main__":

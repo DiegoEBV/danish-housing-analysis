@@ -184,20 +184,30 @@ def rename_rate_columns(
     bitacora: list,
     renames: dict[str, str] | None = None,
 ) -> pd.DataFrame:
-    """P8: Renombra columnas con %25 (encoding de %) a nombres limpios."""
+    """P8: Renombra columnas macro a nombres limpios. Tolera sufijo `%` o `%25`.
+
+    El parquet de Kaggle viene con `%` (single percent); el CSV viene URL-encoded
+    con `%25`. Ambas variantes se renombran al mismo nombre canonico `_pct`.
+    """
     if renames is None:
-        renames = {
-            "nom_interest_rate%25": "nom_interest_rate_pct",
-            "dk_ann_infl_rate%25": "dk_ann_infl_rate_pct",
-            "yield_on_mortgage_credit_bonds%25": "yield_mortgage_bonds_pct",
+        canonical = {
+            "nom_interest_rate": "nom_interest_rate_pct",
+            "dk_ann_infl_rate": "dk_ann_infl_rate_pct",
+            "yield_on_mortgage_credit_bonds": "yield_mortgage_bonds_pct",
         }
+        renames = {}
+        for base, target in canonical.items():
+            for suffix in ("%", "%25"):
+                renames[f"{base}{suffix}"] = target
+        # Ademas: la columna `%_change_between_offer_and_purchase` se renombra a un nombre limpio
+        renames["%_change_between_offer_and_purchase"] = "pct_change_offer_purchase"
     actual = {k: v for k, v in renames.items() if k in df.columns}
     if actual:
         df = df.rename(columns=actual)
         _log(
             bitacora, "P8", str(list(actual.keys())),
-            "Nombre de columna con encoding %25",
-            "Renombrar a nombres limpios",
+            "Nombre de columna con encoding URL/% no estandar",
+            "Renombrar a nombres limpios (sufijo _pct)",
             0, str(list(actual.keys())), str(list(actual.values())),
         )
     return df

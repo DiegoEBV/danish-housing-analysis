@@ -1,11 +1,33 @@
 # configs/analysis.yaml
 # Parametros centralizados para el pipeline de analisis
 
-# Rutas
+# Rutas (todas relativas a la raiz del repo, salvo overrides via env)
 paths:
-  raw_data: data/raw/danish_housing_prices.csv
+  # Bronze (raw)
+  raw_csv: data/raw/danish_housing_prices.csv          # CSV de Kaggle (run_cleaning.py)
+  raw_parquet: data/raw/DKHousingPrices.parquet        # Parquet original 1.2M (run_pipeline.py)
+
+  # Silver
   processed_dir: data/processed/
-  tableau_dir: data/processed/tableau_marts/
+  silver_parquet: data/processed/silver/danish_housing_clean.parquet
+  bitacora_csv: data/processed/bitacora_limpieza.csv
+
+  # Gold
+  gold_dir: data/processed/gold/
+  marts_dir: data/processed/tableau_marts/
+  twbx_path: tableau/danish_housing_exploratorio.twbx
+
+# Google Cloud Platform
+gcp:
+  project_id: project-43d6b6df-15b5-4496-a5e          # Override con env GCP_PROJECT
+  buckets:
+    bronze: danish-housing-bronze
+    silver: danish-housing-silver
+    gold: danish-housing-gold
+  prefixes:
+    bronze: raw/
+    silver: processed/
+    gold: marts/
 
 # Dataset
 dataset:
@@ -35,11 +57,17 @@ cleaning:
   # P7: zip_code string con 4 digitos
   zip_code_pad: 4
 
-  # P8: Renombrar columnas con encoding %25
+  # P8: Renombrar columnas macro con sufijo `%` (parquet de Kaggle) o `%25`
+  # (CSV URL-encoded) al nombre canonico `_pct`. Ambas variantes incluidas
+  # para tolerar cualquier procedencia del raw.
   column_renames:
+    "nom_interest_rate%": nom_interest_rate_pct
     "nom_interest_rate%25": nom_interest_rate_pct
+    "dk_ann_infl_rate%": dk_ann_infl_rate_pct
     "dk_ann_infl_rate%25": dk_ann_infl_rate_pct
+    "yield_on_mortgage_credit_bonds%": yield_mortgage_bonds_pct
     "yield_on_mortgage_credit_bonds%25": yield_mortgage_bonds_pct
+    "%_change_between_offer_and_purchase": pct_change_offer_purchase
 
 # KPIs
 kpis:
@@ -66,6 +94,12 @@ filters:
   exclude_invalid_sales: true
   exclude_price_outliers: true
   include_preliminary_period: true
+
+# Marts (generacion Gold)
+marts:
+  drawdown_min_obs: 5            # filtro n_transactions minimo por (region, house_type, quarter)
+  min_price_real: 500            # piso para sqm_price_real (evita ruido de muestras minimas)
+  bond_corr_window: 8            # ventana rolling para correlacion volumen-bonos
 
 # Tipos de vivienda de interes
 house_types:

@@ -1,0 +1,42 @@
+# cloudbuild.yaml — Build + push de la imagen del pipeline a Artifact Registry
+#
+# Setup previo (una vez por proyecto GCP):
+#   gcloud auth login
+#   gcloud config set project <PROJECT_ID>
+#   gcloud artifacts repositories create danish-housing \
+#     --repository-format=docker --location=europe-west1
+#
+# Trigger manual:
+#   gcloud builds submit --config=cloudbuild.yaml --substitutions=_TAG=latest
+
+substitutions:
+  _LOCATION: europe-west1
+  _REPO: danish-housing
+  _IMAGE: pipeline
+  _TAG: latest
+
+steps:
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - build
+      - -t
+      - ${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE}:${_TAG}
+      - -t
+      - ${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE}:$SHORT_SHA
+      - .
+
+  - name: gcr.io/cloud-builders/docker
+    args:
+      - push
+      - --all-tags
+      - ${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE}
+
+images:
+  - ${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE}:${_TAG}
+  - ${_LOCATION}-docker.pkg.dev/$PROJECT_ID/${_REPO}/${_IMAGE}:$SHORT_SHA
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: E2_HIGHCPU_8
+
+timeout: 1200s

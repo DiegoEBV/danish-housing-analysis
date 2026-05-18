@@ -25,24 +25,28 @@ GOLD   — marts listos para Tableau
 
 ## Capa Bronze — Ingesta
 
-**Script**: carga manual desde Kaggle  
-**Destino**: `gs://danish-housing-bronze/raw/danish_housing_prices.csv`
+**Script**: `scripts/fetch_kaggle_data.py` (Kaggle API) o descarga manual
+**Destino local**: `data/raw/DKHousingPrices.parquet`
+**Destino GCS**: `gs://danish-housing-bronze/raw/DKHousingPrices.parquet`
 
-### Características del dato crudo
+### Características del dato crudo (valores REALES, no estimados)
 
 | Atributo | Valor |
 |----------|-------|
-| Filas | ~1,500,000 |
-| Columnas | ~20 |
-| Formato | CSV |
-| Encoding | UTF-8 |
-| Tamaño | ~200 MB |
+| Filas | **1,507,908** |
+| Columnas | 19 |
+| Formato | Parquet (compressed, Snappy) |
+| Tamaño Parquet | **43.0 MB** |
+| Tamaño CSV equivalente | ~200 MB |
+| Rango fechas | 1992-01-05 → 2024-10-26 |
+| Macro NaN (2023–2024) | 1,193 filas |
+| Schema notable | `nom_interest_rate%`, `dk_ann_infl_rate%`, `yield_on_mortgage_credit_bonds%` (con sufijo `%` literal en el parquet) |
 
 ### Qué NO se modifica en Bronze
 - No se eliminan filas
 - No se cambian tipos de dato
 - No se renombran columnas
-- Se preserva el CSV exactamente como viene de Kaggle
+- Se preserva el parquet exactamente como viene de Kaggle
 
 ---
 
@@ -53,18 +57,21 @@ GOLD   — marts listos para Tableau
 **Input**: Bronze CSV  
 **Output**: `danish_housing_clean.parquet` + `bitacora_limpieza.csv`
 
-### Reglas aplicadas (en orden)
+### Reglas aplicadas (en orden) · CONTEOS REALES sobre 1,507,908 filas
 
-| ID | Problema | Columnas | Acción | Tipo |
-|----|----------|----------|--------|------|
-| P1 | Nulos en `city` (~11 registros) | `city` | Imputar `'Unknown'` | Transformación |
-| P2 | Nulos en vars macro 2023–2024 | `infl`, `yield` | Crear flag `macro_nulo` | Flag |
-| P3 | `sales_type = '-'` (~0.5%) | `sales_type` | Crear flag `sales_type_valido` | Flag |
-| P4 | `year_build < 1800` | `year_build` | Crear flag `year_build_flag` | Flag |
-| P5 | Outliers precio (IQR×3) | `purchase_price`, `sqm_price` | Crear flags `*_outlier` | Flag |
-| P6 | Período 1992–1994 menor completitud | General | Crear flag `periodo_preliminar` | Flag |
-| P7 | `zip_code` como int (pierde ceros) | `zip_code` | Convertir a str con `zfill(4)` | Transformación |
-| P8 | Columnas con `%25` en nombre | Macro vars | Renombrar a `*_pct` | Transformación |
+| ID | Problema | Columnas | Acción | Filas afectadas |
+|----|----------|----------|--------|----------------:|
+| P1 | Nulos en `city` | `city` | Imputar `'Unknown'` | 0 (parquet ya completo) |
+| P2 | Nulos en vars macro 2023–2024 | `dk_ann_infl_rate`, `yield_mortgage_bonds` | Crear flag `macro_nulo` | 1,193 (0.08%) |
+| P3 | `sales_type ∈ {family_sale, other_sale, auction, '-'}` | `sales_type` | Crear flag `sales_type_valido` | **175,149 (11.6%)** |
+| P4 | `year_build < 1800` | `year_build` | Crear flag `year_build_flag` | 0 |
+| P5 | Outliers `purchase_price` (IQR×3) | `purchase_price` | Crear flag `purchase_price_outlier` | 24,282 (1.6%) |
+| P5 | Outliers `sqm_price` (IQR×3) | `sqm_price` | Crear flag `sqm_price_outlier` | 15,217 (1.0%) |
+| P6 | Período 1992–1994 menor completitud | General | Crear flag `periodo_preliminar` | 56,043 (3.7%) |
+| P7 | `zip_code` como int (pierde ceros) | `zip_code` | Convertir a str con `zfill(4)` | 1,507,908 (todas) |
+| P8 | Sufijo `%` o `%25` en nombres macro | Macro vars | Renombrar a `*_pct` | 1,507,908 (todas) |
+
+**Dataset limpio para análisis** (post-filtros `sales_type_valido & ~purchase_price_outlier`): **1,311,568 filas (87.0%)**.
 
 ### Filosofía de limpieza
 
@@ -163,26 +170,44 @@ Importancia de variables del modelo seleccionado.
 
 ## Reproducibilidad
 
-Para regenerar todo el pipeline desde cero:
+Para regenerar todo el pipeline desde cero (con `uv`):
 
 ```bash
-# 1. Limpiar (Bronze → Silver)
-python scripts/run_cleaning.py --config configs/analysis.yaml
+# 0. Setup
+uv sync --extra dev
 
-# 2. Generar marts (Silver → Gold)
-python scripts/export_marts.py --config configs/analysis.yaml
+# 1. Descargar raw de Kaggle (requiere ~/.kaggle/kaggle.json)
+uv run python scripts/fetch_kaggle_data.py
 
-# 3. Subir a GCP
-python scripts/upload_to_gcs.py --layer all --config configs/analysis.yaml
+# 2. Pipeline completo (cleaning + marts en una sola pasada, memory-efficient)
+uv run python scripts/run_pipeline.py --config configs/analysis.yaml
+
+#    O por etapas:
+uv run python scripts/run_cleaning.py --config configs/analysis.yaml
+uv run python scripts/export_marts.py --config configs/analysis.yaml
+
+# 3. Modelado predictivo (TB3 Fase 4) — opcional, requiere GPU para Optuna 50 trials
+uv run python scripts/run_modeling.py --config configs/analysis.yaml \
+  --device cuda --optuna-trials 30 --cv-folds 5
+
+# 4. Subir a GCP (requiere gcloud auth application-default login)
+uv run python scripts/upload_to_gcs.py --layer all --config configs/analysis.yaml
 ```
 
-Todos los parámetros (umbrales IQR, año base, ventana de volatilidad) están en `configs/analysis.yaml` y son la única fuente de verdad.
+Todos los parámetros (umbrales IQR, año base, ventana de volatilidad, project GCP) están en `configs/analysis.yaml` y son la única fuente de verdad.
+
+### Tiempos referenciales (1.5M filas, Lightning.ai L4 GPU)
+
+| Etapa | CPU | GPU (L4) |
+|---|---:|---:|
+| `run_pipeline.py` (cleaning + 5 marts) | ~30 s | n/a |
+| `run_modeling.py` con Optuna 30 trials + CV 5 folds | ~50 min | **~22 min** |
+| `upload_to_gcs.py --layer all` | ~30 s (subida 51 MB Silver) | n/a |
 
 ---
 
 ## Tests de calidad del pipeline
 
 ```bash
-pytest tests/test_cleaning.py -v        # Valida reglas P1–P8
-pytest tests/test_marts.py -v           # Valida shape y tipos de marts
+uv run pytest tests/ -v       # 13/13 tests (8 P1-P8 + 4 features anti-leak + 1 pipeline)
 ```
