@@ -78,6 +78,16 @@
   .section-heading { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em; color: var(--text); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
   .section-heading::before { content: ''; width: 4px; height: 18px; background: var(--accent); border-radius: 2px; }
   @media (max-width: 900px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  /* ── Pestañas ── */
+  .tab-bar { display: flex; gap: 0; border-bottom: 1px solid var(--border); margin-bottom: 20px; overflow-x: auto; scrollbar-width: none; }
+  .tab-bar::-webkit-scrollbar { display: none; }
+  .tab-btn { padding: 10px 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer; border: none; background: transparent; color: var(--muted); border-bottom: 2px solid transparent; transition: all 0.15s; white-space: nowrap; letter-spacing: 0.01em; }
+  .tab-btn:hover { color: var(--text); background: rgba(99,102,241,0.05); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+  /* Placeholder mapa */
+  .map-placeholder { background: var(--surface2); border: 1px dashed var(--border); border-radius: 10px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; min-height: 320px; color: var(--muted); font-size: 0.82rem; text-align: center; padding: 24px; }
 </style>
 </head>
 <body>
@@ -86,8 +96,8 @@
 
 <div class="px-6 py-6 max-w-screen-xl mx-auto">
 
-  <!-- ── Encabezado ── -->
-  <div class="mb-6">
+  <!-- ── Encabezado (siempre visible) ── -->
+  <div class="mb-5">
     <div class="flex items-start justify-between flex-wrap gap-3">
       <div>
         <h1 class="text-2xl font-bold tracking-tight">Mercado Residencial Danés</h1>
@@ -109,8 +119,8 @@
     </div>
   </div>
 
-  <!-- ── KPIs ── -->
-  <div class="grid mb-6" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px">
+  <!-- ── KPIs (siempre visibles) ── -->
+  <div class="grid mb-5" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px">
     <div class="card p-4">
       <div class="kpi-label mb-1">Total Transacciones</div>
       <div class="kpi-value" style="color:#60a5fa" id="kpi-tx">—</div>
@@ -133,107 +143,149 @@
     </div>
   </div>
 
-  <!-- ── Fila 1: Índice Regional + Volatilidad ── -->
-  <div class="grid-2 mb-4">
+  <!-- ── Barra de pestañas ── -->
+  <div class="tab-bar">
+    <button class="tab-btn" id="tab-precios"      onclick="activateTab('precios')">Precios</button>
+    <button class="tab-btn" id="tab-geo"          onclick="activateTab('geo')">Geografía</button>
+    <button class="tab-btn" id="tab-riesgo"       onclick="activateTab('riesgo')">Crisis y Riesgo</button>
+    <button class="tab-btn" id="tab-modelado"     onclick="activateTab('modelado')">Modelado</button>
+    <button class="tab-btn" id="tab-conclusiones" onclick="activateTab('conclusiones')">Conclusiones</button>
+  </div>
 
-    <!-- Vista 1: Índice regional + bonos en paneles apilados -->
-    <div class="card p-5">
-      <div class="flex items-start justify-between mb-3 gap-2">
-        <div>
-          <div class="section-title">Índice Regional de Precios · Bonos Hipotecarios</div>
-          <div class="section-sub">Paneles apilados con eje X compartido · Base 1992Q1 = 100 · Real DKK/m²</div>
+  <!-- ══════════════════════════════════════════════════════════════════════
+       TAB: PRECIOS
+  ══════════════════════════════════════════════════════════════════════ -->
+  <div class="tab-panel" id="panel-precios">
+    <div class="grid-2 mb-4">
+
+      <!-- Índice regional + bonos -->
+      <div class="card p-5">
+        <div class="flex items-start justify-between mb-3 gap-2">
+          <div>
+            <div class="section-title">Índice Regional de Precios · Bonos Hipotecarios</div>
+            <div class="section-sub">Paneles apilados con eje X compartido · Base 1992Q1 = 100 · Real DKK/m²</div>
+          </div>
+          <select id="reg-mode" onchange="renderRegionalIndex()">
+            <option value="index">Índice (1992=100)</option>
+            <option value="price">Precio DKK/m²</option>
+          </select>
         </div>
-        <select id="reg-mode" onchange="renderRegionalIndex()">
-          <option value="index">Índice (1992=100)</option>
-          <option value="price">Precio DKK/m²</option>
-        </select>
+        <div class="flex flex-wrap gap-2 mb-2" id="reg-legend"></div>
+        <div class="crisis-label mb-1">▌ Crisis GFC 2007–2012 &nbsp;·&nbsp; ◆ Eventos macro anotados</div>
+        <div style="position:relative;height:220px"><canvas id="chartRegional"></canvas></div>
+        <div style="position:relative;height:80px;margin-top:4px"><canvas id="chartRegionalBonds"></canvas></div>
+        <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text"><strong>Efecto capital:</strong> Zealand (que incluye København) lidera el crecimiento real de precios desde 1992. Las subidas del rendimiento de bonos hipotecarios (panel inferior) preceden a las correcciones de precio.</span></div>
       </div>
-      <div class="flex flex-wrap gap-2 mb-2" id="reg-legend"></div>
-      <div class="crisis-label mb-1">▌ Crisis GFC 2007–2012 &nbsp;·&nbsp; ◆ Eventos macro anotados</div>
-      <div style="position:relative;height:220px"><canvas id="chartRegional"></canvas></div>
-      <div style="position:relative;height:80px;margin-top:4px"><canvas id="chartRegionalBonds"></canvas></div>
-      <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text" id="ti-regional"><strong>Efecto capital:</strong> Zealand (que incluye København) lidera el crecimiento real de precios desde 1992. Las subidas del rendimiento de bonos hipotecarios (panel inferior) preceden a las correcciones de precio.</span></div>
-    </div>
 
-    <!-- Vista 4: Volatilidad comparada — small multiples por tipología -->
-    <div class="card p-5">
-      <div class="mb-3">
-        <div class="section-title">Volatilidad por Tipología — Small Multiples</div>
-        <div class="section-sub">Desv. estándar del cambio % trimestral · Ventana móvil 4 trimestres · Cada panel destaca una tipología sobre el resto en gris</div>
-      </div>
-      <div id="volMultiples" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
-      <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text" id="ti-vol"><strong>Summerhouse lidera la volatilidad</strong> en cada ciclo: tipología más sensible a régimen de tasas y crisis. Apartments y Villas muestran el comportamiento más estable.</span></div>
-    </div>
-
-  </div>
-
-  <!-- ── Fila 2: Scatter Volumen-Bonos + Heatmap Drawdowns ── -->
-  <div class="grid-2 mb-4">
-
-    <!-- Vista 5: Scatter volumen vs bonos hipotecarios -->
-    <div class="card p-5">
-      <div class="mb-3">
-        <div class="section-title">Correlación Volumen – Bonos Hipotecarios</div>
-        <div class="section-sub">Eje X: rendimiento bono (rezago 2 trim.) · Eje Y: n° transacciones trimestrales · Color: ciclo macroeconómico</div>
-      </div>
-      <div class="flex flex-wrap gap-2 mb-2" id="scatter-legend"></div>
-      <canvas id="chartScatter"></canvas>
-      <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text" id="ti-scatter"><strong>Elasticidad inversa volumen–tasas:</strong> regímenes de bonos hipotecarios bajos coinciden con volúmenes altos; alzas de tasas (rojo GFC, naranja 2022+) coinciden con caídas de transacciones. Confirma la hipótesis H1 del proyecto.</span></div>
-    </div>
-
-    <!-- Vista 3: Heatmap de drawdowns + trayectoria temporal -->
-    <div class="card p-5">
-      <div class="mb-3">
-        <div class="section-title">Drawdowns Pico–Valle — Crisis 2007–2012</div>
-        <div class="section-sub">Heatmap: caída máxima por región × tipología · Inferior: trayectoria del drawdown por tipología (área negativa)</div>
-      </div>
-      <div id="ddHeatmap"></div>
-      <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:10px">
-        <div style="font-size:0.72rem;color:var(--muted);margin-bottom:4px;font-weight:600">Trayectoria temporal del drawdown · promedio por tipología</div>
-        <div style="position:relative;height:140px"><canvas id="chartDrawdownTimeline"></canvas></div>
-      </div>
-      <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text" id="ti-dd"><strong>Summerhouse y Bornholm: combinación más vulnerable.</strong> Los drawdowns más profundos golpean a las tipologías recreativas en regiones periféricas. Zealand (capital) limita su caída por escasez crónica de oferta. La trayectoria muestra que el fondo se alcanza en 2011–2012, no en 2009.</span></div>
-    </div>
-
-  </div>
-
-  <!-- ── Fila 3: Top ciudades + Evolución anual ── -->
-  <div class="grid-2 mb-6">
-
-    <!-- Top ciudades por precio -->
-    <div class="card p-5">
-      <div class="flex items-start justify-between mb-3 gap-2">
-        <div>
-          <div class="section-title">Top 15 Ciudades</div>
-          <div class="section-sub">Precio real promedio/m² o volumen de transacciones</div>
+      <!-- Evolución anual -->
+      <div class="card p-5">
+        <div class="mb-3">
+          <div class="section-title">Evolución Anual de Precio Real/m²</div>
+          <div class="section-sub">Promedio anual por región (DKK real, base 2024)</div>
         </div>
-        <select id="city-sort" onchange="renderCities()">
-          <option value="price">Por precio/m²</option>
-          <option value="tx">Por volumen</option>
-        </select>
+        <div class="flex flex-wrap gap-2 mb-2" id="annual-legend"></div>
+        <canvas id="chartAnnual"></canvas>
+        <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text"><strong>Divergencia post-2012:</strong> tras el suelo de la GFC, Zealand se desacopla del resto y crece a tasa superior. La corrección 2022 reaparece en todas las regiones, con Zealand mostrando la mayor sensibilidad al cambio de régimen de tasas.</span></div>
       </div>
-      <div id="cityBars"></div>
-      <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text"><strong>Concentración geográfica del precio:</strong> el ranking del último año en el dataset concentra las ciudades con mayor precio/m² en Zealand (la región de la capital), duplicando o más a las ciudades de Jutland y Fyn & islands.</span></div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       TAB: GEOGRAFÍA
+  ══════════════════════════════════════════════════════════════════════ -->
+  <div class="tab-panel" id="panel-geo">
+    <div class="grid-2 mb-6">
+
+      <!-- Top ciudades -->
+      <div class="card p-5">
+        <div class="flex items-start justify-between mb-3 gap-2">
+          <div>
+            <div class="section-title">Top 15 Ciudades</div>
+            <div class="section-sub">Precio real promedio/m² o volumen de transacciones</div>
+          </div>
+          <select id="city-sort" onchange="renderCities()">
+            <option value="price">Por precio/m²</option>
+            <option value="tx">Por volumen</option>
+          </select>
+        </div>
+        <div id="cityBars"></div>
+        <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text"><strong>Concentración geográfica del precio:</strong> el ranking del último año concentra las ciudades con mayor precio/m² en Zealand (la región de la capital), duplicando o más a las ciudades de Jutland y Fyn & islands.</span></div>
+      </div>
+
+      <!-- Mapa placeholder -->
+      <div class="card p-5">
+        <div class="mb-3">
+          <div class="section-title">Mapa de Precios por Municipio</div>
+          <div class="section-sub">Vista geográfica pendiente — zip_code disponible en mart_transactions_map</div>
+        </div>
+        <div class="map-placeholder">
+          <div style="font-size:2.5rem;opacity:0.4">🗺</div>
+          <div style="font-weight:600;color:var(--text)">Mapa coroplético en desarrollo</div>
+          <div style="max-width:280px;line-height:1.6">Vista geográfica por código postal con precios reales/m². Requiere integración de GeoJSON con municipios daneses.</div>
+          <div style="margin-top:8px;font-size:0.74rem;color:var(--accent)">Datos disponibles: 24k registros · mart_transactions_map.csv</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════
+       TAB: CRISIS Y RIESGO
+  ══════════════════════════════════════════════════════════════════════ -->
+  <div class="tab-panel" id="panel-riesgo">
+
+    <!-- Fila superior: Volatilidad + Drawdowns -->
+    <div class="grid-2 mb-4">
+
+      <!-- Volatilidad small multiples -->
+      <div class="card p-5">
+        <div class="mb-3">
+          <div class="section-title">Volatilidad por Tipología — Small Multiples</div>
+          <div class="section-sub">Desv. estándar del cambio % trimestral · Ventana móvil 4 trimestres · Cada panel destaca una tipología sobre el resto en gris</div>
+        </div>
+        <div id="volMultiples" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
+        <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text"><strong>Summerhouse lidera la volatilidad</strong> en cada ciclo: tipología más sensible a régimen de tasas y crisis. Apartments y Villas muestran el comportamiento más estable.</span></div>
+      </div>
+
+      <!-- Heatmap drawdowns + timeline -->
+      <div class="card p-5">
+        <div class="mb-3">
+          <div class="section-title">Drawdowns Pico–Valle — Crisis 2007–2012</div>
+          <div class="section-sub">Heatmap: caída máxima por región × tipología · Inferior: trayectoria del drawdown por tipología (área negativa)</div>
+        </div>
+        <div id="ddHeatmap"></div>
+        <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:10px">
+          <div style="font-size:0.72rem;color:var(--muted);margin-bottom:4px;font-weight:600">Trayectoria temporal del drawdown · promedio por tipología</div>
+          <div style="position:relative;height:140px"><canvas id="chartDrawdownTimeline"></canvas></div>
+        </div>
+        <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text"><strong>Summerhouse y Bornholm: combinación más vulnerable.</strong> Los drawdowns más profundos golpean a las tipologías recreativas en regiones periféricas. Zealand (capital) limita su caída por escasez crónica de oferta. El fondo se alcanza en 2011–2012, no en 2009.</span></div>
+      </div>
+
     </div>
 
-    <!-- Evolución anual por región -->
-    <div class="card p-5">
-      <div class="mb-3">
-        <div class="section-title">Evolución Anual de Precio Real/m²</div>
-        <div class="section-sub">Promedio anual por región (DKK real, base 2024)</div>
+    <!-- Scatter volumen-bonos (ancho completo) -->
+    <div class="mb-4">
+      <div class="card p-5">
+        <div class="mb-3">
+          <div class="section-title">Correlación Volumen – Bonos Hipotecarios</div>
+          <div class="section-sub">Eje X: rendimiento bono (rezago 2 trim.) · Eje Y: n° transacciones trimestrales · Color: ciclo macroeconómico</div>
+        </div>
+        <div class="flex flex-wrap gap-2 mb-2" id="scatter-legend"></div>
+        <canvas id="chartScatter"></canvas>
+        <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text"><strong>Elasticidad inversa volumen–tasas:</strong> regímenes de bonos hipotecarios bajos coinciden con volúmenes altos; alzas de tasas (rojo GFC, naranja 2022+) coinciden con caídas de transacciones. Confirma la hipótesis H1 del proyecto.</span></div>
       </div>
-      <div class="flex flex-wrap gap-2 mb-2" id="annual-legend"></div>
-      <canvas id="chartAnnual"></canvas>
-      <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text"><strong>Divergencia post-2012:</strong> tras el suelo de la GFC, Zealand se desacopla del resto y crece a tasa superior. La corrección 2022 reaparece en todas las regiones, con Zealand mostrando la mayor sensibilidad al cambio de régimen de tasas.</span></div>
     </div>
 
   </div>
 
-  <!-- ── Modelado Predictivo (M1-M4 + CV time-series) ── -->
-  <div class="mb-6">
+  <!-- ══════════════════════════════════════════════════════════════════════
+       TAB: MODELADO
+  ══════════════════════════════════════════════════════════════════════ -->
+  <div class="tab-panel" id="panel-modelado">
+
     <div class="section-heading">Modelado Predictivo · Comparativa M1-M4 + Cross-Validation</div>
 
-    <!-- Resumen + tabla -->
     <div class="card p-5 mb-4">
       <div class="flex items-start justify-between mb-3 gap-2">
         <div>
@@ -249,7 +301,6 @@
       </div>
     </div>
 
-    <!-- Fila modelado 1: importance + CV folds -->
     <div class="grid-2 mb-4">
       <div class="card p-5">
         <div class="section-title">Feature importance · top 10 del campeón</div>
@@ -263,7 +314,6 @@
       </div>
     </div>
 
-    <!-- Fila modelado 2: scatter predicciones -->
     <div class="card p-5 mb-4">
       <div class="flex items-start justify-between mb-3 gap-2">
         <div>
@@ -274,45 +324,51 @@
       </div>
       <div style="position:relative;height:380px"><canvas id="chartPredScatter"></canvas></div>
     </div>
+
   </div>
 
-  <!-- ── Recomendaciones (storytelling: cierre accionable) ── -->
-  <div class="mb-6">
-    <div class="section-heading">Recomendaciones e Insights Accionables</div>
-    <div class="grid-2" style="gap:12px">
-      <div class="rec-card" style="border-left-color:#60a5fa">
-        <div class="rec-tag" style="color:#60a5fa">Inversor inmobiliario</div>
-        <div class="rec-title">Priorizar Apartment/Villa en Zealand sobre Summerhouse provincial</div>
-        <div class="rec-body">El diferencial de drawdown entre tipologías estables (Apartment/Villa en Zealand) y tipologías recreativas en regiones periféricas es sustancial durante crisis. Zealand ofrece mayor protección pico-valle. <strong>Trade-off:</strong> menor yield bruto y entrada más cara en la región capital.</div>
-      </div>
-      <div class="rec-card" style="border-left-color:#f87171">
-        <div class="rec-tag" style="color:#f87171">Analista de riesgo</div>
-        <div class="rec-title">Monitorear bonos hipotecarios como leading indicator (lag 2Q)</div>
-        <div class="rec-body">El connected scatter muestra una correlación negativa robusta volumen–tasas: trimestres con bonos altos coinciden con caídas de volumen. Recomendar usar el yield del bono hipotecario danés como variable de alerta temprana para portfolios expuestos al mercado residencial.</div>
-      </div>
-      <div class="rec-card" style="border-left-color:#34d399">
-        <div class="rec-tag" style="color:#34d399">Consultor público</div>
-        <div class="rec-title">Focalizar vivienda asequible en Bornholm, Jutland y Fyn & islands</div>
-        <div class="rec-body">Estas regiones combinan los peores drawdowns con la menor recuperación post-2012. Intervención pública (subsidio o vivienda social) tiene mayor impacto marginal aquí que en Zealand, donde el problema es de oferta y no de demanda.</div>
-      </div>
-      <div class="rec-card" style="border-left-color:#a78bfa">
-        <div class="rec-tag" style="color:#a78bfa">Limitaciones del análisis</div>
-        <div class="rec-title">Correlación ≠ causalidad; sesgos de selección presentes</div>
-        <div class="rec-body">El dataset Kaggle no captura ventas off-market ni variables de calidad (renovación, cercanía a transporte). Los resultados son descriptivos del mercado registrado, no predictivos. Validar con datos externos (Danmarks Statistik) antes de decisiones de inversión.</div>
+  <!-- ══════════════════════════════════════════════════════════════════════
+       TAB: CONCLUSIONES
+  ══════════════════════════════════════════════════════════════════════ -->
+  <div class="tab-panel" id="panel-conclusiones">
+
+    <div class="mb-6">
+      <div class="section-heading">Recomendaciones e Insights Accionables</div>
+      <div class="grid-2" style="gap:12px">
+        <div class="rec-card" style="border-left-color:#60a5fa">
+          <div class="rec-tag" style="color:#60a5fa">Inversor inmobiliario</div>
+          <div class="rec-title">Priorizar Apartment/Villa en Zealand sobre Summerhouse provincial</div>
+          <div class="rec-body">El diferencial de drawdown entre tipologías estables (Apartment/Villa en Zealand) y tipologías recreativas en regiones periféricas es sustancial durante crisis. Zealand ofrece mayor protección pico-valle. <strong>Trade-off:</strong> menor yield bruto y entrada más cara en la región capital.</div>
+        </div>
+        <div class="rec-card" style="border-left-color:#f87171">
+          <div class="rec-tag" style="color:#f87171">Analista de riesgo</div>
+          <div class="rec-title">Monitorear bonos hipotecarios como leading indicator (lag 2Q)</div>
+          <div class="rec-body">El connected scatter muestra una correlación negativa robusta volumen–tasas: trimestres con bonos altos coinciden con caídas de volumen. Recomendar usar el yield del bono hipotecario danés como variable de alerta temprana para portfolios expuestos al mercado residencial.</div>
+        </div>
+        <div class="rec-card" style="border-left-color:#34d399">
+          <div class="rec-tag" style="color:#34d399">Consultor público</div>
+          <div class="rec-title">Focalizar vivienda asequible en Bornholm, Jutland y Fyn & islands</div>
+          <div class="rec-body">Estas regiones combinan los peores drawdowns con la menor recuperación post-2012. Intervención pública (subsidio o vivienda social) tiene mayor impacto marginal aquí que en Zealand, donde el problema es de oferta y no de demanda.</div>
+        </div>
+        <div class="rec-card" style="border-left-color:#a78bfa">
+          <div class="rec-tag" style="color:#a78bfa">Limitaciones del análisis</div>
+          <div class="rec-title">Correlación ≠ causalidad; sesgos de selección presentes</div>
+          <div class="rec-body">El dataset Kaggle no captura ventas off-market ni variables de calidad (renovación, cercanía a transporte). Los resultados son descriptivos del mercado registrado, no predictivos. Validar con datos externos (Danmarks Statistik) antes de decisiones de inversión.</div>
+        </div>
       </div>
     </div>
-  </div>
 
-  <!-- ── Disclaimer metodológico ── -->
-  <div class="disclaimer mb-6">
-    <strong>Nota metodológica:</strong>
-    Este dashboard es de naturaleza <strong>descriptiva</strong>, no predictiva.
-    Las correlaciones observadas entre variables macroeconómicas y precios no implican causalidad.
-    Los datos 1992–1994 pueden tener menor completitud por la transición al sistema digital de registro de transacciones.
-    El precio real/m² está deflactado con el IPC danés (base 2024), derivado de la tasa de inflación anual incluida en el dataset.
-    <strong>Fuente:</strong> Kaggle — Danish Residential Housing Prices 1992–2024; procesado en arquitectura Medallion (Bronze → Silver → Gold) y servido desde <code style="background:rgba(255,255,255,0.05);padding:1px 5px;border-radius:3px;font-size:0.74rem">gs://danish-housing-gold/marts/</code>.
-    Las regiones del dataset (Zealand, Jutland, Fyn & islands, Bornholm) son agregados geográficos amplios; no coinciden 1:1 con las 5 regiones administrativas oficiales de Dinamarca.
-    Proyecto académico — Data Visualization, UPC 2026-01.
+    <div class="disclaimer mb-6">
+      <strong>Nota metodológica:</strong>
+      Este dashboard es de naturaleza <strong>descriptiva</strong>, no predictiva.
+      Las correlaciones observadas entre variables macroeconómicas y precios no implican causalidad.
+      Los datos 1992–1994 pueden tener menor completitud por la transición al sistema digital de registro de transacciones.
+      El precio real/m² está deflactado con el IPC danés (base 2024), derivado de la tasa de inflación anual incluida en el dataset.
+      <strong>Fuente:</strong> Kaggle — Danish Residential Housing Prices 1992–2024; procesado en arquitectura Medallion (Bronze → Silver → Gold) y servido desde <code style="background:rgba(255,255,255,0.05);padding:1px 5px;border-radius:3px;font-size:0.74rem">gs://danish-housing-gold/marts/</code>.
+      Las regiones del dataset (Zealand, Jutland, Fyn & islands, Bornholm) son agregados geográficos amplios; no coinciden 1:1 con las 5 regiones administrativas oficiales de Dinamarca.
+      Proyecto académico — Data Visualization, UPC 2026-01.
+    </div>
+
   </div>
 
 </div><!-- /container -->
@@ -321,9 +377,8 @@
 'use strict';
 
 // ── Paletas ────────────────────────────────────────────────────────────────────
-// Nombres reales del dataset (4 regiones geográficas + 5 tipologías inglesas)
 const REGION_COLORS = {
-  'Zealand':       '#60a5fa',  // incluye København (capital)
+  'Zealand':       '#60a5fa',
   'Fyn & islands': '#34d399',
   'Jutland':       '#f59e0b',
   'Bornholm':      '#a78bfa',
@@ -344,10 +399,7 @@ const PERIOD_COLORS = {
   'Corrección 2022+': '#fb923c',
 };
 
-// ── Carga de marts Gold desde data/marts/ ──────────────────────────────────────
-// Los CSVs vienen del bucket público gs://danish-housing-gold/marts/
-// pero los servimos localmente para evitar CORS (ver scripts/upload_to_gcs.py).
-
+// ── Carga de marts Gold ────────────────────────────────────────────────────────
 function parseCSV(text) {
   const lines = text.trim().split(/\r?\n/);
   const headers = lines[0].split(',');
@@ -375,7 +427,6 @@ async function loadMarts() {
     fetchCSV('mart_volatility.csv'),
     fetchCSV('mart_macro_correlation.csv'),
     fetchCSV('mart_transactions_map.csv'),
-    // Modelado (opcionales: si no existen, la seccion de modelado queda vacia)
     fetchCSV('mart_model_comparison.csv', true),
     fetchCSV('mart_feature_importance.csv', true),
     fetchCSV('mart_model_cv.csv', true),
@@ -384,7 +435,6 @@ async function loadMarts() {
   return { ri, dd, vol, mc, mp, modelCmp, modelImp, modelCv, modelPred };
 }
 
-// Clasificación de período macroeconómico por trimestre (storytelling)
 function periodOfQ(q) {
   const y = parseInt(q);
   if (y < 2000) return 'Expansión 90s';
@@ -396,24 +446,15 @@ function periodOfQ(q) {
 }
 
 function buildDataFromMarts({ ri, dd, vol, mc, mp }) {
-  // Macro indexado por trimestre (para enriquecer regional_index con n y bond)
   const macroByQ = {};
   mc.forEach(d => {
-    macroByQ[d.quarter] = {
-      n: parseInt(d.n_transactions) || 0,
-      bond: parseFloat(d.avg_bond_yield) || null,
-    };
+    macroByQ[d.quarter] = { n: parseInt(d.n_transactions) || 0, bond: parseFloat(d.yield_avg) || null };
   });
 
-  // ── regional_index: { region: [{q, idx, price, n, bond}] } ──
   const regional_index = {};
   ri.forEach(d => {
     if (!regional_index[d.region]) regional_index[d.region] = [];
-    regional_index[d.region].push({
-      q: d.quarter,
-      year: parseInt(d.year),
-      price: parseFloat(d.avg_price),
-    });
+    regional_index[d.region].push({ q: d.quarter, year: parseInt(d.year), price: parseFloat(d.avg_sqm_price_real) });
   });
   Object.keys(regional_index).forEach(region => {
     const arr = regional_index[region]
@@ -421,45 +462,31 @@ function buildDataFromMarts({ ri, dd, vol, mc, mp }) {
       .sort((a, b) => a.q.localeCompare(b.q));
     const base = arr[0]?.price || 1;
     arr.forEach(d => {
-      d.idx = +(d.price / base * 100).toFixed(2);
-      d.n   = macroByQ[d.q]?.n || 0;
+      d.idx  = +(d.price / base * 100).toFixed(2);
+      d.n    = macroByQ[d.q]?.n || 0;
       d.bond = macroByQ[d.q]?.bond ?? null;
     });
     regional_index[region] = arr;
   });
 
-  // ── volatility: { type: [{q, vol}] } ──
   const volatility = {};
   vol.forEach(d => {
     if (!volatility[d.house_type]) volatility[d.house_type] = [];
-    volatility[d.house_type].push({
-      q: d.quarter,
-      vol: parseFloat(d.volatility_4q) || null,
-    });
+    volatility[d.house_type].push({ q: d.quarter, vol: parseFloat(d.volatility_4q) || null });
   });
-  Object.keys(volatility).forEach(t => {
-    volatility[t].sort((a, b) => a.q.localeCompare(b.q));
-  });
+  Object.keys(volatility).forEach(t => volatility[t].sort((a, b) => a.q.localeCompare(b.q)));
 
-  // ── drawdown_summary: worst drawdown by (region, type) ──
   const ddByKey = {};
   dd.forEach(d => {
     const v = parseFloat(d.drawdown_pct);
     if (isNaN(v)) return;
     const key = d.region + '|' + d.house_type;
     if (!ddByKey[key]) ddByKey[key] = { region: d.region, house_type: d.house_type, worst_dd: 0, worst_q: null };
-    if (v < ddByKey[key].worst_dd) {
-      ddByKey[key].worst_dd = v;
-      ddByKey[key].worst_q = d.quarter;
-    }
+    if (v < ddByKey[key].worst_dd) { ddByKey[key].worst_dd = v; ddByKey[key].worst_q = d.quarter; }
   });
-  const drawdown_summary = Object.values(ddByKey).map(o => ({
-    ...o,
-    worst_dd: +o.worst_dd.toFixed(1),
-  }));
+  const drawdown_summary = Object.values(ddByKey).map(o => ({ ...o, worst_dd: +o.worst_dd.toFixed(1) }));
 
-  // ── drawdown_timeline: promedio across regions por (quarter, type) ──
-  const ddTimeAgg = {};  // { type: { quarter: [sum, count] } }
+  const ddTimeAgg = {};
   dd.forEach(d => {
     const v = parseFloat(d.drawdown_pct);
     if (isNaN(v)) return;
@@ -475,18 +502,16 @@ function buildDataFromMarts({ ri, dd, vol, mc, mp }) {
       .sort((a, b) => a.q.localeCompare(b.q));
   });
 
-  // ── macro: [{q, n_tx, yield, bond_lag2, period}] ──
   const macro = mc
     .map(d => ({
       q: d.quarter,
       n_tx: parseInt(d.n_transactions) || 0,
-      yield: parseFloat(d.avg_bond_yield),
+      yield: parseFloat(d.yield_avg),
       bond_lag2: parseFloat(d.bond_yield_lag2q),
       period: periodOfQ(d.quarter),
     }))
     .filter(d => !isNaN(d.bond_lag2) && !isNaN(d.yield));
 
-  // ── top_cities: último año disponible, top 15 by avg_price (min 20 tx) ──
   const yearsMP = mp.map(d => parseInt(d.year)).filter(y => !isNaN(y));
   const lastYear = Math.max(...yearsMP);
   const cityAgg = {};
@@ -495,37 +520,29 @@ function buildDataFromMarts({ ri, dd, vol, mc, mp }) {
     const t = parseInt(d.n_transactions) || 0;
     if (isNaN(p) || t <= 0) return;
     if (!cityAgg[d.city]) cityAgg[d.city] = { city: d.city, region: d.region, weighted: 0, totalTx: 0 };
-    cityAgg[d.city].weighted += p * t;  // promedio ponderado por volumen
+    cityAgg[d.city].weighted += p * t;
     cityAgg[d.city].totalTx += t;
   });
   const top_cities = Object.values(cityAgg)
     .filter(c => c.totalTx >= 20)
-    .map(c => ({
-      city: c.city,
-      region: c.region,
-      avg_price: Math.round(c.weighted / c.totalTx),
-      tx: c.totalTx,
-    }))
+    .map(c => ({ city: c.city, region: c.region, avg_price: Math.round(c.weighted / c.totalTx), tx: c.totalTx }))
     .sort((a, b) => b.avg_price - a.avg_price)
     .slice(0, 15);
 
-  // ── reg_annual_price: { region: { year: avg_price } } ──
   const reg_annual_price = {};
   const annualAgg = {};
   ri.forEach(d => {
-    const p = parseFloat(d.avg_price);
+    const p = parseFloat(d.avg_sqm_price_real);
     if (isNaN(p) || p <= 0) return;
     const key = d.region + '|' + d.year;
     if (!annualAgg[key]) annualAgg[key] = { region: d.region, year: parseInt(d.year), sum: 0, cnt: 0 };
-    annualAgg[key].sum += p;
-    annualAgg[key].cnt += 1;
+    annualAgg[key].sum += p; annualAgg[key].cnt += 1;
   });
   Object.values(annualAgg).forEach(({ region, year, sum, cnt }) => {
     if (!reg_annual_price[region]) reg_annual_price[region] = {};
     reg_annual_price[region][year] = Math.round(sum / cnt);
   });
 
-  // ── KPIs ──
   const total_tx = mc.reduce((s, d) => s + (parseInt(d.n_transactions) || 0), 0);
   const latestPrices = Object.values(regional_index).map(arr => arr[arr.length - 1]?.price).filter(p => p > 0);
   const avg_price_latest = latestPrices.length ? Math.round(latestPrices.reduce((a, b) => a + b, 0) / latestPrices.length) : 0;
@@ -533,29 +550,16 @@ function buildDataFromMarts({ ri, dd, vol, mc, mp }) {
   const worstDD = drawdown_summary.reduce((a, b) => b.worst_dd < a.worst_dd ? b : a, { worst_dd: 0, region: '—', house_type: '—', worst_q: '—' });
 
   return {
-    kpis: {
-      total_tx,
-      avg_price_2024: avg_price_latest,
-      latest_year: latestYearAcrossRegions,
-      worst_dd_pct: worstDD.worst_dd,
-      worst_dd_region: worstDD.region,
-      worst_dd_type: worstDD.house_type,
-      worst_dd_quarter: worstDD.worst_q || '—',
-    },
-    regional_index,
-    volatility,
-    drawdown_summary,
-    drawdown_timeline,
-    macro,
-    top_cities,
-    reg_annual_price,
+    kpis: { total_tx, avg_price_2024: avg_price_latest, latest_year: latestYearAcrossRegions,
+            worst_dd_pct: worstDD.worst_dd, worst_dd_region: worstDD.region,
+            worst_dd_type: worstDD.house_type, worst_dd_quarter: worstDD.worst_q || '—' },
+    regional_index, volatility, drawdown_summary, drawdown_timeline, macro, top_cities, reg_annual_price,
   };
 }
 
-// DATA y constantes derivadas se asignan tras la carga async (ver bootstrap al final).
 let DATA = null;
 
-// ── Helpers de Chart.js ────────────────────────────────────────────────────────
+// ── Helpers Chart.js ───────────────────────────────────────────────────────────
 const CHART_DEFAULTS = {
   responsive: true,
   maintainAspectRatio: true,
@@ -563,12 +567,8 @@ const CHART_DEFAULTS = {
   plugins: {
     legend: { display: false },
     tooltip: {
-      backgroundColor: '#1a1d27',
-      borderColor: '#2e3245',
-      borderWidth: 1,
-      titleColor: '#e2e8f0',
-      bodyColor: '#8892aa',
-      padding: 10,
+      backgroundColor: '#1a1d27', borderColor: '#2e3245', borderWidth: 1,
+      titleColor: '#e2e8f0', bodyColor: '#8892aa', padding: 10,
     },
   },
   scales: {
@@ -596,13 +596,11 @@ function makeLegend(containerId, colorMap) {
   });
 }
 
-// Índices y eventos se inicializan tras la carga (rebuildIndices)
 let ALL_QS = [];
 let CRISIS_START_I = -1, CRISIS_END_I = -1;
 let MACRO_EVENTS = [];
 
 function rebuildIndices() {
-  // Tomamos la región con más quarters (puede que Bornholm empiece tarde)
   ALL_QS = Object.values(DATA.regional_index)
     .reduce((a, b) => b.length > a.length ? b : a, [])
     .map(d => d.q);
@@ -616,7 +614,6 @@ function rebuildIndices() {
   ].map(e => ({ ...e, i: ALL_QS.findIndex(q => q === e.q) })).filter(e => e.i >= 0);
 }
 
-// Plugin reusable: banda de crisis GFC + líneas verticales de eventos macro
 const crisisAnnotationsPlugin = {
   id: 'crisisAnnotations',
   beforeDraw(chart) {
@@ -627,9 +624,7 @@ const crisisAnnotationsPlugin = {
     ctx.save();
     ctx.fillStyle = 'rgba(248,113,113,0.07)';
     ctx.fillRect(x0, chartArea.top, x1 - x0, chartArea.height);
-    ctx.strokeStyle = 'rgba(248,113,113,0.25)';
-    ctx.lineWidth = 1;
-    ctx.setLineDash([3, 3]);
+    ctx.strokeStyle = 'rgba(248,113,113,0.25)'; ctx.lineWidth = 1; ctx.setLineDash([3, 3]);
     ctx.beginPath(); ctx.moveTo(x0, chartArea.top); ctx.lineTo(x0, chartArea.bottom); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(x1, chartArea.top); ctx.lineTo(x1, chartArea.bottom); ctx.stroke();
     ctx.restore();
@@ -638,25 +633,21 @@ const crisisAnnotationsPlugin = {
     const { ctx, chartArea, scales } = chart;
     if (!chartArea) return;
     ctx.save();
-    ctx.setLineDash([2, 3]);
-    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 3]); ctx.lineWidth = 1;
     ctx.font = '600 9.5px -apple-system, sans-serif';
     MACRO_EVENTS.forEach((ev, idx) => {
       const x = scales.x.getPixelForValue(ev.i);
       ctx.strokeStyle = ev.color;
-      ctx.beginPath();
-      ctx.moveTo(x, chartArea.top + 4);
-      ctx.lineTo(x, chartArea.bottom);
-      ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x, chartArea.top + 4); ctx.lineTo(x, chartArea.bottom); ctx.stroke();
       ctx.fillStyle = ev.color;
       ctx.beginPath();
       const my = chartArea.top + 6;
       ctx.moveTo(x, my - 4); ctx.lineTo(x + 4, my); ctx.lineTo(x, my + 4); ctx.lineTo(x - 4, my); ctx.closePath();
       ctx.fill();
       const ly = chartArea.top + 14 + (idx % 2) * 12;
-      ctx.fillStyle = ev.color;
       const textW = ctx.measureText(ev.label).width;
       const tx = Math.min(chartArea.right - textW - 4, Math.max(chartArea.left + 2, x + 5));
+      ctx.fillStyle = ev.color;
       ctx.fillText(ev.label, tx, ly);
     });
     ctx.restore();
@@ -675,7 +666,7 @@ function renderKPIs() {
   if (badge) badge.textContent = fmtTx(k.total_tx) + ' transacciones';
 }
 
-// ── Vista 1: Índice Regional + Bonos en paneles apilados ──────────────────────
+// ── Vista 1: Índice Regional + Bonos ──────────────────────────────────────────
 let chartReg = null, chartRegBonds = null;
 function renderRegionalIndex() {
   const mode = document.getElementById('reg-mode').value;
@@ -683,41 +674,29 @@ function renderRegionalIndex() {
   const qs = ALL_QS;
   const tickFn = (val, i) => qs[i]?.endsWith('Q1') ? qs[i].replace('Q1','') : '';
 
-  // Panel superior: índice/precio por región, alineado al eje X común
   const datasetsTop = regions.map(reg => {
     const byQ = {};
     DATA.regional_index[reg].forEach(d => { byQ[d.q] = mode === 'index' ? d.idx : d.price; });
     return {
-      label: reg,
-      data: qs.map(q => byQ[q] ?? null),
+      label: reg, data: qs.map(q => byQ[q] ?? null),
       borderColor: REGION_COLORS[reg] || '#6366f1',
       backgroundColor: 'transparent',
-      borderWidth: reg === 'Zealand' ? 2.5 : 1.5,  // Zealand (capital) destacada
-      pointRadius: 0,
-      pointHoverRadius: 4,
-      tension: 0.3,
-      spanGaps: true,
+      borderWidth: reg === 'Zealand' ? 2.5 : 1.5,
+      pointRadius: 0, pointHoverRadius: 4, tension: 0.3, spanGaps: true,
     };
   });
 
-  if (chartReg) { chartReg.destroy(); }
+  if (chartReg) chartReg.destroy();
   chartReg = new Chart(document.getElementById('chartRegional'), {
     type: 'line',
     data: { labels: qs, datasets: datasetsTop },
     options: {
-      ...CHART_DEFAULTS,
-      maintainAspectRatio: false,
+      ...CHART_DEFAULTS, maintainAspectRatio: false,
       plugins: {
         ...CHART_DEFAULTS.plugins,
         tooltip: {
-          ...CHART_DEFAULTS.plugins.tooltip,
-          mode: 'index', intersect: false,
-          callbacks: {
-            label: ctx => {
-              const suffix = mode === 'index' ? '' : ' DKK';
-              return ` ${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString()}${suffix}`;
-            }
-          }
+          ...CHART_DEFAULTS.plugins.tooltip, mode: 'index', intersect: false,
+          callbacks: { label: ctx => { const s = mode === 'index' ? '' : ' DKK'; return ` ${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString()}${s}`; } }
         }
       },
       scales: {
@@ -728,69 +707,38 @@ function renderRegionalIndex() {
     plugins: [crisisAnnotationsPlugin],
   });
 
-  // Panel inferior: rendimiento bonos hipotecarios (desde mart_macro_correlation, alineado a ALL_QS)
   const bondByQ = {};
   DATA.macro.forEach(d => { bondByQ[d.q] = d.yield; });
-  const bondData = qs.map(q => bondByQ[q] ?? null);
   if (chartRegBonds) chartRegBonds.destroy();
   chartRegBonds = new Chart(document.getElementById('chartRegionalBonds'), {
     type: 'line',
-    data: {
-      labels: qs,
-      datasets: [{
-        label: 'Bonos hipotecarios %',
-        data: bondData,
-        borderColor: '#fbbf24',
-        backgroundColor: 'rgba(251,191,36,0.10)',
-        borderWidth: 1.6,
-        pointRadius: 0,
-        pointHoverRadius: 3,
-        tension: 0.4,
-        fill: true,
-      }]
-    },
+    data: { labels: qs, datasets: [{ label: 'Bonos hipotecarios %', data: qs.map(q => bondByQ[q] ?? null), borderColor: '#fbbf24', backgroundColor: 'rgba(251,191,36,0.10)', borderWidth: 1.6, pointRadius: 0, pointHoverRadius: 3, tension: 0.4, fill: true }] },
     options: {
-      ...CHART_DEFAULTS,
-      maintainAspectRatio: false,
-      plugins: {
-        ...CHART_DEFAULTS.plugins,
-        tooltip: {
-          ...CHART_DEFAULTS.plugins.tooltip,
-          mode: 'index', intersect: false,
-          callbacks: { label: ctx => ` Bonos hipotecarios: ${ctx.parsed.y.toFixed(2)}%` }
-        }
-      },
+      ...CHART_DEFAULTS, maintainAspectRatio: false,
+      plugins: { ...CHART_DEFAULTS.plugins, tooltip: { ...CHART_DEFAULTS.plugins.tooltip, mode: 'index', intersect: false, callbacks: { label: ctx => ` Bonos hipotecarios: ${ctx.parsed.y.toFixed(2)}%` } } },
       scales: {
         x: { ...CHART_DEFAULTS.scales.x, ticks: { ...CHART_DEFAULTS.scales.x.ticks, callback: tickFn } },
         y: { ...CHART_DEFAULTS.scales.y, ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => v.toFixed(0)+'%', maxTicksLimit: 4 } }
       }
     },
     plugins: [{
-      // Banda crisis sin labels (panel pequeño)
       id: 'crisisBandSlim',
       beforeDraw(chart) {
         const { ctx, chartArea, scales } = chart;
         if (!chartArea) return;
         const x0 = scales.x.getPixelForValue(CRISIS_START_I);
         const x1 = scales.x.getPixelForValue(CRISIS_END_I);
-        ctx.save();
-        ctx.fillStyle = 'rgba(248,113,113,0.07)';
-        ctx.fillRect(x0, chartArea.top, x1 - x0, chartArea.height);
-        ctx.restore();
+        ctx.save(); ctx.fillStyle = 'rgba(248,113,113,0.07)';
+        ctx.fillRect(x0, chartArea.top, x1 - x0, chartArea.height); ctx.restore();
       },
       afterDatasetsDraw(chart) {
         const { ctx, chartArea, scales } = chart;
         if (!chartArea) return;
-        ctx.save();
-        ctx.setLineDash([2, 3]);
-        ctx.lineWidth = 1;
+        ctx.save(); ctx.setLineDash([2, 3]); ctx.lineWidth = 1;
         MACRO_EVENTS.forEach(ev => {
           const x = scales.x.getPixelForValue(ev.i);
           ctx.strokeStyle = ev.color;
-          ctx.beginPath();
-          ctx.moveTo(x, chartArea.top);
-          ctx.lineTo(x, chartArea.bottom);
-          ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(x, chartArea.top); ctx.lineTo(x, chartArea.bottom); ctx.stroke();
         });
         ctx.restore();
       }
@@ -800,15 +748,13 @@ function renderRegionalIndex() {
   makeLegend('reg-legend', REGION_COLORS);
 }
 
-// ── Vista 4: Volatilidad — small multiples por tipología ──────────────────────
+// ── Vista 4: Volatilidad small multiples ──────────────────────────────────────
 let chartVolSmall = [];
 function renderVolatility() {
-  // Solo tipologías que existen en los datos
   const types = Object.keys(TYPE_COLORS).filter(t => DATA.volatility[t]);
   const qs    = ALL_QS;
   const container = document.getElementById('volMultiples');
 
-  // Mapas quarter→vol por tipología, alineados al eje X común
   const volByType = {};
   types.forEach(t => {
     const m = {};
@@ -816,17 +762,14 @@ function renderVolatility() {
     volByType[t] = qs.map(q => m[q] ?? null);
   });
 
-  // Y-scale común para comparación justa entre paneles
   const allVals = Object.values(volByType).flat().filter(v => v != null && !isNaN(v));
   const yMax = allVals.length ? Math.ceil(Math.max(...allVals) * 1.1) : 10;
 
-  // Destruir charts previos y limpiar contenedor
   chartVolSmall.forEach(c => c.destroy());
   chartVolSmall = [];
   container.innerHTML = '';
 
   types.forEach(focal => {
-    // Crear card y canvas
     const card = document.createElement('div');
     card.style.cssText = 'background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 10px 6px';
     card.innerHTML = `
@@ -840,14 +783,10 @@ function renderVolatility() {
     container.appendChild(card);
 
     const datasets = types.map(t => ({
-      label: t,
-      data: volByType[t],
+      label: t, data: volByType[t],
       borderColor: t === focal ? TYPE_COLORS[t] : 'rgba(140,148,170,0.25)',
       backgroundColor: 'transparent',
-      borderWidth: t === focal ? 2 : 1,
-      pointRadius: 0,
-      tension: 0.3,
-      spanGaps: false,
+      borderWidth: t === focal ? 2 : 1, pointRadius: 0, tension: 0.3, spanGaps: false,
       order: t === focal ? 0 : 1,
     }));
 
@@ -855,13 +794,10 @@ function renderVolatility() {
       type: 'line',
       data: { labels: qs, datasets },
       options: {
-        ...CHART_DEFAULTS,
-        maintainAspectRatio: false,
+        ...CHART_DEFAULTS, maintainAspectRatio: false,
         plugins: {
           legend: { display: false },
-          tooltip: {
-            ...CHART_DEFAULTS.plugins.tooltip,
-            mode: 'index', intersect: false,
+          tooltip: { ...CHART_DEFAULTS.plugins.tooltip, mode: 'index', intersect: false,
             filter: ctx => ctx.dataset.label === focal,
             callbacks: { label: ctx => ctx.parsed.y != null ? ` ${focal}: ${ctx.parsed.y.toFixed(2)}%` : null }
           }
@@ -877,10 +813,9 @@ function renderVolatility() {
   });
 }
 
-// ── Vista 5: Connected scatter Volumen vs Bonos (trayectoria temporal) ────────
+// ── Vista 5: Connected scatter Volumen vs Bonos ───────────────────────────────
 let chartScatter = null;
 function renderScatter() {
-  // Mantener orden cronológico dentro de cada período y conectar puntos
   const byPeriod = {};
   DATA.macro.forEach(d => {
     if (!byPeriod[d.period]) byPeriod[d.period] = [];
@@ -888,15 +823,10 @@ function renderScatter() {
   });
 
   const datasets = Object.entries(byPeriod).map(([period, pts]) => ({
-    label: period,
-    data: pts,
+    label: period, data: pts,
     backgroundColor: hex2rgba(PERIOD_COLORS[period] || '#6366f1', 0.85),
     borderColor: PERIOD_COLORS[period] || '#6366f1',
-    showLine: true,
-    borderWidth: 1.3,
-    pointRadius: 3,
-    pointHoverRadius: 6,
-    tension: 0,
+    showLine: true, borderWidth: 1.3, pointRadius: 3, pointHoverRadius: 6, tension: 0,
   }));
 
   if (chartScatter) chartScatter.destroy();
@@ -910,10 +840,7 @@ function renderScatter() {
         tooltip: {
           ...CHART_DEFAULTS.plugins.tooltip,
           callbacks: {
-            title: ctx => {
-              const p = ctx[0].raw;
-              return `${p.q} · ${ctx[0].dataset.label}`;
-            },
+            title: ctx => `${ctx[0].raw.q} · ${ctx[0].dataset.label}`,
             label: ctx => ` Bono lag2: ${ctx.parsed.x.toFixed(2)}% · Volumen: ${ctx.parsed.y.toLocaleString()}`
           }
         }
@@ -927,12 +854,11 @@ function renderScatter() {
   makeLegend('scatter-legend', PERIOD_COLORS);
 }
 
-// ── Vista 3: Heatmap de drawdowns ──────────────────────────────────────────────
+// ── Vista 3: Heatmap drawdowns ─────────────────────────────────────────────────
 function renderHeatmap() {
   const dd = DATA.drawdown_summary;
   const REGIONS = Object.keys(REGION_COLORS);
   const TYPES   = Object.keys(TYPE_COLORS);
-
   const lookup = {};
   dd.forEach(d => { lookup[d.region + '|' + d.house_type] = d.worst_dd; });
   const vals = dd.map(d => d.worst_dd);
@@ -940,10 +866,7 @@ function renderHeatmap() {
 
   function cellColor(v) {
     const t = Math.max(0, Math.min(1, (v - minV) / (0 - minV)));
-    const r = Math.round(239 * (1-t) + 30  * t);
-    const g = Math.round(68  * (1-t) + 120 * t);
-    const b = Math.round(68  * (1-t) + 60  * t);
-    return `rgb(${r},${g},${b})`;
+    return `rgb(${Math.round(239*(1-t)+30*t)},${Math.round(68*(1-t)+120*t)},${Math.round(68*(1-t)+60*t)})`;
   }
 
   let html = '<div style="overflow-x:auto"><table style="width:100%;border-collapse:separate;border-spacing:4px">';
@@ -968,13 +891,11 @@ function renderHeatmap() {
   html += '<div class="flex items-center gap-2 mt-3" style="padding-left:120px">';
   html += '<span style="font-size:0.7rem;color:var(--muted)">Peor</span>';
   html += '<div style="flex:1;height:6px;border-radius:3px;background:linear-gradient(to right,rgb(239,68,68),rgb(30,120,60))"></div>';
-  html += '<span style="font-size:0.7rem;color:var(--muted)">Menor</span>';
-  html += '</div>';
-
+  html += '<span style="font-size:0.7rem;color:var(--muted)">Menor</span></div>';
   document.getElementById('ddHeatmap').innerHTML = html;
 }
 
-// ── Drawdown timeline (trayectoria por tipología) ─────────────────────────────
+// ── Drawdown timeline ──────────────────────────────────────────────────────────
 let chartDdTimeline = null;
 function renderDrawdownTimeline() {
   const types = Object.keys(TYPE_COLORS).filter(t => DATA.drawdown_timeline[t]);
@@ -983,15 +904,11 @@ function renderDrawdownTimeline() {
     const m = {};
     DATA.drawdown_timeline[type].forEach(d => { m[d.q] = d.dd; });
     return {
-      label: type,
-      data: qs.map(q => m[q] ?? null),
+      label: type, data: qs.map(q => m[q] ?? null),
       borderColor: TYPE_COLORS[type],
       backgroundColor: hex2rgba(TYPE_COLORS[type], type === 'Summerhouse' ? 0.18 : 0.06),
       borderWidth: type === 'Summerhouse' ? 2 : 1.3,
-      pointRadius: 0,
-      tension: 0.3,
-      fill: 'origin',
-      spanGaps: true,
+      pointRadius: 0, tension: 0.3, fill: 'origin', spanGaps: true,
     };
   });
 
@@ -1000,16 +917,8 @@ function renderDrawdownTimeline() {
     type: 'line',
     data: { labels: qs, datasets },
     options: {
-      ...CHART_DEFAULTS,
-      maintainAspectRatio: false,
-      plugins: {
-        ...CHART_DEFAULTS.plugins,
-        tooltip: {
-          ...CHART_DEFAULTS.plugins.tooltip,
-          mode: 'index', intersect: false,
-          callbacks: { label: ctx => ctx.parsed.y != null ? ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}%` : null }
-        }
-      },
+      ...CHART_DEFAULTS, maintainAspectRatio: false,
+      plugins: { ...CHART_DEFAULTS.plugins, tooltip: { ...CHART_DEFAULTS.plugins.tooltip, mode: 'index', intersect: false, callbacks: { label: ctx => ctx.parsed.y != null ? ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}%` : null } } },
       scales: {
         x: { ...CHART_DEFAULTS.scales.x, ticks: { ...CHART_DEFAULTS.scales.x.ticks, callback: (v, i) => qs[i]?.endsWith('Q1') && parseInt(qs[i]) % 4 === 0 ? qs[i].replace('Q1','') : '', maxRotation: 0 } },
         y: { ...CHART_DEFAULTS.scales.y, max: 5, ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => v.toFixed(0)+'%', maxTicksLimit: 4 } }
@@ -1033,9 +942,7 @@ function renderCities() {
     const label = sort === 'tx' ? c.tx.toLocaleString() : 'DKK ' + c.avg_price.toLocaleString();
     html += `<div class="city-bar-row">
       <div class="city-label" title="${c.city}">${c.city}</div>
-      <div class="city-bar-wrap">
-        <div class="city-bar" style="width:${pct}%;background:${color}">${label}</div>
-      </div>
+      <div class="city-bar-wrap"><div class="city-bar" style="width:${pct}%;background:${color}">${label}</div></div>
       <div class="city-price">${c.region.split(' ')[0]}</div>
     </div>`;
   });
@@ -1050,16 +957,12 @@ function renderAnnual() {
   const years = [...new Set(regs.flatMap(r => Object.keys(reg[r])))].sort();
 
   const datasets = regs.map(region => ({
-    label: region,
-    data: years.map(y => reg[region][y] || null),
+    label: region, data: years.map(y => reg[region][y] || null),
     borderColor: REGION_COLORS[region],
     backgroundColor: hex2rgba(REGION_COLORS[region], 0.06),
-    fill: false,
-    tension: 0.3,
+    fill: false, tension: 0.3,
     borderWidth: region === 'Zealand' ? 2.5 : 1.8,
-    pointRadius: 2,
-    pointHoverRadius: 5,
-    spanGaps: true,
+    pointRadius: 2, pointHoverRadius: 5, spanGaps: true,
   }));
 
   if (chartAnnual) chartAnnual.destroy();
@@ -1068,14 +971,7 @@ function renderAnnual() {
     data: { labels: years, datasets },
     options: {
       ...CHART_DEFAULTS,
-      plugins: {
-        ...CHART_DEFAULTS.plugins,
-        tooltip: {
-          ...CHART_DEFAULTS.plugins.tooltip,
-          mode: 'index', intersect: false,
-          callbacks: { label: ctx => ctx.parsed.y ? ` ${ctx.dataset.label}: DKK ${ctx.parsed.y.toLocaleString()}` : null }
-        }
-      },
+      plugins: { ...CHART_DEFAULTS.plugins, tooltip: { ...CHART_DEFAULTS.plugins.tooltip, mode: 'index', intersect: false, callbacks: { label: ctx => ctx.parsed.y ? ` ${ctx.dataset.label}: DKK ${ctx.parsed.y.toLocaleString()}` : null } } },
       scales: {
         x: { ...CHART_DEFAULTS.scales.x },
         y: { ...CHART_DEFAULTS.scales.y, ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => 'DKK '+(v/1000).toFixed(0)+'k' } }
@@ -1085,29 +981,21 @@ function renderAnnual() {
   makeLegend('annual-legend', REGION_COLORS);
 }
 
-// ── Sección Modelado ──────────────────────────────────────────────────────────
-const MODEL_COLORS = {
-  'M1_Linear':       '#94a3b8',
-  'M2_Ridge':        '#60a5fa',
-  'M3_RandomForest': '#34d399',
-  'M4_XGBoost':      '#f59e0b',
-};
-
-let MODEL_STATE = { comparison: [], importance: [], cv: [], predictions: [], champion: null };
-
+// ── Modelado predictivo ───────────────────────────────────────────────────────
+const MODEL_COLORS = { 'M1_Linear': '#94a3b8', 'M2_Ridge': '#60a5fa', 'M3_RandomForest': '#34d399', 'M4_XGBoost': '#f59e0b' };
+let MODEL_STATE = null;
 let chartImportance, chartCV, chartPredScatter;
 
 function fmtDKK(n) {
   if (!isFinite(n)) return '—';
-  if (Math.abs(n) >= 1e6) return (n / 1e6).toFixed(2) + 'M';
-  if (Math.abs(n) >= 1e3) return (n / 1e3).toFixed(0) + 'k';
+  if (Math.abs(n) >= 1e6) return (n/1e6).toFixed(2)+'M';
+  if (Math.abs(n) >= 1e3) return (n/1e3).toFixed(0)+'k';
   return n.toFixed(0);
 }
-function fmtPct(n, digits = 1) { return isFinite(n) ? n.toFixed(digits) + '%' : '—'; }
+function fmtPct(n, digits=1) { return isFinite(n) ? n.toFixed(digits)+'%' : '—'; }
 
 function buildModelState({ modelCmp, modelImp, modelCv, modelPred }) {
   if (!modelCmp || modelCmp.length === 0) { MODEL_STATE = null; return; }
-  // Coerce numeric fields
   const comparison = modelCmp.map(r => ({
     model: r.model,
     train_r2: parseFloat(r.train_r2), test_r2: parseFloat(r.test_r2),
@@ -1117,9 +1005,7 @@ function buildModelState({ modelCmp, modelImp, modelCv, modelPred }) {
     n_train: parseInt(r.n_train), n_test: parseInt(r.n_test),
   }));
   const champion = comparison.slice().sort((a, b) => b.test_r2 - a.test_r2)[0]?.model || null;
-  const importance = (modelImp || []).map(r => ({
-    model: r.model, feature: r.feature, importance: parseFloat(r.importance),
-  }));
+  const importance = (modelImp || []).map(r => ({ model: r.model, feature: r.feature, importance: parseFloat(r.importance) }));
   const cv = (modelCv || []).map(r => ({
     fold: parseInt(r.fold), model: r.model,
     train_start: parseInt(r.train_start), train_end: parseInt(r.train_end),
@@ -1129,8 +1015,7 @@ function buildModelState({ modelCmp, modelImp, modelCv, modelPred }) {
   }));
   const predictions = (modelPred || []).map(r => ({
     model: r.model, year: parseInt(r.year),
-    y_true: parseFloat(r.y_true), y_pred: parseFloat(r.y_pred),
-    residual: parseFloat(r.residual),
+    y_true: parseFloat(r.y_true), y_pred: parseFloat(r.y_pred), residual: parseFloat(r.residual),
   }));
   MODEL_STATE = { comparison, importance, cv, predictions, champion };
 }
@@ -1140,41 +1025,31 @@ function renderModelComparison() {
   const tbl = document.getElementById('model-comparison-table');
   const champ = MODEL_STATE.champion;
   const rows = MODEL_STATE.comparison;
-
-  const header = `
-    <table style="width:100%;border-collapse:collapse;font-size:0.84rem">
-      <thead>
-        <tr style="border-bottom:1px solid var(--border);color:var(--muted);font-size:0.74rem;text-transform:uppercase;letter-spacing:0.04em">
-          <th style="text-align:left;padding:8px 6px">Modelo</th>
-          <th style="text-align:right;padding:8px 6px">train R²</th>
-          <th style="text-align:right;padding:8px 6px">test R²</th>
-          <th style="text-align:right;padding:8px 6px">test MAE</th>
-          <th style="text-align:right;padding:8px 6px">test MAPE</th>
-          <th style="text-align:right;padding:8px 6px">test RMSE</th>
-        </tr>
-      </thead>
-      <tbody>`;
+  const header = `<table style="width:100%;border-collapse:collapse;font-size:0.84rem">
+    <thead><tr style="border-bottom:1px solid var(--border);color:var(--muted);font-size:0.74rem;text-transform:uppercase;letter-spacing:0.04em">
+      <th style="text-align:left;padding:8px 6px">Modelo</th>
+      <th style="text-align:right;padding:8px 6px">train R²</th>
+      <th style="text-align:right;padding:8px 6px">test R²</th>
+      <th style="text-align:right;padding:8px 6px">test MAE</th>
+      <th style="text-align:right;padding:8px 6px">test MAPE</th>
+      <th style="text-align:right;padding:8px 6px">test RMSE</th>
+    </tr></thead><tbody>`;
   const body = rows.map(r => {
     const isChamp = r.model === champ;
-    const rowStyle = isChamp ? `background:rgba(245,158,11,0.06);border-left:2px solid ${MODEL_COLORS[r.model] || '#f59e0b'}` : '';
+    const rowStyle = isChamp ? `background:rgba(245,158,11,0.06);border-left:2px solid ${MODEL_COLORS[r.model]||'#f59e0b'}` : '';
     const champBadge = isChamp ? '<span style="color:#f59e0b;font-size:0.7rem;margin-left:6px">★ campeón</span>' : '';
-    return `
-      <tr style="border-bottom:1px solid var(--border);${rowStyle}">
-        <td style="padding:10px 8px;font-weight:${isChamp ? 600 : 500};color:${MODEL_COLORS[r.model] || 'var(--text)'}">${r.model}${champBadge}</td>
-        <td style="text-align:right;padding:10px 6px;color:var(--muted)">${r.train_r2.toFixed(3)}</td>
-        <td style="text-align:right;padding:10px 6px;font-weight:${isChamp ? 600 : 500}">${r.test_r2.toFixed(3)}</td>
-        <td style="text-align:right;padding:10px 6px">${fmtDKK(r.test_mae)} DKK</td>
-        <td style="text-align:right;padding:10px 6px">${fmtPct(r.test_mape, 1)}</td>
-        <td style="text-align:right;padding:10px 6px;color:var(--muted)">${fmtDKK(r.test_rmse)} DKK</td>
-      </tr>`;
+    return `<tr style="border-bottom:1px solid var(--border);${rowStyle}">
+      <td style="padding:10px 8px;font-weight:${isChamp?600:500};color:${MODEL_COLORS[r.model]||'var(--text)'}">${r.model}${champBadge}</td>
+      <td style="text-align:right;padding:10px 6px;color:var(--muted)">${r.train_r2.toFixed(3)}</td>
+      <td style="text-align:right;padding:10px 6px;font-weight:${isChamp?600:500}">${r.test_r2.toFixed(3)}</td>
+      <td style="text-align:right;padding:10px 6px">${fmtDKK(r.test_mae)} DKK</td>
+      <td style="text-align:right;padding:10px 6px">${fmtPct(r.test_mape,1)}</td>
+      <td style="text-align:right;padding:10px 6px;color:var(--muted)">${fmtDKK(r.test_rmse)} DKK</td>
+    </tr>`;
   }).join('');
   tbl.innerHTML = header + body + '</tbody></table>';
-
-  // Badge campeón
   const champRow = rows.find(r => r.model === champ);
   document.getElementById('badge-champion').textContent = champ ? `★ ${champ} · R²=${champRow.test_r2.toFixed(3)}` : '— campeón';
-
-  // Takeaway
   const linealMape = rows.find(r => r.model === 'M1_Linear')?.test_mape || 0;
   document.getElementById('model-takeaway').innerHTML =
     `<strong>${champ}</strong> reduce el error medio a <strong>${fmtDKK(champRow.test_mae)} DKK</strong> (MAPE ${fmtPct(champRow.test_mape)}), vs. ${fmtPct(linealMape)} del baseline lineal. ` +
@@ -1183,169 +1058,116 @@ function renderModelComparison() {
 
 function renderFeatureImportance() {
   if (!MODEL_STATE) return;
-  const champ = MODEL_STATE.champion;
-  const imp = MODEL_STATE.importance
-    .filter(r => r.model === champ)
-    .sort((a, b) => b.importance - a.importance)
-    .slice(0, 10);
+  const imp = MODEL_STATE.importance.filter(r => r.model === MODEL_STATE.champion).sort((a,b) => b.importance - a.importance).slice(0,10);
   if (!imp.length) return;
-  const labels = imp.map(r => r.feature);
-  const data = imp.map(r => +(r.importance * 100).toFixed(2));
-
   if (chartImportance) chartImportance.destroy();
   chartImportance = new Chart(document.getElementById('chartImportance'), {
     type: 'bar',
-    data: {
-      labels,
-      datasets: [{
-        label: 'Importance (%)',
-        data,
-        backgroundColor: '#f59e0b',
-        borderColor: '#fb923c',
-        borderWidth: 1,
-      }],
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: ctx => ctx.parsed.x.toFixed(2) + '%' } },
-      },
-      scales: {
-        x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.08)' } },
-        y: { ticks: { color: '#e2e8f0', font: { size: 11 } }, grid: { display: false } },
-      },
-    },
+    data: { labels: imp.map(r => r.feature), datasets: [{ label: 'Importance (%)', data: imp.map(r => +(r.importance*100).toFixed(2)), backgroundColor: '#f59e0b', borderColor: '#fb923c', borderWidth: 1 }] },
+    options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.x.toFixed(2)+'%' } } },
+      scales: { x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.08)' } }, y: { ticks: { color: '#e2e8f0', font: { size: 11 } }, grid: { display: false } } } },
   });
 }
 
 function renderCV() {
   if (!MODEL_STATE || !MODEL_STATE.cv.length) return;
-  const folds = [...new Set(MODEL_STATE.cv.map(r => r.fold))].sort((a, b) => a - b);
+  const folds = [...new Set(MODEL_STATE.cv.map(r => r.fold))].sort((a,b) => a-b);
   const models = [...new Set(MODEL_STATE.cv.map(r => r.model))];
-
   const datasets = models.map(m => ({
     label: m,
-    data: folds.map(f => {
-      const row = MODEL_STATE.cv.find(r => r.fold === f && r.model === m);
-      return row ? +(row.r2.toFixed(3)) : null;
-    }),
-    borderColor: MODEL_COLORS[m] || '#94a3b8',
-    backgroundColor: MODEL_COLORS[m] || '#94a3b8',
-    borderWidth: m === MODEL_STATE.champion ? 3 : 1.5,
-    pointRadius: m === MODEL_STATE.champion ? 5 : 3,
-    pointHoverRadius: 6,
-    tension: 0.2,
+    data: folds.map(f => { const row = MODEL_STATE.cv.find(r => r.fold===f && r.model===m); return row ? +(row.r2.toFixed(3)) : null; }),
+    borderColor: MODEL_COLORS[m]||'#94a3b8', backgroundColor: MODEL_COLORS[m]||'#94a3b8',
+    borderWidth: m===MODEL_STATE.champion?3:1.5, pointRadius: m===MODEL_STATE.champion?5:3, pointHoverRadius: 6, tension: 0.2,
   }));
-
-  // Label de fold con periodo
-  const foldLabels = folds.map(f => {
-    const r = MODEL_STATE.cv.find(x => x.fold === f);
-    return r ? `F${f}\n${r.test_start}-${r.test_end}` : `F${f}`;
-  });
-
+  const foldLabels = folds.map(f => { const r = MODEL_STATE.cv.find(x=>x.fold===f); return r ? `F${f}\n${r.test_start}-${r.test_end}` : `F${f}`; });
   if (chartCV) chartCV.destroy();
   chartCV = new Chart(document.getElementById('chartCV'), {
     type: 'line',
     data: { labels: foldLabels, datasets },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 11 }, padding: 8, boxWidth: 12 } },
-        tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: R²=${ctx.parsed.y.toFixed(3)}` } },
-      },
-      scales: {
-        x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: 'rgba(148,163,184,0.08)' } },
-        y: { ticks: { color: '#94a3b8' }, title: { display: true, text: 'R² (escala nominal)', color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.08)' }, beginAtZero: true },
-      },
-    },
+    options: { responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 11 }, padding: 8, boxWidth: 12 } }, tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: R²=${ctx.parsed.y.toFixed(3)}` } } },
+      scales: { x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: 'rgba(148,163,184,0.08)' } }, y: { ticks: { color: '#94a3b8' }, title: { display: true, text: 'R² (escala nominal)', color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.08)' }, beginAtZero: true } } },
   });
 }
 
 function renderPredScatter() {
   if (!MODEL_STATE || !MODEL_STATE.predictions.length) return;
   const preds = MODEL_STATE.predictions;
-  // Color por año
   const years = [...new Set(preds.map(p => p.year))].sort();
-  const yearPalette = ['#60a5fa', '#34d399', '#f59e0b', '#f87171', '#a78bfa', '#fb923c', '#22d3ee'];
+  const yearPalette = ['#60a5fa','#34d399','#f59e0b','#f87171','#a78bfa','#fb923c','#22d3ee'];
   const colorOf = y => yearPalette[years.indexOf(y) % yearPalette.length];
-
   const datasets = years.map(y => ({
     label: String(y),
-    data: preds.filter(p => p.year === y).map(p => ({ x: p.y_true, y: p.y_pred })),
-    backgroundColor: colorOf(y) + 'cc',
-    borderColor: 'transparent',
-    pointRadius: 2,
-    pointHoverRadius: 4,
+    data: preds.filter(p => p.year===y).map(p => ({ x: p.y_true, y: p.y_pred })),
+    backgroundColor: colorOf(y)+'cc', borderColor: 'transparent', pointRadius: 2, pointHoverRadius: 4,
   }));
-
-  // Diagonal y_pred = y_true
   const maxV = Math.max(...preds.map(p => Math.max(p.y_true, p.y_pred))) * 1.05;
-  datasets.push({
-    label: 'y_pred = y_true',
-    data: [{ x: 0, y: 0 }, { x: maxV, y: maxV }],
-    type: 'line',
-    borderColor: 'rgba(226,232,240,0.4)',
-    borderDash: [4, 4],
-    borderWidth: 1,
-    pointRadius: 0,
-    fill: false,
-  });
-
-  // Stats badge
-  const mae = preds.reduce((s, p) => s + Math.abs(p.residual), 0) / preds.length;
+  datasets.push({ label: 'y_pred = y_true', data: [{x:0,y:0},{x:maxV,y:maxV}], type: 'line', borderColor: 'rgba(226,232,240,0.4)', borderDash: [4,4], borderWidth: 1, pointRadius: 0, fill: false });
+  const mae = preds.reduce((s,p) => s+Math.abs(p.residual),0)/preds.length;
   document.getElementById('badge-pred-stats').textContent = `MAE muestral ${fmtDKK(mae)} DKK · n=${preds.length}`;
-
   if (chartPredScatter) chartPredScatter.destroy();
   chartPredScatter = new Chart(document.getElementById('chartPredScatter'), {
     type: 'scatter',
     data: { datasets },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 11 }, padding: 8, boxWidth: 12 } },
-        tooltip: {
-          callbacks: {
-            label: ctx => `${ctx.dataset.label}: real=${fmtDKK(ctx.parsed.x)} pred=${fmtDKK(ctx.parsed.y)}`,
-          },
-        },
-      },
-      scales: {
-        x: { type: 'linear', ticks: { color: '#94a3b8', callback: v => fmtDKK(v) }, title: { display: true, text: 'y_true (DKK)', color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.06)' } },
-        y: { type: 'linear', ticks: { color: '#94a3b8', callback: v => fmtDKK(v) }, title: { display: true, text: 'y_pred (DKK)', color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.06)' } },
-      },
-    },
+    options: { responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 11 }, padding: 8, boxWidth: 12 } }, tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: real=${fmtDKK(ctx.parsed.x)} pred=${fmtDKK(ctx.parsed.y)}` } } },
+      scales: { x: { type:'linear', ticks: { color:'#94a3b8', callback: v=>fmtDKK(v) }, title: { display:true, text:'y_true (DKK)', color:'#94a3b8' }, grid: { color:'rgba(148,163,184,0.06)' } }, y: { type:'linear', ticks: { color:'#94a3b8', callback: v=>fmtDKK(v) }, title: { display:true, text:'y_pred (DKK)', color:'#94a3b8' }, grid: { color:'rgba(148,163,184,0.06)' } } } },
   });
 }
 
-// ── Init (async: carga CSVs desde data/marts/ antes de renderizar) ────────────
+// ── Sistema de pestañas ────────────────────────────────────────────────────────
+const TAB_RENDERED = { precios: false, geo: false, riesgo: false, modelado: false, conclusiones: false };
+
+const TAB_RENDERERS = {
+  precios:      () => { renderRegionalIndex(); renderAnnual(); },
+  geo:          () => { renderCities(); },
+  riesgo:       () => { renderHeatmap(); renderDrawdownTimeline(); renderVolatility(); renderScatter(); },
+  modelado:     () => { if (MODEL_STATE && MODEL_STATE.comparison.length) { renderModelComparison(); renderFeatureImportance(); renderCV(); renderPredScatter(); } },
+  conclusiones: () => {},
+};
+
+// Charts registrados por tab para resize
+function getChartsForTab(name) {
+  switch(name) {
+    case 'precios':  return [chartReg, chartRegBonds, chartAnnual].filter(Boolean);
+    case 'geo':      return [];
+    case 'riesgo':   return [...chartVolSmall, chartDdTimeline, chartScatter].filter(Boolean);
+    case 'modelado': return [chartImportance, chartCV, chartPredScatter].filter(Boolean);
+    default:         return [];
+  }
+}
+
+function activateTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`panel-${name}`).classList.add('active');
+  document.getElementById(`tab-${name}`).classList.add('active');
+
+  if (!TAB_RENDERED[name]) {
+    TAB_RENDERED[name] = true;
+    TAB_RENDERERS[name]();
+  } else {
+    requestAnimationFrame(() => {
+      getChartsForTab(name).forEach(ch => ch.resize());
+    });
+  }
+
+  if (history.replaceState) history.replaceState(null, '', `#${name}`);
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────────
 window.addEventListener('load', async () => {
   try {
     const raw = await loadMarts();
     DATA = buildDataFromMarts(raw);
     rebuildIndices();
-
-    renderKPIs();
-    renderRegionalIndex();
-    renderVolatility();
-    renderScatter();
-    renderHeatmap();
-    renderDrawdownTimeline();
-    renderCities();
-    renderAnnual();
-
-    // Modelado predictivo
     buildModelState(raw);
-    if (MODEL_STATE && MODEL_STATE.comparison.length) {
-      renderModelComparison();
-      renderFeatureImportance();
-      renderCV();
-      renderPredScatter();
-    }
+    renderKPIs();
+
+    const VALID_TABS = ['precios', 'geo', 'riesgo', 'modelado', 'conclusiones'];
+    const hashTab = location.hash.slice(1);
+    activateTab(VALID_TABS.includes(hashTab) ? hashTab : 'precios');
   } catch (err) {
     console.error('Error cargando marts:', err);
     document.getElementById('loading').innerHTML =
@@ -1354,7 +1176,7 @@ window.addEventListener('load', async () => {
         <div style="font-weight:600;margin-bottom:6px">Error cargando datos</div>
         <div style="font-size:0.82rem;color:#94a3b8">${err.message}</div>
         <div style="font-size:0.75rem;color:#64748b;margin-top:10px">Verifica que data/marts/*.csv existen y que el server HTTP los está sirviendo.</div>
-       </div>`;
+      </div>`;
     return;
   }
   document.getElementById('loading').style.display = 'none';
