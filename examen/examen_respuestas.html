@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Examen Parcial — Data Visualization UPC 2026-01</title>
+<script src="./chart.umd.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<style>
+  /* ── Utilidades ── */
+  .flex{display:flex}.flex-wrap{flex-wrap:wrap}.grid{display:grid}
+  .items-center{align-items:center}.items-start{align-items:flex-start}
+  .justify-between{justify-content:space-between}
+  .gap-2{gap:8px}.gap-3{gap:12px}
+  .font-bold{font-weight:700}.text-2xl{font-size:1.5rem;line-height:2rem}
+  .text-sm{font-size:0.875rem;line-height:1.25rem}
+  .text-xs{font-size:0.75rem;line-height:1rem}
+  .tracking-tight{letter-spacing:-0.025em}
+  .mb-1{margin-bottom:4px}.mb-2{margin-bottom:8px}.mb-3{margin-bottom:12px}
+  .mb-4{margin-bottom:16px}.mb-5{margin-bottom:20px}.mb-6{margin-bottom:24px}
+  .mt-1{margin-top:4px}.mt-2{margin-top:8px}.mt-3{margin-top:12px}.mt-4{margin-top:16px}
+  .p-4{padding:16px}.p-5{padding:20px}
+  .px-6{padding-left:24px;padding-right:24px}
+  .py-6{padding-top:24px;padding-bottom:24px}
+  .max-w-screen-xl{max-width:1280px}.mx-auto{margin-left:auto;margin-right:auto}
+  /* ── Paleta editorial clara ── */
+  :root {
+    --bg: #f5f4f0;
+    --surface: #ffffff;
+    --surface2: #eeece8;
+    --border: #d4d1ca;
+    --text: #18181b;
+    --muted: #71717a;
+    --accent: #1e3a8a;
+    --warn: rgba(153,27,27,0.05);
+    --warn-border: rgba(153,27,27,0.28);
+    --ok: rgba(6,78,59,0.06);
+    --ok-border: rgba(6,78,59,0.28);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; min-height: 100vh; }
+  code, kbd { font-family: 'IBM Plex Mono', 'Fira Code', monospace; font-size: 0.78em; background: var(--surface2); color: #1e3a8a; padding: 1px 5px; border-radius: 3px; border: 1px solid var(--border); }
+  .card  { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+  .card-inner { background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; }
+  canvas { max-height: 340px !important; }
+  .kpi-value { font-family: 'IBM Plex Mono', monospace; font-size: 1.8rem; font-weight: 700; letter-spacing: -0.02em; }
+  .kpi-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .section-title { font-size: 0.95rem; font-weight: 600; color: var(--text); }
+  .section-sub   { font-family: 'IBM Plex Mono', monospace; font-size: 0.71rem; color: var(--muted); margin-top: 2px; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  @media (max-width: 900px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  /* ── Pestañas ── */
+  .tab-bar { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 24px; overflow-x: auto; scrollbar-width: none; }
+  .tab-bar::-webkit-scrollbar { display: none; }
+  .tab-btn { font-family: 'IBM Plex Mono', monospace; padding: 10px 18px; font-size: 0.73rem; font-weight: 500; cursor: pointer; border: none; background: transparent; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -2px; transition: color 0.12s, background 0.12s; white-space: nowrap; letter-spacing: 0.02em; }
+  .tab-btn:hover { color: var(--text); background: var(--surface2); }
+  .tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+  /* ── Componentes ── */
+  .section-heading { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em; color: var(--text); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .section-heading::before { content: ''; width: 3px; height: 18px; background: var(--accent); border-radius: 1px; }
+  .takeaway { display: flex; gap: 8px; align-items: flex-start; margin-top: 8px; padding: 10px 12px; background: rgba(30,58,138,0.04); border-left: 2px solid var(--accent); border-radius: 0 4px 4px 0; }
+  .takeaway-icon { font-family: 'IBM Plex Mono', monospace; color: var(--accent); font-weight: 600; font-size: 0.8rem; flex-shrink: 0; }
+  .takeaway-text { font-size: 0.82rem; color: #3f3f46; line-height: 1.55; }
+  .takeaway-text strong { color: var(--text); }
+  .badge { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 4px; font-family: 'IBM Plex Mono', monospace; font-size: 0.69rem; font-weight: 500; border: 1px solid transparent; }
+  .synth-banner { background: var(--ok); border: 1px solid var(--ok-border); border-radius: 4px; padding: 8px 14px; font-size: 0.79rem; color: #064e3b; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+  .warn-banner { background: var(--warn); border: 1px solid var(--warn-border); border-radius: 4px; padding: 8px 14px; font-size: 0.79rem; color: #991b1b; font-weight: 500; }
+  /* ── Respuestas del examen — cards por pregunta ── */
+  .respuesta-bloque { margin-top: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .respuesta-bloque.mt-4, .respuesta-bloque.mt-3 { margin-top: 12px; }
+  .pregunta-num { display: flex; align-items: center; gap: 10px; background: var(--surface2); border-bottom: 1px solid var(--border); padding: 10px 16px; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 600; color: var(--text); text-transform: none; letter-spacing: 0; margin-bottom: 0; }
+  .pq-badge { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; font-weight: 700; color: var(--accent); background: rgba(30,58,138,0.1); padding: 2px 8px; border-radius: 3px; flex-shrink: 0; }
+  .pq-title { font-size: 0.875rem; font-weight: 600; color: var(--text); line-height: 1.35; }
+  .respuesta-bloque .respuesta-texto { padding: 14px 18px; }
+  .respuesta-texto { font-size: 0.875rem; color: #27272a; line-height: 1.72; }
+  .respuesta-texto strong { color: var(--text); font-weight: 600; }
+  .respuesta-texto em { color: var(--muted); font-style: normal; font-size: 0.83rem; }
+  .cierre-reflexivo { background: linear-gradient(135deg, #f5f3ff 0%, #eff6ff 100%); border-left: 3px solid #6d28d9; border-radius: 0 6px 6px 0; padding: 14px 18px; margin-top: 16px; font-size: 0.855rem; color: #3f3f46; line-height: 1.68; }
+  .cierre-reflexivo .cr-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.64rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #6d28d9; margin-bottom: 8px; }
+  .bad-chart-box { background: var(--surface2); border: 1px solid var(--warn-border); border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 260px; padding: 16px; }
+  .bad-chart-box img { max-width: 100%; max-height: 240px; border-radius: 3px; }
+  .bad-chart-label { font-family: 'IBM Plex Mono', monospace; font-size: 0.67rem; color: #991b1b; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; margin-top: 8px; }
+  /* ── Mermaid ERD ── */
+  .mermaid { background: var(--surface2); border-radius: 4px; padding: 12px 4px; overflow: auto; border: 1px solid var(--border); }
+  .mermaid svg { max-width: 100%; height: auto; }
+  /* ── KPI mini ── */
+  .kpi-mini { text-align: center; background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+  .kpi-mini .val { font-family: 'IBM Plex Mono', monospace; font-size: 1.4rem; font-weight: 700; }
+  .kpi-mini .lbl { font-family: 'IBM Plex Mono', monospace; font-size: 0.63rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em; margin-top: 3px; }
+  /* ── Estructura global de respuestas ── */
+  .concepto { display: inline; font-family: 'IBM Plex Mono', monospace; background: rgba(30,58,138,0.07); border: 1px solid rgba(30,58,138,0.2); border-radius: 3px; padding: 0 5px; font-size: 0.74rem; font-weight: 500; color: #1e3a8a; white-space: nowrap; }
+  .concepto.warn { background: rgba(153,27,27,0.07); border-color: rgba(153,27,27,0.25); color: #991b1b; }
+  .concepto.ok { background: rgba(6,78,59,0.07); border-color: rgba(6,78,59,0.25); color: #065f46; }
+  .evidencia { background: rgba(30,58,138,0.04); border-left: 2px solid rgba(30,58,138,0.3); border-radius: 0 4px 4px 0; padding: 9px 13px; margin: 10px 0; font-size: 0.8rem; color: #1e3a8a; line-height: 1.6; }
+  .evidencia strong { color: #1e3a8a; font-weight: 600; }
+  .resp-tabla { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin: 10px 0; }
+  .resp-tabla th { font-family: 'IBM Plex Mono', monospace; background: var(--surface2); color: var(--muted); font-size: 0.62rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 7px 10px; border-bottom: 2px solid var(--border); text-align: left; }
+  .resp-tabla td { padding: 7px 10px; border-bottom: 1px solid var(--border); vertical-align: top; line-height: 1.5; }
+  .resp-tabla tr:last-child td { border-bottom: none; }
+  .cell-ok { color: #065f46; font-weight: 500; }
+  .cell-warn { color: #991b1b; font-weight: 500; }
+  .cell-neutral { color: var(--muted); font-style: italic; }
+  .decision-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 14px 16px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  .dc-title { font-family: 'IBM Plex Mono', monospace; font-size: 0.63rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 6px; }
+  .dc-verdict { font-size: 1rem; font-weight: 700; margin-bottom: 10px; }
+  .dc-item { font-size: 0.81rem; color: #3f3f46; margin: 4px 0; padding-left: 15px; position: relative; }
+  .dc-item::before { content: '✓'; position: absolute; left: 0; color: #065f46; font-weight: 700; }
+  .resp-checklist { list-style: none; padding: 0; margin: 8px 0; }
+  .resp-checklist li { display: flex; gap: 10px; align-items: flex-start; padding: 7px 0; border-bottom: 1px solid var(--border); font-size: 0.81rem; color: #27272a; line-height: 1.58; }
+  .resp-checklist li:last-child { border-bottom: none; }
+  .resp-checklist .ck-num { display: inline-flex; align-items: center; justify-content: center; min-width: 20px; height: 20px; border-radius: 50%; background: rgba(30,58,138,0.1); color: #1e3a8a; font-family: 'IBM Plex Mono', monospace; font-size: 0.67rem; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+</style>
+</head>
+<body>
+
+<div class="px-6 py-6 max-w-screen-xl mx-auto">
+
+  <!-- ── Encabezado ── -->
+  <div class="mb-5">
+    <div class="flex items-start justify-between flex-wrap gap-3">
+      <div>
+        <h1 class="text-2xl font-bold tracking-tight">Examen Parcial · Data Visualization</h1>
+        <p class="text-sm mt-1" style="color:var(--muted)">Semanas 1–7 · UPC 2026-01 · Versión con modelado · 20 puntos</p>
+      </div>
+      <div class="flex flex-wrap gap-2 items-center mt-1">
+        <span class="badge" style="background:rgba(30,58,138,0.08);color:#1e3a8a;border-color:rgba(30,58,138,0.2)">5 casos</span>
+        <span class="badge" style="background:rgba(6,78,59,0.08);color:#065f46;border-color:rgba(6,78,59,0.2)">Datos sintéticos ONPE</span>
+        <span class="badge" style="background:rgba(109,40,217,0.08);color:#6d28d9;border-color:rgba(109,40,217,0.2)">Rody Vílchez</span>
+      </div>
+    </div>
+    <div class="synth-banner mt-3">
+      <span>●</span>
+      <span><strong>Dataset sintético</strong> — inspirado en estructura pública de resultados ONPE; no usar como resultado oficial. Todas las cifras son adaptaciones para evaluación académica.</span>
+    </div>
+  </div>
+
+  <!-- ── Barra de pestañas ── -->
+  <div class="tab-bar">
+    <button class="tab-btn" onclick="activateTab('c1')">Caso 1 · Pie Chart ONPE</button>
+    <button class="tab-btn" onclick="activateTab('c2')">Caso 2 · Mesas 900001</button>
+    <button class="tab-btn" onclick="activateTab('c3')">Caso 3 · Pobreza y Voto</button>
+    <button class="tab-btn" onclick="activateTab('c4')">Caso 4 · Obras Paralizadas</button>
+    <button class="tab-btn" onclick="activateTab('c5')">Caso 5 · Modelado DWH</button>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       CASO 1 — ONPE, el pie chart y la fábrica de fraude
+  ══════════════════════════════════════════════════════ -->
+  <div class="tab-panel" id="panel-c1">
+    <div class="mb-4">
+      <div class="section-heading">Caso 1 — ONPE, el pie chart y la fábrica casera de fraude</div>
+      <p class="respuesta-texto mb-2">Una redacción recibe una tabla sintética de resultados ONPE y publica un pie chart titulado "YA HAY GANADORA: porcentajes nacionales", borrando <code>Otros</code>, mezclando denominadores y declarando ganadora antes de explicar qué se está dividiendo. El gráfico corregido a la derecha usa barra horizontal agrupada con dos denominadores explícitos.</p>
+      <div class="warn-banner">⚠ Gráfico original: denominator mezclado · "Otros" borrado · título inferencial sin evidencia</div>
+    </div>
+
+    <div class="grid-2 mb-4">
+      <div class="card p-5">
+        <div class="section-title mb-1">Gráfico original (mal hecho)</div>
+        <div class="section-sub mb-3">Pie chart — torta electoral con denominador oculto</div>
+        <div class="bad-chart-box">
+          <img src="./figures/caso1_grafico_mal_hecho.png" alt="Pie chart mal hecho" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+          <div style="display:none;color:var(--muted);font-size:0.82rem;text-align:center">
+            <div style="font-size:2rem;margin-bottom:8px">🥧</div>
+            <div>Pie chart — "YA HAY GANADORA"</div>
+            <div style="margin-top:6px;color:#991b1b;font-size:0.78rem">Fuerza Popular 22.1% · Reno. Popular 17.7%<br>JPP 15.7% · PBG 15.2% · Otros 29.3%</div>
+            <div style="margin-top:6px;font-size:0.72rem">Imagen en ./figures/caso1_grafico_mal_hecho.png</div>
+          </div>
+          <div class="bad-chart-label">Denominador no declarado · Otros ocultado</div>
+        </div>
+      </div>
+
+      <div class="card p-5">
+        <div class="section-title mb-1">Visualización alternativa honesta</div>
+        <div class="section-sub mb-3">Barra horizontal agrupada · % votos válidos vs % votos emitidos · Incluye Otros</div>
+        <canvas id="chart-c1" style="max-height:320px"></canvas>
+        <div class="takeaway mt-2">
+          <span class="takeaway-icon">→</span>
+          <span class="takeaway-text"><strong>Lectura correcta:</strong> "Otros" (agrupación de partidos menores) obtiene 22.6% sobre votos válidos — el mayor segmento. Ningún partido supera el 50% requerido para ganar en primera vuelta. Las dos barras por partido revelan la diferencia entre denominadores.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Respuestas -->
+    <div class="mb-4">
+      <div class="section-heading mb-2">Respuestas analíticas</div>
+
+      <div class="respuesta-bloque">
+        <div class="pregunta-num">Pregunta 1 — Errores de denominador y definición de votos</div>
+        <div class="respuesta-texto">
+          <strong>Error 1 — Denominador no declarado:</strong> El gráfico muestra "porcentajes nacionales" sin especificar de qué total. En el dataset coexisten tres denominadores distintos con valores muy diferentes. El pie chart mezcla porcentajes calculados sobre votos emitidos con la etiqueta "porcentajes nacionales", lo que hace irreproducible el cálculo.
+          <div class="evidencia">
+            <strong>Denominadores en coexistencia:</strong><br>
+            Votos válidos: <strong>16,197,147</strong> &nbsp;·&nbsp; Votos emitidos: <strong>19,747,057</strong> &nbsp;·&nbsp; Electores hábiles: <strong>27,325,431</strong><br>
+            Fuerza Popular: <strong>17.1%</strong> sobre válidos vs <strong>14.0%</strong> sobre emitidos = diferencia de <strong>3.1 puntos</strong> según denominador elegido
+          </div>
+          <canvas id="chart-c1-denom" style="max-height:72px;margin-top:10px"></canvas><br><br>
+          <strong>Error 2 — Título inferencial sin fundamento:</strong> "YA HAY GANADORA" es una afirmación causal no respaldada por los datos. En primera vuelta presidencial peruana se requiere mayoría absoluta de votos válidos; si nadie la alcanza, pasan a segunda elección las dos candidaturas con mayor votación. Fuerza Popular acumula 17.1% sobre votos válidos — muy lejos de una mayoría absoluta. El color rojo actitudinal refuerza la conclusión visual antes de mostrar evidencia.<br><br>
+          <strong>Definiciones:</strong> <em>Electores hábiles</em> = padrón electoral (incluye quienes no asistieron a votar). <em>Votos emitidos</em> = papeletas depositadas en urna, incluyendo votos blancos y nulos. <em>Votos válidos</em> = votos emitidos menos blancos y nulos, es decir, los que expresan preferencia por un candidato o partido.
+        </div>
+      </div>
+
+      <div class="respuesta-bloque mt-4">
+        <div class="pregunta-num">Pregunta 2 — Unidad de análisis e invalidación por agregación</div>
+        <div class="respuesta-texto">
+          <strong>Unidad de análisis correcta para resultados electorales: el acta de mesa.</strong> Una mesa (≈ 300 electores) es la unidad mínima auditable — tiene código único, presidente asignado, actas enviadas al JEE y datos de participación. Las jerarquías superiores son: acta → mesa → distrito → circunscripción electoral → elección.<br><br>
+          Un <em>analista que comprime todo a agregado nacional</em> hace inválida la pregunta: <strong>"¿Existe un patrón territorial que difiera del resultado nacional?"</strong> Con un solo número nacional, no se puede detectar si mesas en centros poblados remotos (código 9XXXXX) muestran participación distinta, si hay varianza departamental sistemática, o si el conteo avanzó de forma uniforme en todo el territorio. La variación intra-regional desaparece por construcción, no por ausencia de señal.
+        </div>
+      </div>
+
+      <div class="respuesta-bloque mt-4">
+        <div class="pregunta-num">Pregunta 3 — Visualización alternativa con precisión perceptual</div>
+        <div class="respuesta-texto">
+          <strong>Propuesta: barra horizontal agrupada</strong> (ver gráfico a la derecha).<br><br>
+          <strong>Codificación visual:</strong> barra azul = % sobre votos válidos; barra naranja = % sobre votos emitidos. Ambas ordenadas de mayor a menor por votos válidos. "Otros" incluido como primera barra porque agrupa el mayor segmento (22.6% de votos válidos).<br><br>
+          <strong>Justificación con precisión perceptual (Cleveland, 1984):</strong> la comparación de longitudes sobre eje común es la tarea más precisa para el ojo humano — mucho más que la comparación de ángulos o áreas de sectores. Un pie chart requiere que el lector estime diferencias angulares (ej. 15.2% vs 15.7%) que son imperceptibles para segmentos adyacentes. La barra horizontal permite leer el valor exacto alineado en el eje X. Adicionalmente, la doble barra externaliza el denominador: el lector ve que los porcentajes son distintos según qué total se use.
+        </div>
+      </div>
+
+      <div class="respuesta-bloque mt-4">
+        <div class="pregunta-num">Pregunta 4 — Titular electoral sin revisar denominador</div>
+        <div class="respuesta-texto">
+          <strong>Ejemplo típico:</strong> "Candidato X lidera con 35% según encuestadora Y a 3 días de la elección." La pregunta que no hice: <em>¿35% de qué? ¿De los encuestados, de los que dicen que irán a votar, de los indecisos excluidos?</em> Una encuesta de intención de voto sobre muestra sin ponderación demográfica puede dar 35% a un candidato que en urna obtiene 22%.<br><br>
+          <strong>Versión más prudente:</strong> "Candidato X obtiene 35% de intención de voto entre los encuestados que declaran participación segura (n = 480), con margen de ±4.5 puntos y universo limitado a Lima Metropolitana. El dato no incluye voto rural ni corrección por no-respuesta."
+        </div>
+      </div>
+
+      <div class="cierre-reflexivo mt-4">
+        <div class="cr-title">Cierre reflexivo del caso</div>
+        El supuesto que tuve que revisar al construir la visualización alternativa: que "Otros" siempre debe ocultarse para que el gráfico "quede limpio". Al calcular los totales, Otros acumula 22.6% de votos válidos — el segmento mayor. Ocultarlo no simplifica la historia; la falsifica. Un ejemplo real que recuerdo: titulares que comparaban porcentajes de encuestas de distintas empresas sin declarar si eran sobre muestra total o sobre voto probable, haciendo imposible la comparación. Lo que haría distinto: siempre anotar el N y el denominador exacto en el subtítulo del gráfico antes de publicar.
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       CASO 2 — Mesas 900001 y el misterio que se resolvía leyendo
+  ══════════════════════════════════════════════════════ -->
+  <div class="tab-panel" id="panel-c2">
+    <div class="mb-4">
+      <div class="section-heading">Caso 2 — Mesas 900001, centros poblados y el misterio que se resolvía leyendo</div>
+      <p class="respuesta-texto mb-2">Un gráfico de doble eje compara 5 tipos de elección en la misma pantalla. El eje izquierdo (% contabilizadas, truncado a 84–100%) y el eje derecho (millones de votos válidos) crean la ilusión de correlación. El error de fondo: elecciones nacionales (92,766 actas) y elecciones de circunscripción (26,368 actas) aparecen con la misma barra.</p>
+      <div class="warn-banner">⚠ Doble eje · Eje Y truncado · Elecciones de distinto ámbito mezcladas · Lectura falsa de correlación</div>
+    </div>
+
+    <div class="grid-2 mb-4">
+      <div class="card p-5">
+        <div class="section-title mb-1">Gráfico original (mal hecho)</div>
+        <div class="section-sub mb-3">Doble eje: % contabilizadas (izq, truncado) + votos válidos en MM (der)</div>
+        <div class="bad-chart-box">
+          <img src="./figures/caso2_grafico_mal_hecho.png" alt="Gráfico caso 2" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+          <div style="display:none;color:var(--muted);font-size:0.82rem;text-align:center">
+            <div style="font-size:2rem;margin-bottom:8px">📊</div>
+            <div>"Todos están casi listos, no exageren"</div>
+            <div style="margin-top:6px;color:#991b1b;font-size:0.78rem">Doble eje Y · Eje truncado 84–100%<br>Línea roja (votos válidos MM) sin relación con barras</div>
+            <div style="margin-top:6px;font-size:0.72rem">Imagen en ./figures/caso2_grafico_mal_hecho.png</div>
+          </div>
+          <div class="bad-chart-label">Doble eje · unidades incompatibles · ámbitos mezclados</div>
+        </div>
+      </div>
+
+      <div class="card p-5">
+        <div class="section-title mb-1">Visualización alternativa honesta</div>
+        <div class="section-sub mb-3">Antídoto 3/3 Tufte: eje único normalizado · Y desde 0 · Ámbito anotado · Actas pendientes explícitas</div>
+        <canvas id="chart-c2" style="max-height:320px"></canvas>
+        <div class="takeaway mt-2">
+          <span class="takeaway-icon">→</span>
+          <span class="takeaway-text"><strong>Lectura correcta:</strong> Senadores DU y Parlamento Andino tienen un volumen relevante de actas no contabilizadas cuando se suman actas en JEE y pendientes (13,746 y 10,291 respectivamente) sobre una base de 92,766 actas. Senadores DM y Diputados son elecciones de Lima Metropolitana (26,368 actas), no comparables directamente con elecciones nacionales. El ámbito se declara como etiqueta sobre la barra.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <div class="section-heading mb-2">Respuestas analíticas</div>
+
+      <div class="respuesta-bloque">
+        <div class="pregunta-num">Pregunta 1 — Por qué el doble eje induce lectura falsa</div>
+        <div class="respuesta-texto">
+          El doble eje yuxtapone <em>% actas contabilizadas</em> (una proporción, adimensional, 0–100%) y <em>millones de votos válidos</em> (una magnitud absoluta, con unidad diferente) en el mismo plano. El lector decodifica visualmente la posición de los puntos de la línea roja y de las barras como si compartieran escala — lo que induce la interpretación "cuando la barra baja, también bajan los votos", que sería correlación. Sin embargo, los ejes son alineados arbitrariamente por el software (ambos tienen distintos mínimos y máximos): cualquier posición de la línea es manipulable cambiando el rango del eje derecho sin cambiar los datos.<br><br>
+          El problema adicional: el eje Y izquierdo empieza en 84% en vez de 0%. Una diferencia de 5 puntos porcentuales (85% vs 90%) parece enorme visualmente pero en términos de actas pendientes sobre 92,766 puede ser trivial. <strong>La combinación de truncamiento + doble eje maximiza la distorsión perceptual.</strong><br><br>
+          <strong>Tres antídotos al doble eje (Tufte):</strong> (1) <em>Pequeños múltiplos</em> — un panel por variable, misma escala, el ojo escanea diferencias entre paneles; (2) <em>Ratio explícito</em> — calcular actas_pendientes / total_actas como métrica única; (3) <em>Eje único normalizado</em> — es la opción elegida en la visualización alternativa, llevando ambas métricas a la misma escala porcentual. La guía (Semana 7, Parte 5) menciona las tres; el gráfico alternativo implementa la tercera.
+        </div>
+      </div>
+
+      <div class="respuesta-bloque mt-4">
+        <div class="pregunta-num">Pregunta 2 — Trampa de granularidad y campo revelador</div>
+        <div class="respuesta-texto">
+          <strong>Problema de granularidad:</strong> Fórmula Presidencial, Senadores DU y Parlamento Andino son elecciones <em>nacionales</em> con un universo de 92,766 actas. Senadores DM y Diputados son elecciones de <em>Lima Metropolitana</em> con 26,368 actas — universos 3.5× distintos comparados en el mismo gráfico como si fueran equivalentes.
+          <table class="resp-tabla mt-2">
+            <thead><tr><th>Elección</th><th>Ámbito</th><th>Total actas</th><th>Pendientes</th><th>% contabilizadas</th></tr></thead>
+            <tbody>
+              <tr><td>Fórmula Presidencial</td><td>Nacional</td><td>92,766</td><td class="cell-ok">0</td><td class="cell-ok">99.84%</td></tr>
+              <tr><td>Senadores DU</td><td>Nacional</td><td>92,766</td><td class="cell-warn">17</td><td class="cell-warn">85.18%</td></tr>
+              <tr><td>Senadores DM</td><td class="cell-warn">Lima Metro ⚠</td><td class="cell-warn">26,368</td><td>1</td><td>92.86%</td></tr>
+              <tr><td>Diputados</td><td class="cell-warn">Lima Metro ⚠</td><td class="cell-warn">26,368</td><td class="cell-ok">0</td><td>91.23%</td></tr>
+              <tr><td>Parlamento Andino</td><td>Nacional</td><td>92,766</td><td class="cell-warn">11</td><td class="cell-warn">88.91%</td></tr>
+            </tbody>
+          </table>
+          Una barra al 91% sobre 26,368 actas representa ~2,300 actas no contabilizadas; una barra al 88% sobre 92,766 actas representa ~10,300 actas no contabilizadas. El número absoluto de actas faltantes es cuatro veces mayor, pero las barras tienen altura similar.<br><br>
+          <strong>Campo que revela la trampa:</strong> la columna <code>total_actas</code> (92,766 vs 26,368) junto con <code>ambito_mostrado</code> ("Nacional" vs "Lima Metropolitana"). En el dataset, Senadores DM y Diputados tienen <code>tipo_ambito = "circunscripcion"</code> vs <code>"nacional"</code> — muestran que el universo es distinto y que la comparación directa de porcentajes es espuria.
+        </div>
+      </div>
+
+      <div class="respuesta-bloque mt-4">
+        <div class="pregunta-num">Pregunta 3 — Métrica riesgo_cambio_visual y sus límites</div>
+        <div class="respuesta-texto">
+          <strong>Definición propuesta:</strong><br>
+          <code>riesgo_cambio_visual = (actas_jee + actas_pendientes) / total_actas × 100</code><br><br>
+          La métrica expresa el porcentaje del universo de actas que aún no está contabilizado: para Senadores DU = 14.8%, para Parlamento Andino = 11.1%, y para Fórmula Presidencial = 0.16%.<br><br>
+          <strong>Límites explícitos:</strong> (1) La métrica mide incertidumbre operativa, no irregularidad. Un departamento con transporte lento (selva, alta montaña) genera actas pendientes por logística, no por fraude. (2) No captura la distribución geográfica de las actas pendientes — si todas provienen de una circunscripción competitiva, el riesgo sobre el resultado final es mayor que si están dispersas. (3) No diferencia entre actas en tránsito, observadas, o impugnadas.
+        </div>
+      </div>
+
+      <div class="respuesta-bloque mt-4">
+        <div class="pregunta-num">Pregunta 4 — Aggregate calculation vs table calculation para % de votos</div>
+        <div class="respuesta-texto">
+          <strong>Table calculation</strong> es correcto cuando el denominador debe calcularse <em>dentro del contexto visible de la vista</em> — por ejemplo, si filtramos la vista a "Senadores DU", el denominador será el total de votos válidos de esa elección en la vista. Esto es útil si el usuario quiere ver porcentajes relativos a cada elección por separado.<br><br>
+          <strong>Aggregate calculation (LOD)</strong> es correcto cuando el denominador debe ser un total global independiente del filtro de la vista — por ejemplo, para mostrar qué porcentaje representa cada tipo de elección sobre el gran total nacional. Si el usuario filtra a un departamento, la aggregate calculation mantiene el total nacional como denominador; la table calculation lo recalcula con el departamento.<br><br>
+          Para el contexto del examen (avance de conteo por tipo de elección, donde cada tipo tiene su propio universo), la table calculation es más correcta: el denominador debe ser el <code>total_actas</code> de esa elección, no un total cruzado de todas las elecciones.
+        </div>
+      </div>
+
+      <div class="cierre-reflexivo mt-4">
+        <div class="cr-title">Cierre reflexivo del caso</div>
+        El supuesto que tuve que revisar: que un gráfico con más ejes transmite más información. Al analizar el caso, el segundo eje no añade información — añade ilusión de relación. Lo que recuerdo: coberturas de avance electoral en tiempo real donde el porcentaje de actas contabilizadas caía mientras "subian" los votos del candidato favorito del medio, porque el denominador de las actas pendientes venía de zonas donde ese candidato perdía. Lo que haría distinto: antes de publicar cualquier gráfico de avance, verificar que el ámbito y total de referencia estén declarados explícitamente en el subtítulo, no solo en los metadatos del dataset.
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       CASO 3 — Pobreza, voto rural y la recta roja
+  ══════════════════════════════════════════════════════ -->
+  <div class="tab-panel" id="panel-c3">
+    <div class="mb-4">
+      <div class="section-heading">Caso 3 — Pobreza, voto rural y la recta roja que se cree socióloga</div>
+      <p class="respuesta-texto mb-2">Un scatter de pobreza vs voto (N=304 distritos) con línea de tendencia declara "La pobreza explica el voto. Fin del debate." El error estadístico es la falacia ecológica; el error ético es estigmatizar identidad política como función lineal de condición material. El gráfico alternativo segmenta por tipo de área y elimina la trendline impuesta.</p>
+      <div class="warn-banner">⚠ Falacia ecológica · Causalidad no demostrable · Estigmatización del voto rural / pobre · Trendline sin CI</div>
+    </div>
+
+    <div class="grid-2 mb-4">
+      <div class="card p-5">
+        <div class="section-title mb-1">Gráfico original (mal hecho)</div>
+        <div class="section-sub mb-3">Scatter departamental con trendline · Título causal · Sin segmentación</div>
+        <div class="bad-chart-box">
+          <img src="./figures/caso3_grafico_mal_hecho.png" alt="Gráfico caso 3" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+          <div style="display:none;color:var(--muted);font-size:0.82rem;text-align:center">
+            <div style="font-size:2rem;margin-bottom:8px">📈</div>
+            <div>"La pobreza explica el voto. Fin del debate."</div>
+            <div style="margin-top:6px;color:#991b1b;font-size:0.78rem">Scatter depto × partido X · Recta roja · Sin CI · Sin segmentación</div>
+          </div>
+          <div class="bad-chart-label">Título causal · falacia ecológica · trendline sin banda de confianza</div>
+        </div>
+      </div>
+
+      <div class="card p-5">
+        <div class="section-title mb-1">Visualización alternativa honesta</div>
+        <div class="section-sub mb-3">Bubble scatter · Color = tipo de área · Tamaño = √electores (área ∝ valor) · Sin trendline</div>
+        <canvas id="chart-c3" style="max-height:340px"></canvas>
+        <div class="takeaway mt-2">
+          <span class="takeaway-icon">→</span>
+          <span class="takeaway-text"><strong>Lectura correcta:</strong> Dentro del mismo rango de pobreza, el voto para candidatura X varía ampliamente entre distritos rurales, urbanos y mixtos. Un distrito urbano con 15% de pobreza puede votar igual que uno rural con 48%. Esto hace imposible afirmar que "la pobreza explica el voto" a nivel individual.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <div class="section-heading mb-2">Respuestas analíticas</div>
+
+      <div class="respuesta-bloque">
+        <div class="pregunta-num">Pregunta 1 — Tres problemas del gráfico</div>
+        <div class="respuesta-texto">
+          <strong>Problema visual:</strong> El título "La pobreza explica el voto. Fin del debate." es una afirmación causal, no una descripción de la visualización. Ningún gráfico puede "probar" causalidad; solo puede mostrar correlación. El titular cierra el debate antes de mostrarlo — es un dispositivo retórico que desliza la carga de la prueba.<br><br>
+          <strong>Problema estadístico:</strong> El scatter trabaja sobre N=304 distritos (unidades de agregación geográfica). La trendline ajusta una recta sobre datos ecológicos sin informar el R², la pendiente, el error estándar, ni la banda de confianza. Distritos como Lima (gran ciudad, alta riqueza, alta participación, muchos electores) tienen el mismo peso que distritos con 10,000 electores. La regresión no pondera por electores hábiles.<br><br>
+          <strong>Problema ético-narrativo:</strong> La frase implica que los electores de zonas pobres votan de forma predecible en función de su condición material, estigmatizando la identidad política de comunidades rurales, andinas y amazónicas como "explicable" y por tanto sospechosa o inválida. En el contexto peruano, esto reproduce el mismo marco discursivo que ha usado el fraude-narrativo para impugnar votos de pueblos indígenas y comunidades campesinas.
+        </div>
+      </div>
+
+      <div class="respuesta-bloque mt-4">
+        <div class="pregunta-num">Pregunta 2 — Falacia ecológica: por qué la relación departamental no permite inferir preferencias individuales</div>
+        <div class="respuesta-texto">
+          <div class="evidencia">
+            <strong>Falacia ecológica</strong> <span class="concepto">Robinson, 1950</span> — correlación observada entre unidades agregadas (distritos, departamentos) interpretada como relación entre <em>individuos</em> dentro de esas unidades. El nivel de análisis donde existe la correlación ≠ el nivel donde se hace la inferencia.
+          </div>
+          Ocurre en este caso cuando:<br><br>
+          Un distrito con 48% de pobreza puede tener electores de todos los quintiles de ingreso, y esos electores pueden votar por cualquier partido por razones independientes de su condición material: identidad regional, relaciones clientelares, percepción de seguridad, historia local, etc. El promedio distrital de pobreza oculta esa heterogeneidad interna.<br><br>
+          <strong>Analogía con el Cuarteto de Anscombe</strong> <span class="concepto">Anscombe, 1973</span> — cuatro distribuciones con media, varianza y correlación idénticas pero patrones radicalmente distintos: el estadístico resumen destruye la heterogeneidad. Del mismo modo, una correlación ecológica puede ser idéntica en dos países con comportamientos individuales completamente opuestos. La conclusión es la misma que Anscombe enseña: los estadísticos resumen mienten si no se mira la distribución subyacente — en este caso, la distribución a nivel individual dentro del distrito.<br><br>
+          El dataset tiene la columna <code>tipo_area_sintetica</code> (rural/urbano/mixto) que ya muestra que dentro del mismo nivel de pobreza distrital, distritos de distinto tipo de área tienen comportamientos de voto dispersos — lo que es inconsistente con la lectura "la pobreza explica el voto". Se necesitaría encuesta de salida con microdatos individuales (ingreso, etnicidad, educación, voto declarado) para hacer esa afirmación sobre individuos.
+        </div>
+      </div>
+
+      <div class="respuesta-bloque mt-4">
+        <div class="pregunta-num">Pregunta 3 — Visualización más honesta</div>
+        <div class="respuesta-texto">
+          <strong>Decisiones de diseño en el bubble scatter alternativo:</strong><br><br>
+          <strong>Escala:</strong> Eje X (pobreza) arranca en 0%; eje Y (% votos) arranca en 0%. No se trunca el rango.<br>
+          <strong>Etiquetas:</strong> Los ejes están rotulados con unidad explícita ("% votos válidos candidatura X") y fuente sintética declarada en subtítulo.<br>
+          <strong>Tamaño de marca:</strong> El radio de cada burbuja es <code>√(electores_hábiles / 5000)</code> (raíz cuadrada). Esto garantiza que el <strong>área visual</strong> sea proporcional al número de electores — cumpliendo la regla de Cleveland &amp; McGill: el cerebro lee área, no radio; si se usa <code>r = valor</code>, un electorado 4× mayor se vería 16× más grande. Lima aparece más grande pero no aplasta al resto.<br>
+          <strong>Anotación:</strong> El gráfico incluye el texto "Datos a nivel distrito (N=304). Correlación ecológica — no inferir preferencia individual de votantes rurales, urbanos ni indígenas."<br>
+          <strong>Sin trendline impuesta:</strong> Si el usuario necesita ver la tendencia, puede activar la línea con banda de confianza del 95% y R² explícito. Por defecto, no se muestra porque la trendline sin contexto hace el gráfico activo en la narrativa.
+        </div>
+      </div>
+
+      <div class="respuesta-bloque mt-4">
+        <div class="pregunta-num">Pregunta 4 — Tres hipótesis sobre pobreza-voto y su clasificación</div>
+        <div class="respuesta-texto">
+          <strong>Hipótesis 1:</strong> "En zonas con alta pobreza, el candidato que promete más inversión pública obtiene más votos." → <em>Verificable con datos adicionales:</em> requiere programa de gobierno cuantificado y cruce con registro de obras prometidas por circunscripción. No verificable con el dataset actual.<br><br>
+          <strong>Hipótesis 2:</strong> "Los distritos rurales pobres tienen redes clientelares más fuertes que determinan el voto." → <em>Requiere datos adicionales</em> (encuestas de experiencia con compra de votos, presencia de intermediarios políticos, trasferencias sociales). Con datos ecológicos no es verificable ni falsable.<br><br>
+          <strong>Hipótesis 3 — la más peligrosa:</strong> "Los pobres votan por candidatos populistas porque no tienen capacidad de evaluar propuestas." → <em>Descartable por causalidad espuria y sesgo:</em> supone una relación entre ingreso y "racionalidad electoral" que no tiene sustento empírico y es políticamente estigmatizante. Confunde correlación ecológica con preferencia individual y asume que el voto de sectores pobres requiere "explicación" a diferencia del voto urbano acomodado.
+        </div>
+      </div>
+
+      <div class="cierre-reflexivo mt-4">
+        <div class="cr-title">Cierre reflexivo del caso</div>
+        El supuesto que tuve que revisar: que una recta de tendencia con R² alto "prueba" algo sobre comportamiento humano. Al desagregar por tipo_area, la dispersión muestra que la tendencia agregada esconde heterogeneidad severa. Un ejemplo real: análisis de correlación entre IDH distrital y voto en segunda vuelta 2021, presentados en medios como "prueba de que el voto andino es irracional". Lo que haría distinto: siempre reportar la dispersión alrededor de la tendencia (residuales, scatter coloreado) antes de publicar la recta, y anotar explícitamente que el nivel de agregación impide inferencias individuales.
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       CASO 4 — Obras paralizadas y la barra que acusa
+  ══════════════════════════════════════════════════════ -->
+  <div class="tab-panel" id="panel-c4">
+    <div class="mb-4">
+      <div class="section-heading">Caso 4 — Obras paralizadas y la barra que acusa sin tener fiscalía</div>
+      <p class="respuesta-texto mb-2">Un ranking de departamentos por monto bruto paralizado (S/ millones) titulado "Departamentos que botan plata en obras" funde dos granularidades distintas, usa monto bruto como proxy de mala gestión, y no declara ningún denominador de control (población, presupuesto de inversión, número total de obras).</p>
+      <div class="warn-banner">⚠ Monto bruto sin normalizar · Mezcla de granularidades · Título acusatorio sin evidencia · Denominador ausente</div>
+    </div>
+
+    <div class="grid-2 mb-4">
+      <div class="card p-5">
+        <div class="section-title mb-1">Gráfico original (mal hecho)</div>
+        <div class="section-sub mb-3">Ranking por monto total bruto · Sin normalización · Título acusatorio</div>
+        <div class="bad-chart-box">
+          <img src="./figures/caso4_grafico_mal_hecho.png" alt="Gráfico caso 4" onerror="this.style.display='none';this.nextElementSibling.style.display='block'"/>
+          <div style="display:none;color:var(--muted);font-size:0.82rem;text-align:center">
+            <div style="font-size:2rem;margin-bottom:8px">🏗️</div>
+            <div>"Departamentos que botan plata en obras"</div>
+            <div style="margin-top:6px;color:#991b1b;font-size:0.78rem">Ranking por monto bruto (S/ MM) · Barras naranjas · Top 10</div>
+          </div>
+          <div class="bad-chart-label">Monto bruto · sin denominador · título acusatorio</div>
+        </div>
+      </div>
+
+      <div class="card p-5">
+        <div class="section-title mb-1">Visualización alternativa honesta</div>
+        <div class="section-sub mb-3">Dot plot Cleveland · Posición codifica S/ MM/obra · Etiqueta n_obras · Título analítico</div>
+        <canvas id="chart-c4" style="max-height:300px"></canvas>
+        <div class="section-sub mt-4 mb-2">Distribución de obras paralizadas por sector</div>
+        <canvas id="chart-c4-sector" style="max-height:190px"></canvas>
+        <div class="takeaway mt-2">
+          <span class="takeaway-icon">→</span>
+          <span class="takeaway-text"><strong>Lectura correcta:</strong> El monto por obra normaliza el efecto de tener más obras. Un departamento con pocas obras muy costosas (alta inversión por proyecto) domina el ranking de monto bruto sin que eso indique mala gestión. La métrica monto/obra es más informativa sobre la complejidad promedio de los proyectos paralizados.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <div class="section-heading mb-2">Respuestas analíticas</div>
+
+      <div class="respuesta-bloque">
+        <div class="pregunta-num">Pregunta 1 — Granularidades distintas y errores al mezclarlas</div>
+        <div class="respuesta-texto">
+          El dataset tiene dos tablas con granularidades distintas:<br><br>
+          <strong>caso4_obras_paralizadas_resumen_sintetico.csv</strong> (granularidad: departamento × sector): cada fila es un agregado — 883 filas × 10 columnas, donde <code>nivel_resumen</code> puede ser "departamento-total" o "sector-especifico". Una fila de <code>sector='Total'</code> ya incluye los montos de los sectores específicos.<br><br>
+          <strong>Errores al mezclar sin controlar nivel:</strong> (1) <em>Doble conteo:</em> si se suman filas de <code>nivel='departamento-total'</code> más filas de <code>nivel='sector-especifico'</code> del mismo departamento, el monto total nacional se infla artificialmente. (2) <em>Fan trap:</em> si una obra individual se une con la tabla resumen (que tiene múltiples filas por departamento), los montos de la obra se multiplican por cada sector del departamento. (3) <em>Comparación de N distintos:</em> un departamento con 2 sectores y otro con 5 sectores tendrán distinto número de filas en el resumen — agregar sin control produce promedios inválidos.
+        </div>
+      </div>
+
+      <div class="respuesta-bloque mt-4">
+        <div class="pregunta-num">Pregunta 2 — Sensibilidad a outliers: n_obras vs monto total</div>
+        <div class="respuesta-texto">
+          <div class="evidencia">
+            <strong>Dataset:</strong> 883 obras paralizadas · Monto total nacional: <strong>S/ 5,880.4 MM</strong><br>
+            Sectores: Saneamiento (233) · Transporte (223) · Educación (181) · Salud (162) · Riego (84)
+          </div>
+          <canvas id="chart-c4-outlier" style="max-height:160px;margin-top:10px"></canvas>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:0.65rem;color:var(--muted);margin-top:4px">● <span style="color:#b91c1c">Lima</span> · ● <span style="color:#6d28d9">Puno</span> · ● <span style="color:#b45309">Moquegua</span> — destacados por ser outliers en el argumento</div>
+          <strong>n_obras</strong> es más robusto a outliers porque es un conteo discreto de eventos — una obra extra suma 1, no multiplica el total por su costo. No puede ser arrastrado por una mega-obra de S/ 500 millones que aparece en un solo departamento.<br><br>
+          <strong>monto_total_soles</strong> es extremadamente sensible: en el dataset, el monto varía de ~S/ 100M a ~S/ 5,880M nacional (total 883 obras). Una sola obra de infraestructura vial de S/ 300M en Puno puede hacer que ese departamento encabece el ranking de monto aunque tenga menos obras que Ancash (46 obras) o Lima. El gráfico original corona a Puno y Cajamarca por monto bruto — pero sin saber si esas cifras reflejan muchas obras pequeñas o pocas obras grandes, el ranking no informa gestión.<br><br>
+          Para diagnóstico de gestión pública, la métrica más informativa es <strong>monto_por_obra</strong> (intensidad de inversión promedio) y <strong>avance_promedio_pct</strong> (progreso físico de las obras paralizadas). Ambas están disponibles en el dataset resumen.
+        </div>
+      </div>
+
+      <div class="respuesta-bloque mt-4">
+        <div class="pregunta-num">Pregunta 3 — Rediseño para audiencia pública</div>
+        <div class="respuesta-texto">
+          <strong>Tipo de gráfico:</strong> Dot chart horizontal (lollipop) por departamento.<br>
+          <strong>Métrica:</strong> monto promedio por obra paralizada (S/ millones/obra), no monto bruto. El N de obras se muestra como etiqueta junto al punto.<br>
+          <strong>Orden:</strong> descendente por monto_por_obra, no por monto_total.<br>
+          <strong>Segmentación:</strong> El gráfico de la derecha muestra cantidad de obras por sector (Saneamiento 233 · Transporte 223 · Educación 181 · Salud 162 · Riego 84). Esto informa la estructura del problema sin acusar a ningún departamento.<br>
+          <strong>Título neutro:</strong> "Inversión promedio por obra de infraestructura paralizada, por departamento (S/ millones)" — evita "botan plata" que implica despilfarro sin evidencia de gestión.<br>
+          <strong>Nota metodológica:</strong> "Dato: obras con avance físico reportado y causal registrada. No incluye total de obras activas ni presupuesto disponible."
+        </div>
+      </div>
+
+      <div class="respuesta-bloque mt-4">
+        <div class="pregunta-num">Pregunta 4 — Conclusión apresurada y por qué no se sostiene</div>
+        <div class="respuesta-texto">
+          <strong>Conclusión apresurada al ver el ranking:</strong> "Puno tiene la peor gestión de inversión pública del país."<br><br>
+          <strong>Por qué no se sostiene con estos datos:</strong> El dataset no tiene: (1) total de obras en ejecución en Puno (el denominador del ratio de paralización), (2) monto total de presupuesto de inversión del departamento (Puno tiene alta transferencia de canon minero), (3) antigüedad de las obras paralizadas (¿son legado de gestiones previas?), (4) tipo de obra — infraestructura vial o de riego tiene montos 10–50x mayores que infraestructura social, sesgando el ranking por monto bruto.<br><br>
+          <strong>Fuentes adicionales necesarias antes de publicar:</strong> MEF - Seguimiento de Inversiones (número y estado de todas las obras), Contraloría - Sistema de Información de Obras Públicas (INFOBRAS) para contexto histórico, y INEI para datos de población y PBI departamental que permitan normalizar.
+        </div>
+      </div>
+
+      <div class="cierre-reflexivo mt-4">
+        <div class="cr-title">Cierre reflexivo del caso</div>
+        El supuesto que tuve que revisar: que el ranking por monto bruto es la visualización "natural" de obras paralizadas. Al calcular monto_por_obra, el ranking cambia completamente — departamentos con muchas obras pequeñas bajan; los que tienen pocas obras de gran inversión suben. Ejemplo real que recuerdo: infografías sobre contratos públicos donde el "mayor gasto" era el departamento con más hospitales en construcción, no el de mayor corrupción per cápita. Lo que haría distinto: siempre declarar el denominador antes de ordenar cualquier ranking — ¿monto bruto, monto por obra, monto por habitante, monto sobre presupuesto disponible? Cada elección produce una historia diferente.
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════
+       CASO 5 — Modelado: estrella, copo de nieve y el Excel que quería ser DWH
+  ══════════════════════════════════════════════════════ -->
+  <div class="tab-panel" id="panel-c5">
+    <div class="mb-4">
+      <div class="section-heading">Caso 5 — Modelado electoral: estrella, copo de nieve y el Excel que quería ser data warehouse</div>
+      <p class="respuesta-texto mb-2">El equipo recibe resultados electorales a nivel mesa-organización y quiere cruzarlos con geografía, ruralidad y servicios. El jefe pide un modelo simple para Tableau; el área de datos pide un modelo normalizado. El caso evalúa capacidad de argumentar el modelo correcto para cada escenario.</p>
+    </div>
+
+    <!-- KPIs de cardinalidad (de prepare_data.py) -->
+    <div class="grid-3 mb-4" id="c5-kpis">
+      <div class="kpi-mini"><div class="val" style="color:#1d4ed8" id="k5-mesas">—</div><div class="lbl">Mesas únicas</div></div>
+      <div class="kpi-mini"><div class="val" style="color:#059669" id="k5-distritos">—</div><div class="lbl">Distritos en fact_mesa</div></div>
+      <div class="kpi-mini"><div class="val" style="color:#6d28d9" id="k5-dim">—</div><div class="lbl">Distritos en dim_territorio</div></div>
+      <div class="kpi-mini"><div class="val" style="color:#059669" id="k5-dimok">—</div><div class="lbl">dim_territorio clave única</div></div>
+      <div class="kpi-mini"><div class="val" style="color:#1d4ed8" id="k5-votos">—</div><div class="lbl">Total votos (fact)</div></div>
+      <div class="kpi-mini"><div class="val" style="color:#f87171" id="k5-inflacion">—</div><div class="lbl">Inflación si join mal construido</div></div>
+    </div>
+
+    <!-- Diagramas ERD -->
+    <div class="grid-2 mb-4">
+      <div class="card p-5">
+        <div class="section-title mb-3" style="color:#3730a3">Modelo Estrella — para Tableau</div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-bottom:12px">fact_mesa conecta directo a dimensiones denormalizadas</div>
+        <div class="mermaid">
+erDiagram
+    fact_mesa {
+        string mesa_id PK
+        int distrito_id FK
+        int eleccion_id FK
+        int organizacion_id FK
+        int votos
+        int votos_validos_mesa
+        int electores_habiles_mesa
+    }
+    dim_territorio_completa {
+        int distrito_id PK
+        string distrito
+        string provincia
+        string departamento
+        string macroregion
+        string tipo_area
+        float internet_hogar_pct "denorm"
+        float cobertura_movil_pct "denorm"
+        float minutos_salud "denorm"
+    }
+    dim_eleccion {
+        int eleccion_id PK
+        string tipo_eleccion
+        int anio
+        string ambito
+    }
+    dim_organizacion {
+        int organizacion_id PK
+        string nombre_partido
+        string acronimo
+    }
+    fact_mesa }o--|| dim_territorio_completa : "distrito_id"
+    fact_mesa }o--|| dim_eleccion : "eleccion_id"
+    fact_mesa }o--|| dim_organizacion : "organizacion_id"
+        </div>
+        <div class="takeaway mt-3">
+          <span class="takeaway-icon">→</span>
+          <span class="takeaway-text"><strong>Ventajas:</strong> menos joins, mejor performance en Tableau extract, fácil publicación en 24h. <strong>Costo:</strong> si cambia el nombre de una provincia, hay que actualizar todas las filas de dim_territorio_completa.</span>
+        </div>
+      </div>
+
+      <div class="card p-5">
+        <div class="section-title mb-3" style="color:#6d28d9">Modelo Copo de Nieve — para repositorio institucional</div>
+        <div style="font-size:0.75rem;color:var(--muted);margin-bottom:12px">Jerarquía geográfica normalizada · dim_servicios como satélite</div>
+        <div class="mermaid">
+erDiagram
+    fact_mesa {
+        string mesa_id PK
+        int distrito_id FK
+        int eleccion_id FK
+        int organizacion_id FK
+        int votos
+        int votos_validos_mesa
+    }
+    dim_distrito {
+        int distrito_id PK
+        int provincia_id FK
+        string nombre
+        string tipo_area
+    }
+    dim_servicios {
+        int distrito_id FK
+        int anio
+        float internet_hogar_pct
+        float cobertura_movil_pct
+        float minutos_salud
+    }
+    dim_provincia {
+        int provincia_id PK
+        int departamento_id FK
+        string nombre
+    }
+    dim_departamento {
+        int departamento_id PK
+        string nombre
+        string macroregion
+    }
+    dim_eleccion {
+        int eleccion_id PK
+        string tipo_eleccion
+        int anio
+        string ambito
+    }
+    dim_organizacion {
+        int organizacion_id PK
+        string nombre_partido
+        string acronimo
+    }
+    fact_mesa }o--|| dim_distrito : "distrito_id"
+    fact_mesa }o--|| dim_eleccion : "eleccion_id"
+    fact_mesa }o--|| dim_organizacion : "organizacion_id"
+    dim_distrito ||--o{ dim_servicios : "satelite"
+    dim_distrito }o--|| dim_provincia : "provincia_id"
+    dim_provincia }o--|| dim_departamento : "departamento_id"
+        </div>
+        <div class="takeaway mt-3">
+          <span class="takeaway-icon">→</span>
+          <span class="takeaway-text"><strong>Ventajas:</strong> actualización sin duplicación (cambiar provincia = 1 fila), auditable, controla redistritación. <strong>Costo:</strong> más joins en Tableau, curva de aprendizaje para analistas.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <div class="section-heading mb-2">Respuestas analíticas</div>
+
+      <div class="respuesta-bloque">
+        <div class="pregunta-num">Pregunta 1 — Tabla de hechos, dimensiones y granularidad de fact_mesa</div>
+        <div class="respuesta-texto">
+          <strong>Tabla de hechos:</strong> <code>fact_mesa</code>. Contiene métricas numéricas aditivas (votos, votos_validos_mesa, electores_habiles_mesa) y claves foráneas a las dimensiones.<br><br>
+          <strong>Granularidad exacta:</strong> una fila = una combinación de <code>mesa_id × organizacion_politica × eleccion_id</code>. Esto significa que para una misma mesa y elección, habrá tantas filas como organizaciones participaron — el total de votos de la mesa se distribuye en esas filas. El campo <code>votos_validos_mesa</code> es constante para toda combinación del mismo <code>mesa_id × eleccion_id</code> (verificado: 0 inconsistencias en el dataset).<br><br>
+          <strong>Fan trap:</strong> Si <code>dim_territorio</code> no respeta <code>distrito_id</code> como clave única — por ejemplo, si tiene dos filas para el mismo distrito (años distintos de medición de servicios, distintas versiones de límites distritales) — el JOIN con <code>fact_mesa</code> duplicará las filas del hecho. Cada voto de una mesa del distrito D00001 aparecerá dos veces en el resultado del JOIN, inflando el total electoral. Con 1,358 mesas y N organizaciones por mesa × 2 filas de dim = el total de votos se duplica exactamente. En el dataset actual, dim_territorio sí es clave única por distrito_id — pero el riesgo existe si se incorporan series históricas sin llave compuesta.
+        </div>
+      </div>
+
+      <div class="respuesta-bloque mt-4">
+        <div class="pregunta-num">Pregunta 2 — Modelo estrella para Tableau</div>
+        <div class="respuesta-texto">
+          <strong>Dimensiones denormalizadas en dim_territorio_completa:</strong> distrito, provincia, departamento, macroregion, tipo_area, quintil_pobreza + campos de servicios (internet_hogar_pct, cobertura_movil_pct, minutos_puesto_salud, instituciones_educativas). Al denormalizar, el analista puede filtrar por "departamento = Amazonas" sin necesidad de multi-join.<br><br>
+          <strong>Validaciones de cardinalidad antes de publicar:</strong>
+          <ul class="resp-checklist mt-2">
+            <li><span class="ck-num">1</span><div>Cobertura: <code>COUNT(DISTINCT distrito_id)</code> en <code>dim_territorio_completa</code> debe igualar el de <code>fact_mesa</code>. <span class="cell-ok">Dataset actual: 334 = 334 ✓</span></div></li>
+            <li><span class="ck-num">2</span><div>Consistencia de medida: <code>votos_validos_mesa</code> debe ser idéntico para todas las filas del mismo <code>mesa_id × eleccion_id</code><br><code style="font-size:0.73rem">GROUP BY mesa_id, eleccion_id HAVING COUNT(DISTINCT votos_validos_mesa) &gt; 1</code></div></li>
+            <li><span class="ck-num">3</span><div>Integridad aditiva: <code>SUM(votos) ≤ votos_validos_mesa</code> por mesa — los votos por organización no pueden superar los votos válidos de la mesa.</div></li>
+            <li><span class="ck-num">4</span><div>Anti fan-trap: <code>dim_servicios</code> debe tener exactamente un registro por <code>distrito_id × anio_medicion</code> antes de denormalizar. Duplicados inflan métricas de servicios en el JOIN.</div></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="respuesta-bloque mt-4">
+        <div class="pregunta-num">Pregunta 3 — Modelo copo de nieve para repositorio institucional</div>
+        <div class="respuesta-texto">
+          <strong>Estructura:</strong> fact_mesa → dim_distrito (FK a dim_provincia → dim_departamento) + dim_servicios (satélite por <code>distrito_id × anio_medicion</code>) + dim_eleccion + dim_organizacion.
+          <table class="resp-tabla mt-2">
+            <thead><tr><th>Criterio</th><th>★ Estrella</th><th>❄ Copo de Nieve</th></tr></thead>
+            <tbody>
+              <tr><td>Joins en Tableau</td><td class="cell-ok">1 join directo</td><td class="cell-warn">3–4 joins en cadena</td></tr>
+              <tr><td>Actualización geográfica</td><td class="cell-warn">Regenerar dim entera</td><td class="cell-ok">1 fila en dim_provincia</td></tr>
+              <tr><td>Dim_servicios temporal</td><td class="cell-warn">Denormalizada (año fijo)</td><td class="cell-ok">Satélite por distrito × año</td></tr>
+              <tr><td>Performance &lt; 10K filas</td><td class="cell-ok">Igual</td><td class="cell-ok">Igual</td></tr>
+              <tr><td>Performance &gt; 100M filas</td><td class="cell-ok">Mejor</td><td class="cell-warn">Más lento</td></tr>
+              <tr><td>Claridad para analista</td><td class="cell-ok">Alta (todo en una tabla)</td><td class="cell-warn">Media (jerarquía de joins)</td></tr>
+              <tr><td>Integridad referencial</td><td class="cell-warn">Solo a nivel dim plana</td><td class="cell-ok">Auditable por nivel</td></tr>
+              <tr><td>Escenario recomendado</td><td class="cell-neutral">Sala de prensa / 24h</td><td class="cell-neutral">Repositorio / actualizaciones regulares</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="respuesta-bloque mt-4">
+        <div class="pregunta-num">Pregunta 4 — Elección por escenario y cierre reflexivo</div>
+        <div class="respuesta-texto">
+          <div class="grid-2 mt-2 mb-3">
+            <div class="decision-card">
+              <div class="dc-title" style="color:#1d4ed8">⚡ Sala de prensa — entrega 24h</div>
+              <div class="dc-verdict" style="color:#3730a3">→ Modelo Estrella</div>
+              <div class="dc-item">dim_territorio_completa plana con merge Python</div>
+              <div class="dc-item">Tableau extract sin DBA</div>
+              <div class="dc-item">Analista configura el dashboard solo</div>
+              <div class="dc-item">Copo sería válido solo si ya existiera</div>
+            </div>
+            <div class="decision-card">
+              <div class="dc-title" style="color:#6d28d9">🏛 Repositorio institucional — mensual</div>
+              <div class="dc-verdict" style="color:#6d28d9">→ Modelo Copo de Nieve</div>
+              <div class="dc-item">Redistritación controlada (1 fila en dim_provincia)</div>
+              <div class="dc-item">dim_servicios como satélite temporal por año</div>
+              <div class="dc-item">Sin regenerar dim entera en cada actualización</div>
+              <div class="dc-item">Integridad referencial auditable por nivel</div>
+            </div>
+          </div>
+          <strong>Cierre reflexivo sobre preferencia y sesgo técnico:</strong> Mi preferencia por defecto es el modelo estrella porque trabajo con analistas que valoran velocidad de exploración sobre mantenibilidad de repositorio. El sesgo técnico que revela esa preferencia: tiendo a asumir que la audiencia final son analistas de negocio, no ingenieros de datos — si el cliente es un equipo de gobierno de datos con ciclos de actualización regulados, el copo de nieve es la respuesta correcta. La pregunta que haría al usuario antes de modelar: <em>"¿Con qué frecuencia cambian los límites distritales o los nombres de circunscripciones, y quién es responsable de mantener el modelo en el tiempo?"</em>
+        </div>
+      </div>
+
+      <div class="cierre-reflexivo mt-4">
+        <div class="cr-title">Cierre reflexivo del caso</div>
+        El supuesto que tuve que revisar: que "normalizado = correcto" en data warehousing. Al construir los dos modelos para este dataset, el modelo estrella resuelve el 95% de las preguntas analíticas con un solo join. El copo de nieve es mejor para el 5% de casos donde la jerarquía geográfica cambia frecuentemente. El ejemplo real que recuerdo: un repositorio electoral normalizado en 5NF que nadie sabía consultar sin el DBA — los analistas terminaron exportando todo a Excel. Lo que haría distinto: entrevistar al usuario final sobre su workflow antes de elegir el modelo, no al jefe de datos.
+      </div>
+    </div>
+  </div>
+
+</div><!-- /.max-w-screen-xl -->
+
+<script src="./chart.umd.min.js"></script>
+<script>
+// ── Datos embebidos (generados por prepare_data.py) ──────────────────────────
+const C1 = {"agrupaciones":["Otros","Fuerza Popular","Renovacion Popular","Juntos por el Peru","Partido del Buen Gobierno","Partido Civico Obras","Ahora Nacion","Pais para Todos"],"pct_validos":[22.62,17.11,13.68,12.09,11.73,9.34,6.79,6.63],"pct_emitidos":[18.55,14.03,11.22,9.92,9.63,7.66,5.57,5.44],"totales":{"votos_validos":16197147,"votos_emitidos":19747057,"electores_habiles":27325431,"participacion_pct":72.27}};
+
+const C2 = {"elecciones":["Formula Presidencial","Senadores DU","Senadores DM","Diputados","Parlamento Andino"],"ambito":["Nacional","Nacional","Lima Metropolitana","Lima Metropolitana","Nacional"],"pct_contabilizadas":[99.84,85.18,92.86,91.23,88.91],"total_actas":[92766,92766,26368,26368,92766],"actas_contabilizadas":[92618,79020,24484,24056,82475],"actas_jee":[148,13729,1883,2312,10280],"actas_pendientes":[0,17,1,0,11],"actas_no_contabilizadas":[148,13746,1884,2312,10291],"votos_validos_millones":[16.73,12.9,4.4,4.55,12.09],"riesgo_cambio_visual":[0.16,14.82,7.15,8.77,11.09]};
+
+const C3_RAW = [{"departamento":"Amazonas","distrito":"AMA-01","tipo_area":"rural","pobreza":48.0,"voto_x":8.8,"electores":28108},{"departamento":"Amazonas","distrito":"AMA-02","tipo_area":"rural","pobreza":41.2,"voto_x":12.61,"electores":184673},{"departamento":"Amazonas","distrito":"AMA-03","tipo_area":"urbano","pobreza":34.2,"voto_x":8.06,"electores":55413},{"departamento":"Amazonas","distrito":"AMA-04","tipo_area":"urbano","pobreza":33.2,"voto_x":12.31,"electores":14783},{"departamento":"Amazonas","distrito":"AMA-05","tipo_area":"mixto","pobreza":35.1,"voto_x":15.9,"electores":72811},{"departamento":"Amazonas","distrito":"AMA-06","tipo_area":"rural","pobreza":36.8,"voto_x":16.15,"electores":125179},{"departamento":"Amazonas","distrito":"AMA-07","tipo_area":"rural","pobreza":41.2,"voto_x":10.31,"electores":77002},{"departamento":"Amazonas","distrito":"AMA-08","tipo_area":"urbano","pobreza":28.9,"voto_x":16.87,"electores":49839},{"departamento":"Amazonas","distrito":"AMA-09","tipo_area":"mixto","pobreza":28.2,"voto_x":9.76,"electores":106801},{"departamento":"Amazonas","distrito":"AMA-10","tipo_area":"urbano","pobreza":19.0,"voto_x":11.15,"electores":53991},{"departamento":"Amazonas","distrito":"AMA-11","tipo_area":"urbano","pobreza":36.9,"voto_x":16.0,"electores":33982},{"departamento":"Amazonas","distrito":"AMA-12","tipo_area":"mixto","pobreza":33.5,"voto_x":12.05,"electores":34049},{"departamento":"Amazonas","distrito":"AMA-13","tipo_area":"urbano","pobreza":27.6,"voto_x":11.82,"electores":216363},{"departamento":"Amazonas","distrito":"AMA-14","tipo_area":"urbano","pobreza":29.3,"voto_x":12.27,"electores":83865},{"departamento":"Amazonas","distrito":"AMA-15","tipo_area":"rural","pobreza":40.4,"voto_x":13.44,"electores":101433},{"departamento":"Ancash","distrito":"ANC-01","tipo_area":"mixto","pobreza":30.1,"voto_x":12.5,"electores":210488},{"departamento":"Ancash","distrito":"ANC-02","tipo_area":"mixto","pobreza":31.9,"voto_x":8.75,"electores":71996},{"departamento":"Ancash","distrito":"ANC-03","tipo_area":"mixto","pobreza":31.6,"voto_x":12.73,"electores":50068},{"departamento":"Ancash","distrito":"ANC-04","tipo_area":"mixto","pobreza":29.8,"voto_x":3.96,"electores":73468},{"departamento":"Ancash","distrito":"ANC-05","tipo_area":"urbano","pobreza":27.0,"voto_x":3.41,"electores":11493},{"departamento":"Ancash","distrito":"ANC-06","tipo_area":"urbano","pobreza":15.4,"voto_x":15.53,"electores":52267},{"departamento":"Ancash","distrito":"ANC-07","tipo_area":"rural","pobreza":39.8,"voto_x":15.1,"electores":87698},{"departamento":"Ancash","distrito":"ANC-08","tipo_area":"mixto","pobreza":37.4,"voto_x":18.41,"electores":25585},{"departamento":"Ancash","distrito":"ANC-09","tipo_area":"rural","pobreza":34.0,"voto_x":13.88,"electores":91429},{"departamento":"Ancash","distrito":"ANC-10","tipo_area":"rural","pobreza":41.5,"voto_x":12.27,"electores":60759},{"departamento":"Ancash","distrito":"ANC-11","tipo_area":"mixto","pobreza":26.1,"voto_x":9.72,"electores":144856},{"departamento":"Apurimac","distrito":"APU-01","tipo_area":"rural","pobreza":51.4,"voto_x":14.45,"electores":224322},{"departamento":"Apurimac","distrito":"APU-02","tipo_area":"mixto","pobreza":51.5,"voto_x":14.8,"electores":179337},{"departamento":"Apurimac","distrito":"APU-03","tipo_area":"rural","pobreza":48.4,"voto_x":19.01,"electores":31205},{"departamento":"Apurimac","distrito":"APU-04","tipo_area":"urbano","pobreza":41.2,"voto_x":10.25,"electores":37582},{"departamento":"Apurimac","distrito":"APU-05","tipo_area":"rural","pobreza":59.8,"voto_x":14.97,"electores":259242},{"departamento":"Apurimac","distrito":"APU-06","tipo_area":"mixto","pobreza":47.3,"voto_x":13.05,"electores":52319},{"departamento":"Apurimac","distrito":"APU-07","tipo_area":"mixto","pobreza":51.0,"voto_x":13.63,"electores":26453},{"departamento":"Apurimac","distrito":"APU-08","tipo_area":"urbano","pobreza":42.1,"voto_x":19.84,"electores":32250},{"departamento":"Apurimac","distrito":"APU-09","tipo_area":"urbano","pobreza":44.1,"voto_x":12.53,"electores":103571},{"departamento":"Arequipa","distrito":"ARE-01","tipo_area":"urbano","pobreza":8.4,"voto_x":10.65,"electores":11128},{"departamento":"Arequipa","distrito":"ARE-02","tipo_area":"mixto","pobreza":10.5,"voto_x":2.0,"electores":210513},{"departamento":"Arequipa","distrito":"ARE-03","tipo_area":"mixto","pobreza":19.7,"voto_x":9.67,"electores":146941},{"departamento":"Arequipa","distrito":"ARE-04","tipo_area":"mixto","pobreza":14.8,"voto_x":4.34,"electores":188597},{"departamento":"Arequipa","distrito":"ARE-05","tipo_area":"rural","pobreza":19.2,"voto_x":6.0,"electores":50590},{"departamento":"Arequipa","distrito":"ARE-06","tipo_area":"rural","pobreza":24.2,"voto_x":14.61,"electores":14649},{"departamento":"Arequipa","distrito":"ARE-07","tipo_area":"mixto","pobreza":15.9,"voto_x":6.5,"electores":140693},{"departamento":"Arequipa","distrito":"ARE-08","tipo_area":"mixto","pobreza":20.6,"voto_x":7.41,"electores":404043},{"departamento":"Arequipa","distrito":"ARE-09","tipo_area":"urbano","pobreza":15.9,"voto_x":19.21,"electores":17724},{"departamento":"Ayacucho","distrito":"AYA-01","tipo_area":"mixto","pobreza":44.8,"voto_x":14.23,"electores":216101},{"departamento":"Ayacucho","distrito":"AYA-02","tipo_area":"urbano","pobreza":43.4,"voto_x":16.77,"electores":92988},{"departamento":"Ayacucho","distrito":"AYA-03","tipo_area":"urbano","pobreza":33.3,"voto_x":16.6,"electores":55005},{"departamento":"Ayacucho","distrito":"AYA-04","tipo_area":"rural","pobreza":55.5,"voto_x":11.31,"electores":86285},{"departamento":"Ayacucho","distrito":"AYA-05","tipo_area":"mixto","pobreza":44.5,"voto_x":8.89,"electores":67886},{"departamento":"Ayacucho","distrito":"AYA-06","tipo_area":"urbano","pobreza":47.0,"voto_x":12.5,"electores":92243},{"departamento":"Ayacucho","distrito":"AYA-07","tipo_area":"mixto","pobreza":46.6,"voto_x":3.47,"electores":40178},{"departamento":"Ayacucho","distrito":"AYA-08","tipo_area":"urbano","pobreza":38.7,"voto_x":14.8,"electores":50205},{"departamento":"Ayacucho","distrito":"AYA-09","tipo_area":"urbano","pobreza":37.5,"voto_x":13.7,"electores":99263},{"departamento":"Ayacucho","distrito":"AYA-10","tipo_area":"rural","pobreza":51.3,"voto_x":16.63,"electores":27534},{"departamento":"Cajamarca","distrito":"CAJ-01","tipo_area":"mixto","pobreza":33.7,"voto_x":13.16,"electores":162723},{"departamento":"Cajamarca","distrito":"CAJ-02","tipo_area":"rural","pobreza":52.4,"voto_x":13.11,"electores":27986},{"departamento":"Cajamarca","distrito":"CAJ-03","tipo_area":"urbano","pobreza":29.4,"voto_x":20.55,"electores":167299},{"departamento":"Cajamarca","distrito":"CAJ-04","tipo_area":"urbano","pobreza":40.3,"voto_x":11.62,"electores":102912},{"departamento":"Cajamarca","distrito":"CAJ-05","tipo_area":"rural","pobreza":47.5,"voto_x":12.18,"electores":49316},{"departamento":"Cajamarca","distrito":"CAJ-06","tipo_area":"mixto","pobreza":53.6,"voto_x":13.07,"electores":33066},{"departamento":"Cajamarca","distrito":"CAJ-07","tipo_area":"urbano","pobreza":31.3,"voto_x":15.49,"electores":46524},{"departamento":"Cajamarca","distrito":"CAJ-08","tipo_area":"urbano","pobreza":30.9,"voto_x":19.52,"electores":75686},{"departamento":"Cajamarca","distrito":"CAJ-09","tipo_area":"rural","pobreza":53.4,"voto_x":22.75,"electores":21861},{"departamento":"Cajamarca","distrito":"CAJ-10","tipo_area":"mixto","pobreza":45.5,"voto_x":22.35,"electores":171194},{"departamento":"Cajamarca","distrito":"CAJ-11","tipo_area":"urbano","pobreza":33.7,"voto_x":8.47,"electores":47177},{"departamento":"Cajamarca","distrito":"CAJ-12","tipo_area":"rural","pobreza":55.6,"voto_x":20.38,"electores":9623},{"departamento":"Cajamarca","distrito":"CAJ-13","tipo_area":"mixto","pobreza":37.8,"voto_x":12.03,"electores":99359},{"departamento":"Cajamarca","distrito":"CAJ-14","tipo_area":"rural","pobreza":46.4,"voto_x":17.25,"electores":34042},{"departamento":"Callao","distrito":"CAL-01","tipo_area":"urbano","pobreza":11.1,"voto_x":5.09,"electores":25231},{"departamento":"Callao","distrito":"CAL-02","tipo_area":"urbano","pobreza":17.4,"voto_x":9.75,"electores":43886},{"departamento":"Callao","distrito":"CAL-03","tipo_area":"rural","pobreza":29.0,"voto_x":5.47,"electores":58252},{"departamento":"Callao","distrito":"CAL-04","tipo_area":"rural","pobreza":24.5,"voto_x":14.4,"electores":63068},{"departamento":"Callao","distrito":"CAL-05","tipo_area":"mixto","pobreza":24.2,"voto_x":11.43,"electores":985},{"departamento":"Callao","distrito":"CAL-06","tipo_area":"mixto","pobreza":13.4,"voto_x":13.93,"electores":78919},{"departamento":"Callao","distrito":"CAL-07","tipo_area":"rural","pobreza":13.1,"voto_x":18.41,"electores":30023},{"departamento":"Callao","distrito":"CAL-08","tipo_area":"rural","pobreza":30.9,"voto_x":11.14,"electores":23092},{"departamento":"Callao","distrito":"CAL-09","tipo_area":"mixto","pobreza":12.3,"voto_x":21.21,"electores":65609},{"departamento":"Callao","distrito":"CAL-10","tipo_area":"urbano","pobreza":21.7,"voto_x":7.83,"electores":44341},{"departamento":"Callao","distrito":"CAL-11","tipo_area":"urbano","pobreza":5.0,"voto_x":8.94,"electores":6944},{"departamento":"Callao","distrito":"CAL-12","tipo_area":"rural","pobreza":16.6,"voto_x":17.25,"electores":29117},{"departamento":"Callao","distrito":"CAL-13","tipo_area":"rural","pobreza":17.8,"voto_x":10.64,"electores":40043},{"departamento":"Callao","distrito":"CAL-14","tipo_area":"rural","pobreza":23.2,"voto_x":10.5,"electores":96839},{"departamento":"Callao","distrito":"CAL-15","tipo_area":"urbano","pobreza":11.3,"voto_x":6.24,"electores":94818},{"departamento":"Callao","distrito":"CAL-16","tipo_area":"urbano","pobreza":12.7,"voto_x":14.26,"electores":58837},{"departamento":"Cusco","distrito":"CUS-01","tipo_area":"mixto","pobreza":28.6,"voto_x":5.36,"electores":2793},{"departamento":"Cusco","distrito":"CUS-02","tipo_area":"urbano","pobreza":29.5,"voto_x":17.59,"electores":13625},{"departamento":"Cusco","distrito":"CUS-03","tipo_area":"rural","pobreza":33.5,"voto_x":12.03,"electores":67125},{"departamento":"Cusco","distrito":"CUS-04","tipo_area":"rural","pobreza":41.6,"voto_x":11.76,"electores":109409},{"departamento":"Cusco","distrito":"CUS-05","tipo_area":"urbano","pobreza":32.2,"voto_x":9.78,"electores":44499},{"departamento":"Cusco","distrito":"CUS-06","tipo_area":"rural","pobreza":34.2,"voto_x":10.06,"electores":11735},{"departamento":"Cusco","distrito":"CUS-07","tipo_area":"urbano","pobreza":39.2,"voto_x":11.6,"electores":25415},{"departamento":"Cusco","distrito":"CUS-08","tipo_area":"mixto","pobreza":34.3,"voto_x":13.62,"electores":28656},{"departamento":"Cusco","distrito":"CUS-09","tipo_area":"mixto","pobreza":45.0,"voto_x":8.59,"electores":26975},{"departamento":"Cusco","distrito":"CUS-10","tipo_area":"urbano","pobreza":23.4,"voto_x":7.34,"electores":73094},{"departamento":"Cusco","distrito":"CUS-11","tipo_area":"rural","pobreza":44.0,"voto_x":11.11,"electores":28907},{"departamento":"Huancavelica","distrito":"HUA-01","tipo_area":"rural","pobreza":60.6,"voto_x":25.09,"electores":15826},{"departamento":"Huancavelica","distrito":"HUA-02","tipo_area":"urbano","pobreza":38.8,"voto_x":14.78,"electores":39944},{"departamento":"Huancavelica","distrito":"HUA-03","tipo_area":"urbano","pobreza":38.9,"voto_x":14.8,"electores":61508},{"departamento":"Huancavelica","distrito":"HUA-04","tipo_area":"rural","pobreza":56.8,"voto_x":16.81,"electores":17216},{"departamento":"Huancavelica","distrito":"HUA-05","tipo_area":"urbano","pobreza":42.0,"voto_x":12.0,"electores":6536},{"departamento":"Huancavelica","distrito":"HUA-06","tipo_area":"mixto","pobreza":47.2,"voto_x":12.75,"electores":51523},{"departamento":"Huancavelica","distrito":"HUA-07","tipo_area":"mixto","pobreza":48.5,"voto_x":9.33,"electores":7762},{"departamento":"Huancavelica","distrito":"HUA-08","tipo_area":"urbano","pobreza":35.6,"voto_x":12.46,"electores":15081},{"departamento":"Huancavelica","distrito":"HUA-09","tipo_area":"urbano","pobreza":31.6,"voto_x":15.43,"electores":21705},{"departamento":"Huancavelica","distrito":"HUA-10","tipo_area":"urbano","pobreza":42.1,"voto_x":13.27,"electores":5096},{"departamento":"Huanuco","distrito":"HUA-01","tipo_area":"mixto","pobreza":31.9,"voto_x":17.81,"electores":24048},{"departamento":"Huanuco","distrito":"HUA-02","tipo_area":"urbano","pobreza":21.1,"voto_x":15.43,"electores":27281},{"departamento":"Huanuco","distrito":"HUA-03","tipo_area":"mixto","pobreza":33.4,"voto_x":11.18,"electores":40762},{"departamento":"Huanuco","distrito":"HUA-04","tipo_area":"rural","pobreza":43.5,"voto_x":17.19,"electores":47172},{"departamento":"Huanuco","distrito":"HUA-05","tipo_area":"rural","pobreza":54.3,"voto_x":15.62,"electores":56699},{"departamento":"Huanuco","distrito":"HUA-06","tipo_area":"urbano","pobreza":28.1,"voto_x":10.93,"electores":22144},{"departamento":"Huanuco","distrito":"HUA-07","tipo_area":"rural","pobreza":47.7,"voto_x":16.51,"electores":2439},{"departamento":"Huanuco","distrito":"HUA-08","tipo_area":"urbano","pobreza":30.8,"voto_x":13.61,"electores":47521},{"departamento":"Huanuco","distrito":"HUA-09","tipo_area":"urbano","pobreza":38.2,"voto_x":18.35,"electores":54417},{"departamento":"Huanuco","distrito":"HUA-10","tipo_area":"mixto","pobreza":38.8,"voto_x":15.37,"electores":27614},{"departamento":"Huanuco","distrito":"HUA-11","tipo_area":"rural","pobreza":36.5,"voto_x":18.49,"electores":56886},{"departamento":"Huanuco","distrito":"HUA-12","tipo_area":"urbano","pobreza":36.7,"voto_x":6.72,"electores":3549},{"departamento":"Huanuco","distrito":"HUA-13","tipo_area":"urbano","pobreza":31.7,"voto_x":10.22,"electores":105652},{"departamento":"Ica","distrito":"ICA-01","tipo_area":"mixto","pobreza":22.2,"voto_x":12.32,"electores":11146},{"departamento":"Ica","distrito":"ICA-02","tipo_area":"urbano","pobreza":8.4,"voto_x":14.57,"electores":23997},{"departamento":"Ica","distrito":"ICA-03","tipo_area":"urbano","pobreza":17.0,"voto_x":6.42,"electores":16091},{"departamento":"Ica","distrito":"ICA-04","tipo_area":"rural","pobreza":22.6,"voto_x":9.5,"electores":27867},{"departamento":"Ica","distrito":"ICA-05","tipo_area":"mixto","pobreza":17.9,"voto_x":6.37,"electores":68104},{"departamento":"Ica","distrito":"ICA-06","tipo_area":"rural","pobreza":19.6,"voto_x":16.3,"electores":22478},{"departamento":"Ica","distrito":"ICA-07","tipo_area":"mixto","pobreza":14.1,"voto_x":15.34,"electores":34432},{"departamento":"Ica","distrito":"ICA-08","tipo_area":"mixto","pobreza":27.5,"voto_x":10.52,"electores":15655},{"departamento":"Ica","distrito":"ICA-09","tipo_area":"rural","pobreza":29.9,"voto_x":11.93,"electores":80455},{"departamento":"Ica","distrito":"ICA-10","tipo_area":"urbano","pobreza":11.6,"voto_x":12.15,"electores":15515},{"departamento":"Ica","distrito":"ICA-11","tipo_area":"rural","pobreza":12.4,"voto_x":6.42,"electores":53107},{"departamento":"Ica","distrito":"ICA-12","tipo_area":"urbano","pobreza":6.8,"voto_x":9.66,"electores":58116},{"departamento":"Ica","distrito":"ICA-13","tipo_area":"urbano","pobreza":14.4,"voto_x":8.84,"electores":13296},{"departamento":"Ica","distrito":"ICA-14","tipo_area":"mixto","pobreza":11.6,"voto_x":8.73,"electores":34420},{"departamento":"Ica","distrito":"ICA-15","tipo_area":"urbano","pobreza":17.2,"voto_x":10.14,"electores":1587},{"departamento":"Ica","distrito":"ICA-16","tipo_area":"rural","pobreza":19.6,"voto_x":11.52,"electores":23009},{"departamento":"Junin","distrito":"JUN-01","tipo_area":"mixto","pobreza":34.9,"voto_x":15.52,"electores":128141},{"departamento":"Junin","distrito":"JUN-02","tipo_area":"urbano","pobreza":17.7,"voto_x":14.2,"electores":16265},{"departamento":"Junin","distrito":"JUN-03","tipo_area":"urbano","pobreza":25.2,"voto_x":10.11,"electores":57948},{"departamento":"Junin","distrito":"JUN-04","tipo_area":"rural","pobreza":24.8,"voto_x":19.96,"electores":342971},{"departamento":"Junin","distrito":"JUN-05","tipo_area":"urbano","pobreza":33.1,"voto_x":20.97,"electores":42940},{"departamento":"Junin","distrito":"JUN-06","tipo_area":"rural","pobreza":27.6,"voto_x":11.1,"electores":106749},{"departamento":"Junin","distrito":"JUN-07","tipo_area":"urbano","pobreza":24.2,"voto_x":12.98,"electores":35843},{"departamento":"Junin","distrito":"JUN-08","tipo_area":"mixto","pobreza":34.4,"voto_x":6.31,"electores":274346},{"departamento":"Junin","distrito":"JUN-09","tipo_area":"rural","pobreza":36.9,"voto_x":13.53,"electores":126364},{"departamento":"Junin","distrito":"JUN-10","tipo_area":"urbano","pobreza":24.0,"voto_x":10.08,"electores":26811},{"departamento":"La Libertad","distrito":"LA -01","tipo_area":"mixto","pobreza":33.1,"voto_x":14.75,"electores":52155},{"departamento":"La Libertad","distrito":"LA -02","tipo_area":"rural","pobreza":25.8,"voto_x":17.55,"electores":268854},{"departamento":"La Libertad","distrito":"LA -03","tipo_area":"rural","pobreza":30.8,"voto_x":16.67,"electores":105865},{"departamento":"La Libertad","distrito":"LA -04","tipo_area":"rural","pobreza":23.1,"voto_x":12.85,"electores":187842},{"departamento":"La Libertad","distrito":"LA -05","tipo_area":"mixto","pobreza":25.9,"voto_x":13.76,"electores":49964},{"departamento":"La Libertad","distrito":"LA -06","tipo_area":"mixto","pobreza":38.2,"voto_x":11.36,"electores":59347},{"departamento":"La Libertad","distrito":"LA -07","tipo_area":"rural","pobreza":30.3,"voto_x":10.54,"electores":49148},{"departamento":"La Libertad","distrito":"LA -08","tipo_area":"urbano","pobreza":26.4,"voto_x":9.49,"electores":34999},{"departamento":"La Libertad","distrito":"LA -09","tipo_area":"urbano","pobreza":23.7,"voto_x":3.9,"electores":49924},{"departamento":"La Libertad","distrito":"LA -10","tipo_area":"rural","pobreza":33.9,"voto_x":15.9,"electores":90889},{"departamento":"La Libertad","distrito":"LA -11","tipo_area":"urbano","pobreza":27.5,"voto_x":12.36,"electores":11702},{"departamento":"La Libertad","distrito":"LA -12","tipo_area":"rural","pobreza":36.8,"voto_x":16.05,"electores":126347},{"departamento":"La Libertad","distrito":"LA -13","tipo_area":"urbano","pobreza":16.0,"voto_x":11.51,"electores":61218},{"departamento":"La Libertad","distrito":"LA -14","tipo_area":"urbano","pobreza":25.1,"voto_x":6.49,"electores":23390},{"departamento":"La Libertad","distrito":"LA -15","tipo_area":"urbano","pobreza":24.6,"voto_x":7.11,"electores":29022},{"departamento":"La Libertad","distrito":"LA -16","tipo_area":"urbano","pobreza":22.5,"voto_x":11.82,"electores":1470},{"departamento":"Lambayeque","distrito":"LAM-01","tipo_area":"rural","pobreza":20.7,"voto_x":11.85,"electores":11877},{"departamento":"Lambayeque","distrito":"LAM-02","tipo_area":"urbano","pobreza":23.1,"voto_x":11.27,"electores":13252},{"departamento":"Lambayeque","distrito":"LAM-03","tipo_area":"urbano","pobreza":23.5,"voto_x":9.17,"electores":11770},{"departamento":"Lambayeque","distrito":"LAM-04","tipo_area":"urbano","pobreza":15.6,"voto_x":17.68,"electores":71376},{"departamento":"Lambayeque","distrito":"LAM-05","tipo_area":"urbano","pobreza":26.4,"voto_x":9.59,"electores":7569},{"departamento":"Lambayeque","distrito":"LAM-06","tipo_area":"urbano","pobreza":16.7,"voto_x":10.94,"electores":9910},{"departamento":"Lambayeque","distrito":"LAM-07","tipo_area":"urbano","pobreza":24.2,"voto_x":9.5,"electores":5919},{"departamento":"Lambayeque","distrito":"LAM-08","tipo_area":"rural","pobreza":32.3,"voto_x":18.88,"electores":28068},{"departamento":"Lambayeque","distrito":"LAM-09","tipo_area":"urbano","pobreza":10.4,"voto_x":10.43,"electores":8227},{"departamento":"Lambayeque","distrito":"LAM-10","tipo_area":"urbano","pobreza":20.6,"voto_x":17.13,"electores":17930},{"departamento":"Lima","distrito":"LIM-01","tipo_area":"rural","pobreza":19.6,"voto_x":13.82,"electores":1192811},{"departamento":"Lima","distrito":"LIM-02","tipo_area":"mixto","pobreza":26.7,"voto_x":20.56,"electores":1248215},{"departamento":"Lima","distrito":"LIM-03","tipo_area":"mixto","pobreza":19.3,"voto_x":13.96,"electores":1153545},{"departamento":"Lima","distrito":"LIM-04","tipo_area":"rural","pobreza":26.1,"voto_x":19.55,"electores":651099},{"departamento":"Lima","distrito":"LIM-05","tipo_area":"urbano","pobreza":20.8,"voto_x":10.64,"electores":165227},{"departamento":"Lima","distrito":"LIM-06","tipo_area":"mixto","pobreza":21.5,"voto_x":8.02,"electores":875898},{"departamento":"Lima","distrito":"LIM-07","tipo_area":"urbano","pobreza":19.0,"voto_x":11.0,"electores":332537},{"departamento":"Lima","distrito":"LIM-08","tipo_area":"urbano","pobreza":12.1,"voto_x":2.0,"electores":404720},{"departamento":"Lima","distrito":"LIM-09","tipo_area":"rural","pobreza":29.3,"voto_x":13.67,"electores":479286},{"departamento":"Lima","distrito":"LIM-10","tipo_area":"rural","pobreza":31.2,"voto_x":11.13,"electores":541794},{"departamento":"Lima","distrito":"LIM-11","tipo_area":"mixto","pobreza":19.5,"voto_x":15.84,"electores":154867},{"departamento":"Loreto","distrito":"LOR-01","tipo_area":"urbano","pobreza":29.7,"voto_x":18.08,"electores":11899},{"departamento":"Loreto","distrito":"LOR-02","tipo_area":"mixto","pobreza":42.4,"voto_x":18.45,"electores":42784},{"departamento":"Loreto","distrito":"LOR-03","tipo_area":"rural","pobreza":55.0,"voto_x":12.13,"electores":285158},{"departamento":"Loreto","distrito":"LOR-04","tipo_area":"mixto","pobreza":35.8,"voto_x":21.19,"electores":14244},{"departamento":"Loreto","distrito":"LOR-05","tipo_area":"urbano","pobreza":21.3,"voto_x":9.33,"electores":221197},{"departamento":"Loreto","distrito":"LOR-06","tipo_area":"urbano","pobreza":36.3,"voto_x":16.49,"electores":56714},{"departamento":"Loreto","distrito":"LOR-07","tipo_area":"urbano","pobreza":34.5,"voto_x":16.14,"electores":184743},{"departamento":"Loreto","distrito":"LOR-08","tipo_area":"urbano","pobreza":37.7,"voto_x":3.91,"electores":133611},{"departamento":"Loreto","distrito":"LOR-09","tipo_area":"rural","pobreza":36.8,"voto_x":19.63,"electores":49235},{"departamento":"Loreto","distrito":"LOR-10","tipo_area":"mixto","pobreza":32.6,"voto_x":14.97,"electores":100191},{"departamento":"Moquegua","distrito":"MOQ-01","tipo_area":"urbano","pobreza":12.0,"voto_x":11.74,"electores":12176},{"departamento":"Moquegua","distrito":"MOQ-02","tipo_area":"urbano","pobreza":21.1,"voto_x":11.66,"electores":38779},{"departamento":"Moquegua","distrito":"MOQ-03","tipo_area":"urbano","pobreza":15.3,"voto_x":7.32,"electores":33625},{"departamento":"Moquegua","distrito":"MOQ-04","tipo_area":"mixto","pobreza":17.9,"voto_x":10.36,"electores":34140},{"departamento":"Moquegua","distrito":"MOQ-05","tipo_area":"mixto","pobreza":13.9,"voto_x":2.5,"electores":40688},{"departamento":"Moquegua","distrito":"MOQ-06","tipo_area":"urbano","pobreza":5.0,"voto_x":11.66,"electores":69899},{"departamento":"Moquegua","distrito":"MOQ-07","tipo_area":"urbano","pobreza":6.1,"voto_x":9.18,"electores":26991},{"departamento":"Moquegua","distrito":"MOQ-08","tipo_area":"urbano","pobreza":5.0,"voto_x":2.76,"electores":33407},{"departamento":"Moquegua","distrito":"MOQ-09","tipo_area":"rural","pobreza":9.3,"voto_x":8.24,"electores":12418},{"departamento":"Moquegua","distrito":"MOQ-10","tipo_area":"urbano","pobreza":5.0,"voto_x":12.84,"electores":25090},{"departamento":"Pasco","distrito":"PAS-01","tipo_area":"rural","pobreza":37.7,"voto_x":6.08,"electores":7328},{"departamento":"Pasco","distrito":"PAS-02","tipo_area":"urbano","pobreza":27.5,"voto_x":15.27,"electores":38614},{"departamento":"Pasco","distrito":"PAS-03","tipo_area":"urbano","pobreza":37.5,"voto_x":8.42,"electores":96976},{"departamento":"Pasco","distrito":"PAS-04","tipo_area":"mixto","pobreza":42.9,"voto_x":10.12,"electores":68071},{"departamento":"Pasco","distrito":"PAS-05","tipo_area":"rural","pobreza":40.9,"voto_x":8.72,"electores":15377},{"departamento":"Pasco","distrito":"PAS-06","tipo_area":"mixto","pobreza":23.3,"voto_x":8.6,"electores":42169},{"departamento":"Pasco","distrito":"PAS-07","tipo_area":"rural","pobreza":40.3,"voto_x":16.15,"electores":53040},{"departamento":"Pasco","distrito":"PAS-08","tipo_area":"urbano","pobreza":29.8,"voto_x":18.02,"electores":1356},{"departamento":"Pasco","distrito":"PAS-09","tipo_area":"urbano","pobreza":31.0,"voto_x":10.25,"electores":126634},{"departamento":"Pasco","distrito":"PAS-10","tipo_area":"urbano","pobreza":32.2,"voto_x":9.42,"electores":20443},{"departamento":"Pasco","distrito":"PAS-11","tipo_area":"rural","pobreza":45.9,"voto_x":16.92,"electores":7201},{"departamento":"Pasco","distrito":"PAS-12","tipo_area":"urbano","pobreza":42.2,"voto_x":22.95,"electores":365886},{"departamento":"Pasco","distrito":"PAS-13","tipo_area":"rural","pobreza":43.2,"voto_x":25.99,"electores":12188},{"departamento":"Pasco","distrito":"PAS-14","tipo_area":"mixto","pobreza":30.0,"voto_x":14.18,"electores":34768},{"departamento":"Pasco","distrito":"PAS-15","tipo_area":"mixto","pobreza":33.5,"voto_x":12.36,"electores":19558},{"departamento":"Pasco","distrito":"PAS-16","tipo_area":"rural","pobreza":45.6,"voto_x":13.78,"electores":126972},{"departamento":"Pasco","distrito":"PAS-17","tipo_area":"urbano","pobreza":24.4,"voto_x":13.04,"electores":36136},{"departamento":"Piura","distrito":"PIU-01","tipo_area":"urbano","pobreza":15.0,"voto_x":12.33,"electores":22338},{"departamento":"Piura","distrito":"PIU-02","tipo_area":"rural","pobreza":40.1,"voto_x":9.08,"electores":39503},{"departamento":"Piura","distrito":"PIU-03","tipo_area":"rural","pobreza":46.3,"voto_x":16.04,"electores":39135},{"departamento":"Piura","distrito":"PIU-04","tipo_area":"urbano","pobreza":23.2,"voto_x":16.94,"electores":23737},{"departamento":"Piura","distrito":"PIU-05","tipo_area":"mixto","pobreza":38.6,"voto_x":13.09,"electores":56167},{"departamento":"Piura","distrito":"PIU-06","tipo_area":"urbano","pobreza":29.4,"voto_x":9.93,"electores":88521},{"departamento":"Piura","distrito":"PIU-07","tipo_area":"mixto","pobreza":31.8,"voto_x":8.52,"electores":10706},{"departamento":"Piura","distrito":"PIU-08","tipo_area":"urbano","pobreza":26.5,"voto_x":22.33,"electores":11872},{"departamento":"Piura","distrito":"PIU-09","tipo_area":"urbano","pobreza":17.9,"voto_x":8.93,"electores":11198},{"departamento":"Piura","distrito":"PIU-10","tipo_area":"urbano","pobreza":25.1,"voto_x":14.34,"electores":10196},{"departamento":"Puno","distrito":"PUN-01","tipo_area":"urbano","pobreza":37.0,"voto_x":17.77,"electores":95210},{"departamento":"Puno","distrito":"PUN-02","tipo_area":"rural","pobreza":49.7,"voto_x":14.27,"electores":12889},{"departamento":"Puno","distrito":"PUN-03","tipo_area":"urbano","pobreza":28.4,"voto_x":10.56,"electores":10940},{"departamento":"Puno","distrito":"PUN-04","tipo_area":"urbano","pobreza":42.9,"voto_x":18.46,"electores":38468},{"departamento":"Puno","distrito":"PUN-05","tipo_area":"urbano","pobreza":37.0,"voto_x":10.81,"electores":23841},{"departamento":"Puno","distrito":"PUN-06","tipo_area":"rural","pobreza":47.1,"voto_x":19.04,"electores":60256},{"departamento":"Puno","distrito":"PUN-07","tipo_area":"rural","pobreza":47.4,"voto_x":16.36,"electores":27642},{"departamento":"Puno","distrito":"PUN-08","tipo_area":"rural","pobreza":43.8,"voto_x":10.38,"electores":7439},{"departamento":"Puno","distrito":"PUN-09","tipo_area":"urbano","pobreza":45.2,"voto_x":15.25,"electores":900},{"departamento":"Puno","distrito":"PUN-10","tipo_area":"urbano","pobreza":41.6,"voto_x":19.59,"electores":45964},{"departamento":"Puno","distrito":"PUN-11","tipo_area":"mixto","pobreza":39.8,"voto_x":12.88,"electores":13150},{"departamento":"Puno","distrito":"PUN-12","tipo_area":"rural","pobreza":52.0,"voto_x":21.47,"electores":36447},{"departamento":"Puno","distrito":"PUN-13","tipo_area":"rural","pobreza":55.0,"voto_x":22.22,"electores":12238},{"departamento":"Puno","distrito":"PUN-14","tipo_area":"rural","pobreza":40.1,"voto_x":15.95,"electores":46321},{"departamento":"Puno","distrito":"PUN-15","tipo_area":"mixto","pobreza":41.4,"voto_x":18.13,"electores":84485},{"departamento":"Puno","distrito":"PUN-16","tipo_area":"rural","pobreza":43.4,"voto_x":22.57,"electores":86369},{"departamento":"Puno","distrito":"PUN-17","tipo_area":"rural","pobreza":49.7,"voto_x":20.39,"electores":102056},{"departamento":"San Martin","distrito":"SAN-01","tipo_area":"urbano","pobreza":27.3,"voto_x":15.83,"electores":139729},{"departamento":"San Martin","distrito":"SAN-02","tipo_area":"urbano","pobreza":35.0,"voto_x":14.18,"electores":43088},{"departamento":"San Martin","distrito":"SAN-03","tipo_area":"mixto","pobreza":30.5,"voto_x":14.94,"electores":26860},{"departamento":"San Martin","distrito":"SAN-04","tipo_area":"rural","pobreza":46.2,"voto_x":16.76,"electores":287301},{"departamento":"San Martin","distrito":"SAN-05","tipo_area":"rural","pobreza":46.8,"voto_x":15.69,"electores":20692},{"departamento":"San Martin","distrito":"SAN-06","tipo_area":"urbano","pobreza":21.5,"voto_x":6.76,"electores":58273},{"departamento":"San Martin","distrito":"SAN-07","tipo_area":"rural","pobreza":33.8,"voto_x":20.17,"electores":126354},{"departamento":"San Martin","distrito":"SAN-08","tipo_area":"rural","pobreza":47.9,"voto_x":19.21,"electores":41314},{"departamento":"San Martin","distrito":"SAN-09","tipo_area":"mixto","pobreza":32.4,"voto_x":13.16,"electores":55635},{"departamento":"San Martin","distrito":"SAN-10","tipo_area":"urbano","pobreza":25.1,"voto_x":12.66,"electores":119107},{"departamento":"San Martin","distrito":"SAN-11","tipo_area":"urbano","pobreza":18.6,"voto_x":13.89,"electores":45687},{"departamento":"San Martin","distrito":"SAN-12","tipo_area":"rural","pobreza":39.5,"voto_x":18.53,"electores":89293},{"departamento":"San Martin","distrito":"SAN-13","tipo_area":"urbano","pobreza":32.3,"voto_x":6.12,"electores":41106},{"departamento":"Tacna","distrito":"TAC-01","tipo_area":"urbano","pobreza":5.0,"voto_x":4.53,"electores":57044},{"departamento":"Tacna","distrito":"TAC-02","tipo_area":"urbano","pobreza":5.1,"voto_x":4.46,"electores":38313},{"departamento":"Tacna","distrito":"TAC-03","tipo_area":"mixto","pobreza":11.8,"voto_x":2.17,"electores":26316},{"departamento":"Tacna","distrito":"TAC-04","tipo_area":"mixto","pobreza":5.5,"voto_x":10.72,"electores":28104},{"departamento":"Tacna","distrito":"TAC-05","tipo_area":"urbano","pobreza":20.0,"voto_x":3.66,"electores":2529},{"departamento":"Tacna","distrito":"TAC-06","tipo_area":"mixto","pobreza":19.5,"voto_x":9.04,"electores":93610},{"departamento":"Tacna","distrito":"TAC-07","tipo_area":"urbano","pobreza":18.4,"voto_x":8.53,"electores":16385},{"departamento":"Tacna","distrito":"TAC-08","tipo_area":"mixto","pobreza":7.3,"voto_x":11.36,"electores":47781},{"departamento":"Tacna","distrito":"TAC-09","tipo_area":"rural","pobreza":12.0,"voto_x":8.01,"electores":41589},{"departamento":"Tacna","distrito":"TAC-10","tipo_area":"urbano","pobreza":12.2,"voto_x":7.25,"electores":35673},{"departamento":"Tacna","distrito":"TAC-11","tipo_area":"urbano","pobreza":12.1,"voto_x":2.46,"electores":67728},{"departamento":"Tacna","distrito":"TAC-12","tipo_area":"mixto","pobreza":16.8,"voto_x":7.54,"electores":16559},{"departamento":"Tacna","distrito":"TAC-13","tipo_area":"mixto","pobreza":12.9,"voto_x":13.11,"electores":47765},{"departamento":"Tumbes","distrito":"TUM-01","tipo_area":"mixto","pobreza":19.4,"voto_x":12.25,"electores":5317},{"departamento":"Tumbes","distrito":"TUM-02","tipo_area":"rural","pobreza":22.2,"voto_x":8.31,"electores":75127},{"departamento":"Tumbes","distrito":"TUM-03","tipo_area":"urbano","pobreza":31.0,"voto_x":13.33,"electores":29307},{"departamento":"Tumbes","distrito":"TUM-04","tipo_area":"mixto","pobreza":27.4,"voto_x":9.9,"electores":45992},{"departamento":"Tumbes","distrito":"TUM-05","tipo_area":"rural","pobreza":30.1,"voto_x":14.67,"electores":49362},{"departamento":"Tumbes","distrito":"TUM-06","tipo_area":"mixto","pobreza":20.3,"voto_x":9.6,"electores":7659},{"departamento":"Tumbes","distrito":"TUM-07","tipo_area":"urbano","pobreza":15.6,"voto_x":5.33,"electores":96842},{"departamento":"Tumbes","distrito":"TUM-08","tipo_area":"urbano","pobreza":12.7,"voto_x":11.73,"electores":24493},{"departamento":"Tumbes","distrito":"TUM-09","tipo_area":"mixto","pobreza":15.7,"voto_x":7.88,"electores":20583},{"departamento":"Tumbes","distrito":"TUM-10","tipo_area":"rural","pobreza":32.6,"voto_x":20.67,"electores":1493},{"departamento":"Tumbes","distrito":"TUM-11","tipo_area":"mixto","pobreza":21.6,"voto_x":17.45,"electores":6725},{"departamento":"Tumbes","distrito":"TUM-12","tipo_area":"urbano","pobreza":26.2,"voto_x":8.54,"electores":22239},{"departamento":"Tumbes","distrito":"TUM-13","tipo_area":"urbano","pobreza":32.6,"voto_x":17.93,"electores":78733},{"departamento":"Tumbes","distrito":"TUM-14","tipo_area":"mixto","pobreza":24.4,"voto_x":10.4,"electores":73720},{"departamento":"Tumbes","distrito":"TUM-15","tipo_area":"urbano","pobreza":9.8,"voto_x":8.44,"electores":17041},{"departamento":"Tumbes","distrito":"TUM-16","tipo_area":"rural","pobreza":29.7,"voto_x":18.54,"electores":4294},{"departamento":"Tumbes","distrito":"TUM-17","tipo_area":"urbano","pobreza":30.9,"voto_x":8.29,"electores":3669},{"departamento":"Ucayali","distrito":"UCA-01","tipo_area":"rural","pobreza":52.5,"voto_x":17.88,"electores":30732},{"departamento":"Ucayali","distrito":"UCA-02","tipo_area":"mixto","pobreza":42.9,"voto_x":19.81,"electores":3945},{"departamento":"Ucayali","distrito":"UCA-03","tipo_area":"rural","pobreza":47.4,"voto_x":27.11,"electores":6844},{"departamento":"Ucayali","distrito":"UCA-04","tipo_area":"urbano","pobreza":39.5,"voto_x":20.68,"electores":22017},{"departamento":"Ucayali","distrito":"UCA-05","tipo_area":"urbano","pobreza":37.2,"voto_x":18.92,"electores":15790},{"departamento":"Ucayali","distrito":"UCA-06","tipo_area":"mixto","pobreza":40.8,"voto_x":9.82,"electores":13245},{"departamento":"Ucayali","distrito":"UCA-07","tipo_area":"mixto","pobreza":35.0,"voto_x":12.94,"electores":44198},{"departamento":"Ucayali","distrito":"UCA-08","tipo_area":"urbano","pobreza":35.5,"voto_x":7.46,"electores":7248},{"departamento":"Ucayali","distrito":"UCA-09","tipo_area":"mixto","pobreza":45.0,"voto_x":16.67,"electores":21105},{"departamento":"Ucayali","distrito":"UCA-10","tipo_area":"urbano","pobreza":32.5,"voto_x":15.91,"electores":174787},{"departamento":"Ucayali","distrito":"UCA-11","tipo_area":"rural","pobreza":34.0,"voto_x":18.94,"electores":22678},{"departamento":"Ucayali","distrito":"UCA-12","tipo_area":"mixto","pobreza":28.1,"voto_x":17.83,"electores":7845},{"departamento":"Ucayali","distrito":"UCA-13","tipo_area":"rural","pobreza":42.9,"voto_x":21.66,"electores":86070},{"departamento":"Ucayali","distrito":"UCA-14","tipo_area":"urbano","pobreza":33.9,"voto_x":19.86,"electores":6193},{"departamento":"Ucayali","distrito":"UCA-15","tipo_area":"urbano","pobreza":30.6,"voto_x":14.05,"electores":14310},{"departamento":"Ucayali","distrito":"UCA-16","tipo_area":"rural","pobreza":52.2,"voto_x":11.84,"electores":14827}];
+
+const C4 = {"ranking_monto_bruto":{"departamentos":["San Martin","Tacna","Arequipa","Ica","Callao","Moquegua","Piura","Apurimac","Ancash","Pasco","Ucayali","Cusco","Lima","Cajamarca","Puno"],"monto_mm":[209.33,234.7,235.15,248.4,252.47,255.63,263.85,278.91,287.01,288.32,294.62,414.83,445.79,475.06,486.63],"n_obras":[24,39,39,45,45,33,46,41,46,32,42,52,49,68,66]},"ranking_normalizado":{"departamentos":["Arequipa","Loreto","Ancash","Lambayeque","Huancavelica","Ayacucho","Apurimac","Cajamarca","Ucayali","Puno","Moquegua","Cusco","San Martin","Pasco","Lima"],"monto_por_obra_mm":[6.03,6.213,6.239,6.376,6.632,6.732,6.803,6.986,7.015,7.373,7.746,7.978,8.722,9.01,9.098],"n_obras":[39,25,46,21,28,24,41,68,42,66,33,52,24,32,49]},"por_sector":{"sectores":["Saneamiento","Transporte","Educacion","Salud","Riego"],"obras":[233,223,181,162,84],"monto_mm":[1746.1,1451.61,1155.44,1007.17,520.1]},"totales":{"total_obras":883,"monto_total_mm":5880.4}};
+
+const C5_CARD = {"mesas_unicas":1358,"distritos_en_fact":334,"distritos_en_dim_territorio":334,"distritos_en_dim_servicios":334,"dim_territorio_clave_unica":true,"distritos_sin_dim":[],"mesas_con_votos_validos_inconsistente":0,"total_votos_fact":254830,"total_votos_tras_join_correcto":254830,"inflacion_votos_si_join_malo":0,"elecciones_unicas":1,"organizaciones_unicas":5};
+
+// ── Sistema de pestañas (copiado del dashboard base) ─────────────────────────
+const TAB_RENDERED = { c1: false, c2: false, c3: false, c4: false, c5: false };
+
+const TAB_RENDERERS = {
+  c1: renderCaso1,
+  c2: renderCaso2,
+  c3: renderCaso3,
+  c4: renderCaso4,
+  c5: renderCaso5,
+};
+
+function activateTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`panel-${name}`).classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b => {
+    if (b.getAttribute('onclick') === `activateTab('${name}')`) b.classList.add('active');
+  });
+  if (!TAB_RENDERED[name]) {
+    TAB_RENDERED[name] = true;
+    TAB_RENDERERS[name]();
+  }
+  if (history.replaceState) history.replaceState(null, '', `#${name}`);
+}
+
+// ── Caso 1: Barra horizontal agrupada ────────────────────────────────────────
+function renderCaso1() {
+  const labels = C1.agrupaciones;
+  new Chart(document.getElementById('chart-c1'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: '% votos válidos', data: C1.pct_validos, backgroundColor: 'rgba(99,102,241,0.75)', borderColor: '#6366f1', borderWidth: 1 },
+        { label: '% votos emitidos', data: C1.pct_emitidos, backgroundColor: 'rgba(251,146,60,0.65)', borderColor: '#fb923c', borderWidth: 1 },
+      ]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      plugins: {
+        legend: { labels: { color: '#18181b', font: { size: 11 } } },
+        tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.x.toFixed(2)}%` } },
+        annotation: { annotations: { line50: { type: 'line', xMin: 50, xMax: 50, borderColor: 'rgba(185,28,28,0.5)', borderWidth: 1.5, borderDash: [4, 3], label: { content: '50% (umbral primera vuelta)', display: true, color: '#b91c1c', font: { size: 9 } } } } }
+      },
+      scales: {
+        x: { beginAtZero: true, max: 30, ticks: { color: '#71717a', callback: v => v + '%' }, grid: { color: 'rgba(0,0,0,0.08)' }, title: { display: true, text: 'Porcentaje', color: '#71717a', font: { size: 10 } } },
+        y: { ticks: { color: '#18181b', font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } }
+      }
+    }
+  });
+  renderDenomChart();
+}
+
+// (renderDenomChart se define más abajo; se llama desde renderCaso1)
+// ── C1 support: denominadores en magnitud absoluta ───────────────────────────
+function renderDenomChart() {
+  const t = C1.totales;
+  new Chart(document.getElementById('chart-c1-denom'), {
+    type: 'bar',
+    data: {
+      labels: ['Electores hábiles', 'Votos emitidos', 'Votos válidos'],
+      datasets: [{ data: [t.electores_habiles, t.votos_emitidos, t.votos_validos],
+        backgroundColor: ['rgba(30,58,138,0.12)','rgba(30,58,138,0.38)','rgba(30,58,138,0.7)'],
+        borderColor: ['rgba(30,58,138,0.35)','rgba(30,58,138,0.7)','rgba(30,58,138,1)'],
+        borderWidth: 1, borderRadius: 3 }]
+    },
+    options: {
+      indexAxis: 'y', responsive: true,
+      plugins: { legend: { display: false },
+        title: { display: true, text: '¿Sobre qué universo se calcula el porcentaje?',
+                 color: '#52525b', font: { size: 9, family: 'IBM Plex Mono' }, padding: { bottom: 4 } },
+        tooltip: { callbacks: { label: ctx => (ctx.parsed.x/1e6).toFixed(2)+'M' } } },
+      scales: {
+        x: { beginAtZero: true, ticks: { color: '#71717a', font: { size: 9 }, callback: v => (v/1e6).toFixed(0)+'M' }, grid: { color: 'rgba(0,0,0,0.06)' } },
+        y: { ticks: { color: '#18181b', font: { size: 9.5, family: 'IBM Plex Mono' } }, grid: { display: false } }
+      }
+    }
+  });
+}
+
+// ── Caso 2: Barras simples, un eje, Y desde 0 ────────────────────────────────
+function renderCaso2() {
+  const ambitos = C2.ambito.map((a, i) => a === 'Nacional' ? '' : `(${a})`);
+  const labels = C2.elecciones.map((e, i) => [e, ambitos[i]].filter(Boolean));
+  const colors = C2.ambito.map(a => a === 'Nacional' ? 'rgba(99,102,241,0.75)' : 'rgba(167,139,250,0.65)');
+  new Chart(document.getElementById('chart-c2'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: '% actas contabilizadas',
+        data: C2.pct_contabilizadas,
+        backgroundColor: colors,
+        borderColor: C2.ambito.map(a => a === 'Nacional' ? '#6366f1' : '#a78bfa'),
+        borderWidth: 1,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { labels: { color: '#18181b', font: { size: 11 } } },
+        tooltip: {
+          callbacks: {
+            label: ctx => `${ctx.parsed.y.toFixed(2)}% contabilizadas`,
+            afterLabel: ctx => `Total actas: ${C2.total_actas[ctx.dataIndex].toLocaleString()} · No contabilizadas: ${C2.actas_no_contabilizadas[ctx.dataIndex].toLocaleString()} (JEE: ${C2.actas_jee[ctx.dataIndex].toLocaleString()} · pendientes: ${C2.actas_pendientes[ctx.dataIndex].toLocaleString()})`
+          }
+        }
+      },
+      scales: {
+        y: { beginAtZero: true, max: 100, ticks: { color: '#71717a', callback: v => v + '%' }, grid: { color: 'rgba(0,0,0,0.08)' }, title: { display: true, text: '% actas contabilizadas (0–100%)', color: '#71717a', font: { size: 10 } } },
+        x: { ticks: { color: '#18181b', font: { size: 10 } }, grid: { color: 'rgba(0,0,0,0.05)' } }
+      }
+    }
+  });
+}
+
+// ── Caso 3: Bubble scatter por tipo_area ─────────────────────────────────────
+function renderCaso3() {
+  const COLORS = { rural: '#ea580c', urbano: '#1d4ed8', mixto: '#7c3aed' };
+  const grupos = {};
+  C3_RAW.forEach(d => {
+    if (!grupos[d.tipo_area]) grupos[d.tipo_area] = [];
+    grupos[d.tipo_area].push({ x: d.pobreza, y: d.voto_x, r: Math.max(4, Math.sqrt(d.electores / 5000)) });
+  });
+  const datasets = Object.entries(grupos).map(([tipo, pts]) => ({
+    label: tipo.charAt(0).toUpperCase() + tipo.slice(1),
+    data: pts,
+    backgroundColor: COLORS[tipo] + 'aa',
+    borderColor: COLORS[tipo],
+    borderWidth: 1,
+  }));
+  new Chart(document.getElementById('chart-c3'), {
+    type: 'bubble',
+    data: { datasets },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { labels: { color: '#18181b', font: { size: 11 } } },
+        tooltip: { callbacks: { label: ctx => `Pobreza: ${ctx.parsed.x}% · Voto X: ${ctx.parsed.y}%` } },
+      },
+      scales: {
+        x: { beginAtZero: true, max: 60, ticks: { color: '#71717a', callback: v => v + '%' }, grid: { color: 'rgba(0,0,0,0.08)' }, title: { display: true, text: 'Pobreza monetaria 2024 (%)', color: '#71717a', font: { size: 10 } } },
+        y: { beginAtZero: true, max: 22, ticks: { color: '#71717a', callback: v => v + '%' }, grid: { color: 'rgba(0,0,0,0.08)' }, title: { display: true, text: '% votos válidos candidatura X', color: '#71717a', font: { size: 10 } } }
+      }
+    }
+  });
+}
+
+// ── C4 support: scatter n_obras vs monto_por_obra — outlier sensitivity ───────
+function renderC4OutlierChart() {
+  const d = C4.ranking_normalizado;
+  const pts = d.departamentos.map((dep, i) => ({ x: d.n_obras[i], y: d.monto_por_obra_mm[i], dep }));
+  const ACCENT = { Lima: '#b91c1c', Puno: '#6d28d9', Moquegua: '#b45309' };
+  new Chart(document.getElementById('chart-c4-outlier'), {
+    type: 'scatter',
+    data: { datasets: [{ data: pts.map(p => ({ x: p.x, y: p.y })),
+      backgroundColor: pts.map(p => ACCENT[p.dep] ? ACCENT[p.dep]+'99' : 'rgba(30,58,138,0.35)'),
+      borderColor: pts.map(p => ACCENT[p.dep] || 'rgba(30,58,138,0.7)'),
+      borderWidth: 1.5, pointRadius: 5, pointHoverRadius: 7 }] },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false },
+        tooltip: { callbacks: { label: ctx => { const p = pts[ctx.dataIndex]; return `${p.dep}: ${p.x} obras · S/${p.y.toFixed(1)}M/obra`; } } } },
+      scales: {
+        x: { ticks: { color: '#71717a', font: { size: 9 } }, grid: { color: 'rgba(0,0,0,0.07)' }, title: { display: true, text: 'N° obras paralizadas', color: '#71717a', font: { size: 9 } } },
+        y: { ticks: { color: '#71717a', font: { size: 9 }, callback: v => 'S/'+v+'M' }, grid: { color: 'rgba(0,0,0,0.07)' }, title: { display: true, text: 'S/ MM por obra', color: '#71717a', font: { size: 9 } } }
+      }
+    }
+  });
+}
+
+// ── Caso 4: Cleveland dot plot — posición (no longitud) codifica monto por obra
+function renderCaso4() {
+  const d = C4.ranking_normalizado;
+  const n = d.departamentos.length;
+  // Dot plot: y-index reversed so highest monto appears at top
+  const pts = d.departamentos.map((dep, i) => ({
+    dep, x: d.monto_por_obra_mm[i], y: n - 1 - i, n_obras: d.n_obras[i]
+  }));
+  new Chart(document.getElementById('chart-c4'), {
+    type: 'scatter',
+    data: { datasets: [{ data: pts.map(p => ({ x: p.x, y: p.y })),
+      backgroundColor: 'rgba(13,148,136,0.82)', borderColor: '#0d9488',
+      borderWidth: 1.5, pointRadius: 7, pointHoverRadius: 9, pointStyle: 'circle',
+    }] },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        title: { display: true,
+          text: 'Moquegua y Puno: alta inversión por obra — no necesariamente más obras',
+          color: '#18181b', font: { size: 10.5, weight: '600', family: 'DM Sans' },
+          padding: { bottom: 8 } },
+        tooltip: { callbacks: { label: ctx => {
+          const p = pts[ctx.dataIndex];
+          return `${p.dep}: S/ ${p.x.toFixed(2)}M/obra · ${p.n_obras} obras`;
+        } } },
+      },
+      scales: {
+        x: { beginAtZero: true,
+             ticks: { color: '#71717a', callback: v => 'S/' + v + 'M' },
+             grid: { color: 'rgba(0,0,0,0.08)' },
+             title: { display: true, text: 'S/ millones por obra paralizada (métrica normalizada)',
+                      color: '#71717a', font: { size: 10 } } },
+        y: { type: 'linear', min: -0.5, max: n - 0.5,
+             ticks: { stepSize: 1,
+               callback: v => { const i = n - 1 - Math.round(v); return (i >= 0 && i < n) ? d.departamentos[i] : ''; },
+               color: '#18181b', font: { size: 9.5 } },
+             grid: { color: 'rgba(0,0,0,0.05)' } }
+      }
+    }
+  });
+  renderC4OutlierChart();
+}
+
+// ── Mermaid (ERD Caso 5) ──────────────────────────────────────────────────────
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'neutral',
+  er: { diagramPadding: 20, layoutDirection: 'TB', minEntityWidth: 110, minEntityHeight: 28, entityPadding: 14 },
+  themeVariables: {
+    darkMode: false,
+    background: '#ffffff',
+    primaryColor: '#eeece8',
+    primaryTextColor: '#18181b',
+    primaryBorderColor: '#d4d1ca',
+    lineColor: '#1e3a8a',
+    attributeBackgroundColorEven: '#ffffff',
+    attributeBackgroundColorOdd: '#f5f4f0',
+    fontFamily: 'IBM Plex Mono, monospace',
+    fontSize: '12px',
+  }
+});
+
+// ── Caso 5: KPI cards de cardinalidad ────────────────────────────────────────
+function renderCaso5() {
+  document.getElementById('k5-mesas').textContent = C5_CARD.mesas_unicas.toLocaleString();
+  document.getElementById('k5-distritos').textContent = C5_CARD.distritos_en_fact.toLocaleString();
+  document.getElementById('k5-dim').textContent = C5_CARD.distritos_en_dim_territorio.toLocaleString();
+  document.getElementById('k5-dimok').textContent = C5_CARD.dim_territorio_clave_unica ? '✓ Sí' : '✗ No';
+  document.getElementById('k5-votos').textContent = C5_CARD.total_votos_fact.toLocaleString();
+  const inf = C5_CARD.inflacion_votos_si_join_malo;
+  document.getElementById('k5-inflacion').textContent = inf === 0 ? '±0 (dim OK)' : ('+' + inf.toLocaleString());
+  mermaid.run({ nodes: document.querySelectorAll('#panel-c5 .mermaid') });
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  // Inyectar badge P.NN + título en los headers de pregunta
+  document.querySelectorAll('.pregunta-num').forEach(el => {
+    const m = el.textContent.trim().match(/^Pregunta\s+(\d+)\s*[—–]\s*(.+)$/);
+    if (m) el.innerHTML = `<span class="pq-badge">P.${m[1].padStart(2,'0')}</span><span class="pq-title">${m[2]}</span>`;
+  });
+  const VALID = ['c1','c2','c3','c4','c5'];
+  const hash = location.hash.slice(1);
+  activateTab(VALID.includes(hash) ? hash : 'c1');
+});
+</script>
+</body>
+</html>
