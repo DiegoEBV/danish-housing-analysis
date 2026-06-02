@@ -18,7 +18,7 @@ dependencies = [
 
     # Kaggle dataset
     "mlcroissant>=0.0.13",
-    "kaggle>=1.6.0",
+    "kaggle>=2.2.0",
 
     # Visualizacion
     "matplotlib>=3.8.0",
