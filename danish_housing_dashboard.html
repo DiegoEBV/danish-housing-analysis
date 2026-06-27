@@ -122,7 +122,7 @@
   .leaflet-control-zoom a{background:var(--surface2)!important;color:var(--text)!important;border-color:var(--border)!important}
   .leaflet-tooltip{background:var(--surface)!important;border:1px solid var(--border)!important;color:var(--text)!important;font-family:-apple-system,sans-serif!important;font-size:.8rem!important;padding:8px 12px!important;border-radius:6px!important;box-shadow:none!important}
   .leaflet-tooltip::before{display:none}
-  #choroMap{height:440px;border-radius:10px;border:1px solid var(--border)}
+  #choroMap{width:100%;aspect-ratio:1.18;min-height:380px;max-height:640px;border-radius:10px;border:1px solid var(--border)}
   /* Region stats */
   .reg-stat-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
   .reg-stat-row:last-child{border-bottom:none}
@@ -1288,6 +1288,24 @@ async function initChoropleth() {
   });
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
     subdomains: 'abcd', maxZoom: 19,
+  }).addTo(_leafletMap);
+
+  // Resalta el área de Copenhague (donde se concentra el premio de precio).
+  // Pane propio por encima del coroplético para que el anillo no quede tapado.
+  _leafletMap.createPane('cphHighlight');
+  const hp = _leafletMap.getPane('cphHighlight');
+  hp.style.zIndex = 650; hp.style.pointerEvents = 'none';
+  L.circle([55.683, 12.571], {
+    pane: 'cphHighlight', radius: 14000, color: '#22d3ee', weight: 2,
+    opacity: 0.95, fill: false, dashArray: '5,5', interactive: false,
+  }).addTo(_leafletMap);
+  L.marker([55.86, 12.571], {
+    pane: 'cphHighlight', interactive: false, keyboard: false,
+    icon: L.divIcon({
+      className: '', iconSize: [104, 18], iconAnchor: [52, 9],
+      html: '<span style="background:rgba(34,211,238,.16);border:1px solid #22d3ee;color:#a5f3fc;' +
+            'font:600 11px -apple-system,sans-serif;padding:1px 8px;border-radius:10px;white-space:nowrap">København</span>',
+    }),
   }).addTo(_leafletMap);
 
   // City points overlay (clustered) — toggled via Leaflet's layer control
