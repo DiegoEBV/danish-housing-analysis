@@ -95,7 +95,7 @@
       </div>
       <div class="flex flex-wrap gap-2 items-center mt-1">
         <span class="badge" style="background:#1e2a3a;color:#60a5fa">5 marts de datos</span>
-        <span class="badge" style="background:#1e3a2a;color:#34d399">5 regiones danesas</span>
+        <span class="badge" style="background:#1e3a2a;color:#34d399">4 regiones danesas</span>
         <span class="badge" style="background:#2a1e3a;color:#a78bfa" id="badge-tx">— transacciones</span>
       </div>
     </div>
@@ -129,11 +129,16 @@
     <div class="card p-4">
       <div class="kpi-label mb-1">Cobertura</div>
       <div class="kpi-value" style="color:#a78bfa">33 años</div>
-      <div class="text-xs mt-1" style="color:var(--muted)">5 regiones · 4 tipologías</div>
+      <div class="text-xs mt-1" style="color:var(--muted)">4 regiones · 5 tipologías</div>
     </div>
   </div>
 
-  <!-- ── Fila 1: Índice Regional + Volatilidad ── -->
+  <!-- ── H2: Índice Regional + H3: Volatilidad ── -->
+  <div class="section-heading mb-3" style="margin-top:4px">
+    <span style="background:rgba(99,102,241,0.15);color:var(--accent);padding:2px 10px;border-radius:4px;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;margin-right:8px">H2</span>
+    Copenhague muestra respuesta más amortiguada que Jutlandia ante shocks macro
+    <span style="margin-left:auto;font-size:0.72rem;color:#34d399;font-weight:600;background:rgba(52,211,153,0.1);padding:2px 8px;border-radius:4px">✓ Soportada</span>
+  </div>
   <div class="grid-2 mb-4">
 
     <!-- Vista 1: Índice regional + bonos en paneles apilados -->
@@ -141,7 +146,7 @@
       <div class="flex items-start justify-between mb-3 gap-2">
         <div>
           <div class="section-title">Índice Regional de Precios · Bonos Hipotecarios</div>
-          <div class="section-sub">Paneles apilados con eje X compartido · Base 1992Q1 = 100 · Real DKK/m²</div>
+          <div class="section-sub">Base 1992Q1 = 100 · Real DKK/m² · Zealand (incl. Copenhagen) destacada · Panel inferior: bonos hipotecarios</div>
         </div>
         <select id="reg-mode" onchange="renderRegionalIndex()">
           <option value="index">Índice (1992=100)</option>
@@ -149,50 +154,65 @@
         </select>
       </div>
       <div class="flex flex-wrap gap-2 mb-2" id="reg-legend"></div>
-      <div class="crisis-label mb-1">▌ Crisis GFC 2007–2012 &nbsp;·&nbsp; ◆ Eventos macro anotados</div>
+      <div class="crisis-label mb-1">▌ Crisis GFC 2007–2012 &nbsp;·&nbsp; ▌ COVID 2020–2021 &nbsp;·&nbsp; ◆ Eventos macro anotados</div>
       <div style="position:relative;height:220px"><canvas id="chartRegional"></canvas></div>
       <div style="position:relative;height:80px;margin-top:4px"><canvas id="chartRegionalBonds"></canvas></div>
-      <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text" id="ti-regional"><strong>Efecto capital:</strong> Zealand (que incluye København) lidera el crecimiento real de precios desde 1992. Las subidas del rendimiento de bonos hipotecarios (panel inferior) preceden a las correcciones de precio.</span></div>
+      <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text" id="ti-regional"><strong>Efecto capital confirmado (H2):</strong> Zealand (que incluye København/Capital) más que duplicó su índice desde 1992. Durante el piso GFC (2009–2010), el índice mínimo de Zealand fue <strong>154.46</strong> mientras que Fyn &amp; islands cayó a <strong>91.51</strong> (por debajo de su base 1992). Jutlandia, aunque más resiliente que Fyn, también quedó por debajo de Zealand en todos los ciclos.</span></div>
     </div>
 
-    <!-- Vista 4: Volatilidad comparada — small multiples por tipología -->
+    <!-- Vista 4: Volatilidad — H3 -->
     <div class="card p-5">
-      <div class="mb-3">
-        <div class="section-title">Volatilidad por Tipología — Small Multiples</div>
-        <div class="section-sub">Desv. estándar del cambio % trimestral · Ventana móvil 4 trimestres · Cada panel destaca una tipología sobre el resto en gris</div>
+      <div class="mb-2" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div>
+          <div class="section-title">Volatilidad por Tipología — Small Multiples</div>
+          <div class="section-sub">Desv. estándar del cambio % trimestral · Ventana móvil 4Q · Cada panel destaca una tipología sobre el resto en gris</div>
+        </div>
+        <span style="font-size:0.7rem;font-weight:700;letter-spacing:0.05em;background:rgba(99,102,241,0.15);color:var(--accent);padding:2px 8px;border-radius:4px;white-space:nowrap">H3</span>
       </div>
       <div id="volMultiples" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
-      <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text" id="ti-vol"><strong>Summerhouse lidera la volatilidad</strong> en cada ciclo: tipología más sensible a régimen de tasas y crisis. Apartments y Villas muestran el comportamiento más estable.</span></div>
+      <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text" id="ti-vol"><strong>Townhouse lidera la volatilidad (0.102)</strong>, seguido de Apartment (0.089). Villa es la tipología más estable (0.023). <strong>Refinamiento de H3:</strong> la sensibilidad al ciclo de crédito es mayor en vivienda urbana de menor ticket (Apt/Townhouse, más dependiente de financiamiento hipotecario) que en segunda vivienda (Summerhouse, comprador con mayor solvencia relativa).</span></div>
     </div>
 
   </div>
 
-  <!-- ── Fila 2: Scatter Volumen-Bonos + Heatmap Drawdowns ── -->
+  <!-- ── H1: Scatter + H3: Drawdowns ── -->
+  <div class="section-heading mb-3">
+    <span style="background:rgba(99,102,241,0.15);color:var(--accent);padding:2px 10px;border-radius:4px;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;margin-right:8px">H1</span>
+    Relación negativa entre rendimiento de bonos hipotecarios y volumen transaccional (rezago 1–2 trimestres)
+    <span style="margin-left:auto;font-size:0.72rem;color:#34d399;font-weight:600;background:rgba(52,211,153,0.1);padding:2px 8px;border-radius:4px">✓ Soportada</span>
+  </div>
   <div class="grid-2 mb-4">
 
-    <!-- Vista 5: Scatter volumen vs bonos hipotecarios -->
+    <!-- Vista 5: Scatter volumen vs bonos + rolling correlation -->
     <div class="card p-5">
       <div class="mb-3">
         <div class="section-title">Correlación Volumen – Bonos Hipotecarios</div>
-        <div class="section-sub">Eje X: rendimiento bono (rezago 2 trim.) · Eje Y: n° transacciones trimestrales · Color: ciclo macroeconómico</div>
+        <div class="section-sub">Scatter: eje X = rendimiento bono lag 2Q · eje Y = n° transacciones · color = ciclo macro · Inferior: correlación rolling 8Q</div>
       </div>
       <div class="flex flex-wrap gap-2 mb-2" id="scatter-legend"></div>
       <canvas id="chartScatter"></canvas>
-      <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text" id="ti-scatter"><strong>Elasticidad inversa volumen–tasas:</strong> regímenes de bonos hipotecarios bajos coinciden con volúmenes altos; alzas de tasas (rojo GFC, naranja 2022+) coinciden con caídas de transacciones. Confirma la hipótesis H1 del proyecto.</span></div>
+      <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:10px">
+        <div style="font-size:0.72rem;color:var(--muted);margin-bottom:4px;font-weight:600">Correlación rolling 8Q (volumen vs. bonos lag 2Q) · línea 0 = sin relación</div>
+        <div style="position:relative;height:110px"><canvas id="chartRollingCorr"></canvas></div>
+      </div>
+      <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text" id="ti-scatter"><strong>H1 confirmada:</strong> la correlación rolling media es <strong>negativa</strong> (mín. −0.96, máx. +0.87 sobre 125 trimestres). Regímenes de bonos bajos coinciden con volúmenes altos; alzas de tasas (GFC, 2022+) anticipan caídas de transacciones con rezago de 1–2 trimestres. La dispersión por período sugiere que la relación es más fuerte en ciclos alcistas de tasas.</span></div>
     </div>
 
-    <!-- Vista 3: Heatmap de drawdowns + trayectoria temporal -->
+    <!-- Vista 3: Heatmap de drawdowns + trayectoria temporal — H3 -->
     <div class="card p-5">
-      <div class="mb-3">
-        <div class="section-title">Drawdowns Pico–Valle — Crisis 2007–2012</div>
-        <div class="section-sub">Heatmap: caída máxima por región × tipología · Inferior: trayectoria del drawdown por tipología (área negativa)</div>
+      <div class="mb-2" style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div>
+          <div class="section-title">Drawdowns Pico–Valle — Crisis 2007–2012</div>
+          <div class="section-sub">Heatmap: caída máxima por región × tipología · Inferior: trayectoria temporal del drawdown promedio por tipología</div>
+        </div>
+        <span style="font-size:0.7rem;font-weight:700;letter-spacing:0.05em;background:rgba(99,102,241,0.15);color:var(--accent);padding:2px 8px;border-radius:4px;white-space:nowrap">H3 · refinada</span>
       </div>
       <div id="ddHeatmap"></div>
       <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:10px">
         <div style="font-size:0.72rem;color:var(--muted);margin-bottom:4px;font-weight:600">Trayectoria temporal del drawdown · promedio por tipología</div>
         <div style="position:relative;height:140px"><canvas id="chartDrawdownTimeline"></canvas></div>
       </div>
-      <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text" id="ti-dd"><strong>Summerhouse y Bornholm: combinación más vulnerable.</strong> Los drawdowns más profundos golpean a las tipologías recreativas en regiones periféricas. Zealand (capital) limita su caída por escasez crónica de oferta. La trayectoria muestra que el fondo se alcanza en 2011–2012, no en 2009.</span></div>
+      <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text" id="ti-dd"><strong>Refinamiento de H3:</strong> Apartment en Bornholm muestra el peor drawdown (−92.11%, n=5) y Townhouse hasta −80.73%. Summerhouse (−63.09%) y Villa (−44.06%) son más resilientes de lo esperado. La vulnerabilidad recae en vivienda urbana dependiente de crédito (Apt/Townhouse), no en segunda vivienda. Zealand (Capital) limita su caída por escasez crónica de oferta.</span></div>
     </div>
 
   </div>
@@ -547,6 +567,7 @@ function buildDataFromMarts({ ri, dd, vol, mc, mp }) {
     drawdown_summary,
     drawdown_timeline,
     macro,
+    macro_raw: mc,   // raw para renderRollingCorr (columna volume_bond_corr)
     top_cities,
     reg_annual_price,
   };
@@ -599,6 +620,7 @@ function makeLegend(containerId, colorMap) {
 // Índices y eventos se inicializan tras la carga (rebuildIndices)
 let ALL_QS = [];
 let CRISIS_START_I = -1, CRISIS_END_I = -1;
+let COVID_START_I = -1, COVID_END_I = -1;
 let MACRO_EVENTS = [];
 
 function rebuildIndices() {
@@ -608,23 +630,27 @@ function rebuildIndices() {
     .map(d => d.q);
   CRISIS_START_I = ALL_QS.findIndex(q => q === '2007Q1');
   CRISIS_END_I   = ALL_QS.findIndex(q => q === '2012Q4');
+  COVID_START_I  = ALL_QS.findIndex(q => q === '2020Q1');
+  COVID_END_I    = ALL_QS.findIndex(q => q === '2021Q4');
+  // Eventos macro según TB4: liberalización 1995, Lehman 2008, COVID 2020, alza tasas 2022
   MACRO_EVENTS = [
-    { q: '2006Q4', label: 'Pico burbuja DK', color: '#f59e0b' },
-    { q: '2008Q3', label: 'Lehman Bros.',    color: '#f87171' },
-    { q: '2015Q1', label: 'QE BCE',          color: '#a78bfa' },
-    { q: '2022Q3', label: 'Alza tasas BCE',  color: '#fb923c' },
+    { q: '1995Q1', label: 'Liberaliz. hipotecaria', color: '#a78bfa' },
+    { q: '2008Q3', label: 'Lehman Bros.',           color: '#f87171' },
+    { q: '2020Q2', label: 'COVID-19',               color: '#34d399' },
+    { q: '2022Q3', label: 'Alza tasas post-COVID',  color: '#fb923c' },
   ].map(e => ({ ...e, i: ALL_QS.findIndex(q => q === e.q) })).filter(e => e.i >= 0);
 }
 
-// Plugin reusable: banda de crisis GFC + líneas verticales de eventos macro
+// Plugin reusable: banda de crisis GFC + banda COVID + líneas verticales de eventos macro
 const crisisAnnotationsPlugin = {
   id: 'crisisAnnotations',
   beforeDraw(chart) {
     const { ctx, chartArea, scales } = chart;
     if (!chartArea) return;
+    ctx.save();
+    // Banda GFC 2007-2012 (rojo)
     const x0 = scales.x.getPixelForValue(CRISIS_START_I);
     const x1 = scales.x.getPixelForValue(CRISIS_END_I);
-    ctx.save();
     ctx.fillStyle = 'rgba(248,113,113,0.07)';
     ctx.fillRect(x0, chartArea.top, x1 - x0, chartArea.height);
     ctx.strokeStyle = 'rgba(248,113,113,0.25)';
@@ -632,6 +658,17 @@ const crisisAnnotationsPlugin = {
     ctx.setLineDash([3, 3]);
     ctx.beginPath(); ctx.moveTo(x0, chartArea.top); ctx.lineTo(x0, chartArea.bottom); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(x1, chartArea.top); ctx.lineTo(x1, chartArea.bottom); ctx.stroke();
+    // Banda COVID 2020-2021 (verde oscuro)
+    if (COVID_START_I >= 0 && COVID_END_I >= 0) {
+      const xc0 = scales.x.getPixelForValue(COVID_START_I);
+      const xc1 = scales.x.getPixelForValue(COVID_END_I);
+      ctx.fillStyle = 'rgba(52,211,153,0.06)';
+      ctx.fillRect(xc0, chartArea.top, xc1 - xc0, chartArea.height);
+      ctx.strokeStyle = 'rgba(52,211,153,0.2)';
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath(); ctx.moveTo(xc0, chartArea.top); ctx.lineTo(xc0, chartArea.bottom); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(xc1, chartArea.top); ctx.lineTo(xc1, chartArea.bottom); ctx.stroke();
+    }
     ctx.restore();
   },
   afterDatasetsDraw(chart) {
@@ -683,20 +720,25 @@ function renderRegionalIndex() {
   const qs = ALL_QS;
   const tickFn = (val, i) => qs[i]?.endsWith('Q1') ? qs[i].replace('Q1','') : '';
 
-  // Panel superior: índice/precio por región, alineado al eje X común
+  // Panel superior: índice/precio por región — Zealand y Jutland destacadas (H2)
   const datasetsTop = regions.map(reg => {
     const byQ = {};
     DATA.regional_index[reg].forEach(d => { byQ[d.q] = mode === 'index' ? d.idx : d.price; });
+    const isCapital  = reg === 'Zealand';
+    const isJutland  = reg === 'Jutland';
+    const isPrimary  = isCapital || isJutland;
     return {
-      label: reg,
+      label: isCapital ? 'Zealand (incl. Capital)' : reg,
       data: qs.map(q => byQ[q] ?? null),
       borderColor: REGION_COLORS[reg] || '#6366f1',
       backgroundColor: 'transparent',
-      borderWidth: reg === 'Zealand' ? 2.5 : 1.5,  // Zealand (capital) destacada
+      borderWidth: isCapital ? 3 : isJutland ? 2.5 : 1.2,
+      borderDash: isPrimary ? [] : [4, 3],
       pointRadius: 0,
       pointHoverRadius: 4,
       tension: 0.3,
       spanGaps: true,
+      order: isCapital ? 0 : isJutland ? 1 : 2,
     };
   });
 
@@ -797,7 +839,16 @@ function renderRegionalIndex() {
     }],
   });
 
-  makeLegend('reg-legend', REGION_COLORS);
+  // Leyenda con nombre extendido para Zealand (H2)
+  const REGION_LABELS = {
+    'Zealand':       'Zealand (incl. Capital)',
+    'Jutland':       'Jutland',
+    'Fyn & islands': 'Fyn & islands',
+    'Bornholm':      'Bornholm',
+  };
+  makeLegend('reg-legend', Object.fromEntries(
+    Object.entries(REGION_COLORS).map(([k, v]) => [REGION_LABELS[k] || k, v])
+  ));
 }
 
 // ── Vista 4: Volatilidad — small multiples por tipología ──────────────────────
@@ -925,6 +976,76 @@ function renderScatter() {
     }
   });
   makeLegend('scatter-legend', PERIOD_COLORS);
+}
+
+// ── H1: Correlación rolling 8Q (volume_bond_corr) ─────────────────────────────
+let chartRollingCorr = null;
+function renderRollingCorr() {
+  const qs = ALL_QS;
+  // Mapear volume_bond_corr desde mart_macro_correlation por quarter
+  const corrByQ = {};
+  DATA.macro_raw.forEach(d => {
+    const v = parseFloat(d.volume_bond_corr);
+    if (!isNaN(v)) corrByQ[d.quarter] = v;
+  });
+  const corrData = qs.map(q => corrByQ[q] ?? null);
+
+  if (chartRollingCorr) chartRollingCorr.destroy();
+  chartRollingCorr = new Chart(document.getElementById('chartRollingCorr'), {
+    type: 'line',
+    data: {
+      labels: qs,
+      datasets: [
+        {
+          label: 'Correlación rolling 8Q',
+          data: corrData,
+          borderColor: '#6366f1',
+          backgroundColor: ctx => {
+            const v = ctx.raw;
+            return v != null && v < 0 ? 'rgba(248,113,113,0.12)' : 'rgba(99,102,241,0.08)';
+          },
+          borderWidth: 1.8,
+          pointRadius: 0,
+          pointHoverRadius: 4,
+          tension: 0.35,
+          fill: 'origin',
+          spanGaps: false,
+        },
+        // Línea de referencia en 0
+        {
+          label: 'Sin correlación',
+          data: qs.map(() => 0),
+          borderColor: 'rgba(139,146,170,0.35)',
+          borderWidth: 1,
+          borderDash: [3, 3],
+          pointRadius: 0,
+          fill: false,
+        },
+      ],
+    },
+    options: {
+      ...CHART_DEFAULTS,
+      maintainAspectRatio: false,
+      plugins: {
+        ...CHART_DEFAULTS.plugins,
+        tooltip: {
+          ...CHART_DEFAULTS.plugins.tooltip,
+          mode: 'index', intersect: false,
+          filter: ctx => ctx.dataset.label !== 'Sin correlación',
+          callbacks: {
+            label: ctx => ctx.parsed.y != null
+              ? ` Corr. vol–bonos: ${ctx.parsed.y.toFixed(3)}`
+              : null,
+          },
+        },
+      },
+      scales: {
+        x: { ...CHART_DEFAULTS.scales.x, ticks: { ...CHART_DEFAULTS.scales.x.ticks, callback: (v, i) => qs[i]?.endsWith('Q1') ? qs[i].replace('Q1','') : '' } },
+        y: { ...CHART_DEFAULTS.scales.y, min: -1.1, max: 1.1, ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => v.toFixed(1), maxTicksLimit: 5 } },
+      },
+    },
+    plugins: [crisisAnnotationsPlugin],
+  });
 }
 
 // ── Vista 3: Heatmap de drawdowns ──────────────────────────────────────────────
@@ -1333,6 +1454,7 @@ window.addEventListener('load', async () => {
     renderRegionalIndex();
     renderVolatility();
     renderScatter();
+    renderRollingCorr();
     renderHeatmap();
     renderDrawdownTimeline();
     renderCities();
