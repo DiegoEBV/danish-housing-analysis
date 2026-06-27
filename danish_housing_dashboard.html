@@ -586,6 +586,10 @@ function switchTab(id) {
   document.querySelectorAll('.tab-btn').forEach(btn =>
     btn.classList.toggle('tab-active', btn.id === 'tab-btn-' + id));
   if (id === 'geografia' && !window._choroInited) initChoropleth();
+  if (id === 'modelado' && !window._predScatterInited && MODEL_STATE) {
+    window._predScatterInited = true;
+    requestAnimationFrame(() => renderPredScatter());
+  }
   // Charts inicializados en pestañas ocultas quedan con dimensiones 0 — forzar resize
   requestAnimationFrame(() => {
     [chartReg, chartBonds, chartAnnual, chartScatter, chartRollingCorr,
@@ -1420,14 +1424,37 @@ function renderPredScatter() {
   const preds = MODEL_STATE.predictions;
   const years = [...new Set(preds.map(p => p.year))].sort();
   const palette = ['#60a5fa','#34d399','#f59e0b','#f87171','#a78bfa','#fb923c','#22d3ee'];
-  const datasets = years.map((y, i) => ({ label: String(y), data: preds.filter(p => p.year===y).map(p => ({ x:p.y_true, y:p.y_pred })), backgroundColor: palette[i%palette.length]+'cc', borderColor:'transparent', pointRadius:2, pointHoverRadius:4 }));
-  const maxV = Math.max(...preds.map(p => Math.max(p.y_true, p.y_pred))) * 1.05;
-  datasets.push({ label:'Predicción perfecta', data:[{x:0,y:0},{x:maxV,y:maxV}], type:'line', borderColor:'rgba(226,232,240,.35)', borderDash:[4,4], borderWidth:1, pointRadius:0, fill:false });
-  const mae = preds.reduce((s,p) => s+Math.abs(p.residual),0)/preds.length;
+  const allVals = preds.flatMap(p => [p.y_true, p.y_pred]).filter(v => isFinite(v));
+  const maxV = Math.max(...allVals) * 1.05;
+  const minV = Math.max(0, Math.min(...allVals) * 0.95);
+  // Diagonal "predicción perfecta" como dataset scatter con showLine (evita mezcla de tipos)
+  const diagPoints = 50;
+  const diagData = Array.from({length: diagPoints + 1}, (_, i) => {
+    const v = minV + (maxV - minV) * (i / diagPoints);
+    return { x: v, y: v };
+  });
+  const datasets = [
+    ...years.map((y, i) => ({
+      label: String(y),
+      data: preds.filter(p => p.year === y).map(p => ({ x: p.y_true, y: p.y_pred })),
+      backgroundColor: palette[i % palette.length] + 'cc',
+      borderColor: 'transparent',
+      pointRadius: 2, pointHoverRadius: 5,
+    })),
+    {
+      label: 'Predicción perfecta',
+      data: diagData,
+      backgroundColor: 'transparent',
+      borderColor: 'rgba(226,232,240,.35)',
+      showLine: true, borderDash: [5, 4], borderWidth: 1.2,
+      pointRadius: 0, pointHoverRadius: 0,
+    }
+  ];
+  const mae = preds.reduce((s, p) => s + Math.abs(p.residual), 0) / preds.length;
   document.getElementById('badge-pred-stats').textContent = `MAE muestral ${fmtDKK(mae)} DKK · n=${preds.length}`;
   if (chartPredScatter) chartPredScatter.destroy();
   chartPredScatter = new Chart(document.getElementById('chartPredScatter'), {
-    type:'scatter', data:{datasets},
+    type: 'scatter', data: { datasets },
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#94a3b8',font:{size:11},padding:8,boxWidth:12}},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: real=${fmtDKK(ctx.parsed.x)} pred=${fmtDKK(ctx.parsed.y)}`}}},scales:{x:{type:'linear',ticks:{color:'#94a3b8',callback:v=>fmtDKK(v)},title:{display:true,text:'y_true (DKK)',color:'#94a3b8'},grid:{color:'rgba(148,163,184,.06)'}},y:{type:'linear',ticks:{color:'#94a3b8',callback:v=>fmtDKK(v)},title:{display:true,text:'y_pred (DKK)',color:'#94a3b8'},grid:{color:'rgba(148,163,184,.06)'}}}},
   });
 }
@@ -1454,7 +1481,7 @@ window.addEventListener('load', async () => {
       renderModelComparison();
       renderFeatureImportance();
       renderCV();
-      renderPredScatter();
+      // renderPredScatter se llama lazy al abrir la pestaña Modelado (canvas visible)
     } else {
       document.getElementById('no-model-msg').style.display = 'block';
       document.getElementById('model-section').style.display = 'none';
