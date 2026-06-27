@@ -999,7 +999,7 @@ function renderSummary() {
   const datasets = bubbleData.map(d => ({
     label: d.t,
     data: [{
-      x: +(d.vol * 100).toFixed(3),           // volatilidad en %
+      x: +d.vol.toFixed(3),                    // volatilidad en % (volatility_4q ya viene en %)
       y: +d.dd.toFixed(1),                    // drawdown (negativo)
       r: Math.max(8, Math.sqrt(d.n / maxN) * 38),
     }],
@@ -1609,7 +1609,20 @@ function renderCV() {
 }
 
 function renderPredScatter() {
-  if (!MODEL_STATE || !MODEL_STATE.predictions.length) return;
+  if (!MODEL_STATE) return;
+  if (!MODEL_STATE.predictions.length) {
+    const canvas = document.getElementById('chartPredScatter');
+    if (canvas) {
+      const ctx2d = canvas.getContext('2d');
+      if (ctx2d) {
+        ctx2d.fillStyle = '#8892aa';
+        ctx2d.font = '13px sans-serif';
+        ctx2d.textAlign = 'center';
+        ctx2d.fillText('Archivo mart_predictions_sample.csv no disponible en este entorno.', canvas.clientWidth/2 || 300, 80);
+      }
+    }
+    return;
+  }
   const preds = MODEL_STATE.predictions;
   const years = [...new Set(preds.map(p => p.year))].sort();
   const palette = ['#60a5fa','#34d399','#f59e0b','#f87171','#a78bfa','#fb923c','#22d3ee'];
