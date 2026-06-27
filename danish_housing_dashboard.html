@@ -4,496 +4,506 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Mercado Residencial Danés 1992–2024</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 <script src="/chart.umd.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <style>
-  .flex{display:flex}.flex-wrap{flex-wrap:wrap}.grid{display:grid}
-  .items-center{align-items:center}.items-start{align-items:flex-start}
-  .justify-between{justify-content:space-between}
-  .gap-2{gap:8px}.gap-3{gap:12px}
-  .font-bold{font-weight:700}.text-2xl{font-size:1.5rem;line-height:2rem}
-  .text-sm{font-size:0.875rem;line-height:1.25rem}
-  .text-xs{font-size:0.75rem;line-height:1rem}
-  .tracking-tight{letter-spacing:-0.025em}
-  .mb-1{margin-bottom:4px}.mb-2{margin-bottom:8px}.mb-3{margin-bottom:12px}
-  .mb-4{margin-bottom:16px}.mb-5{margin-bottom:20px}.mb-6{margin-bottom:24px}
-  .mt-1{margin-top:4px}.mt-3{margin-top:12px}
-  .p-4{padding:16px}.p-5{padding:20px}
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#0f1117;--surface:#1a1d27;--surface2:#242736;--border:#2e3245;
+    --text:#e2e8f0;--muted:#8892aa;--accent:#6366f1;
+  }
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:12px}
+  .card-inner{background:var(--surface2);border:1px solid var(--border);border-radius:10px}
+  canvas{max-height:320px!important}
+  /* KPIs */
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-bottom:16px}
+  .kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px}
+  .kpi-label{font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+  .kpi-value{font-size:1.9rem;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+  .kpi-sub{font-size:.72rem;color:var(--muted);margin-top:4px}
+  .kpi-delta{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:4px;font-size:.7rem;font-weight:700;margin-top:6px}
+  .delta-up{background:rgba(52,211,153,.12);color:#34d399}
+  .delta-neutral{background:rgba(99,102,241,.12);color:#a78bfa}
+  .delta-down{background:rgba(248,113,113,.12);color:#f87171}
+  /* Typography */
+  .section-heading{font-size:1rem;font-weight:700;letter-spacing:-.01em;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .section-heading::before{content:'';width:4px;height:18px;background:var(--accent);border-radius:2px;flex-shrink:0}
+  .section-title{font-size:.92rem;font-weight:600;color:var(--text)}
+  .section-sub{font-size:.74rem;color:var(--muted);margin-top:2px}
+  /* Chips / badges */
+  .badge{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:6px;font-size:.72rem;font-weight:600}
+  .chip{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:.72rem;font-weight:600;border:1.5px solid transparent}
+  .chip.active{border-color:currentColor}
+  .legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.7rem;font-weight:600}
+  /* Tabs */
+  .tab-bar{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--border)}
+  .tab-btn{padding:10px 18px;cursor:pointer;border:none;background:transparent;border-bottom:3px solid transparent;color:var(--muted);font-size:.84rem;font-weight:500;transition:all .15s;white-space:nowrap}
+  .tab-btn:hover{color:var(--text);background:rgba(255,255,255,.03)}
+  .tab-btn.tab-active{border-bottom-color:var(--accent);color:var(--text)}
+  .tab-section{display:none}
+  .tab-section.tab-visible{display:block}
+  /* Layout */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
   .px-6{padding-left:24px;padding-right:24px}
   .py-6{padding-top:24px;padding-bottom:24px}
   .py-4{padding-top:16px;padding-bottom:16px}
-  .max-w-screen-xl{max-width:1280px}.mx-auto{margin-left:auto;margin-right:auto}
-  :root {
-    --bg: #0f1117;
-    --surface: #1a1d27;
-    --surface2: #242736;
-    --border: #2e3245;
-    --text: #e2e8f0;
-    --muted: #8892aa;
-    --accent: #6366f1;
-    --crisis: rgba(248,113,113,0.08);
-    --crisis-border: rgba(248,113,113,0.35);
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; min-height: 100vh; }
-  .card  { background: var(--surface);  border: 1px solid var(--border); border-radius: 12px; }
-  .card-inner { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; }
-  canvas { max-height: 300px !important; }
-  .kpi-value { font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; }
-  .kpi-label { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); }
-  .section-title { font-size: 0.95rem; font-weight: 600; letter-spacing: 0.01em; color: var(--text); }
-  .section-sub   { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
-  select { background: var(--surface2); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 4px 8px; font-size: 0.8rem; cursor: pointer; outline: none; }
-  select:focus { border-color: var(--accent); }
-  .tag   { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 0.7rem; font-weight: 600; }
-  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 6px; font-size: 0.72rem; font-weight: 600; }
-  .legend-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .dd-cell { padding: 8px 12px; text-align: center; border-radius: 6px; font-size: 0.82rem; font-weight: 600; transition: transform 0.1s; cursor: default; }
-  .dd-cell:hover { transform: scale(1.05); }
-  #loading { position: fixed; inset: 0; background: var(--bg); display: flex; align-items: center; justify-content: center; z-index: 999; }
-  .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.7s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-  .city-bar-row  { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
-  .city-label    { width: 130px; flex-shrink: 0; font-size: 0.78rem; color: var(--muted); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .city-bar-wrap { flex: 1; height: 20px; background: var(--border); border-radius: 4px; overflow: hidden; }
-  .city-bar      { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 6px; font-size: 0.7rem; font-weight: 600; color: #fff; white-space: nowrap; transition: width 0.6s ease; }
-  .city-price    { width: 80px; flex-shrink: 0; font-size: 0.75rem; color: var(--muted); }
-  .chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 999px; font-size: 0.72rem; font-weight: 600; cursor: pointer; border: 1.5px solid transparent; transition: all 0.15s; user-select: none; }
-  .chip.active { border-color: currentColor; }
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
-  .pregunta-callout { background: linear-gradient(135deg, #1a1d27 0%, #1e2235 100%); border-left: 3px solid var(--accent); border-radius: 0 8px 8px 0; padding: 12px 16px; margin-top: 12px; font-size: 0.85rem; color: #c4cbdc; line-height: 1.5; font-style: italic; }
-  .crisis-label { font-size: 0.68rem; color: #f87171; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; }
-  .disclaimer { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; font-size: 0.76rem; color: var(--muted); line-height: 1.6; }
-  .disclaimer strong { color: var(--text); }
-  .synth-banner { background: linear-gradient(90deg, rgba(52,211,153,0.12) 0%, rgba(52,211,153,0.04) 100%); border: 1px solid rgba(52,211,153,0.35); border-radius: 8px; padding: 8px 14px; font-size: 0.78rem; color: #6ee7b7; font-weight: 500; display: flex; align-items: center; gap: 8px; }
-  .takeaway { display: flex; gap: 8px; align-items: flex-start; margin-top: 6px; padding: 8px 10px; background: rgba(99,102,241,0.06); border-left: 2px solid var(--accent); border-radius: 0 6px 6px 0; }
-  .takeaway-icon { color: var(--accent); font-weight: 700; font-size: 0.78rem; flex-shrink: 0; }
-  .takeaway-text { font-size: 0.78rem; color: #c4cbdc; line-height: 1.45; }
-  .takeaway-text strong { color: var(--text); }
-  .rec-card { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 8px; padding: 14px 16px; }
-  .rec-card .rec-tag { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 6px; }
-  .rec-card .rec-title { font-size: 0.92rem; font-weight: 600; color: var(--text); margin-bottom: 6px; line-height: 1.35; }
-  .rec-card .rec-body  { font-size: 0.78rem; color: var(--muted); line-height: 1.55; }
-  .section-heading { font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em; color: var(--text); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
-  .section-heading::before { content: ''; width: 4px; height: 18px; background: var(--accent); border-radius: 2px; }
-  /* ── Tabs ── */
-  .tab-bar { position: sticky; top: 0; z-index: 50; background: var(--bg); border-bottom: 1px solid var(--border); width: 100%; }
-  .tab-btn { padding: 10px 18px; cursor: pointer; border: none; background: transparent; border-bottom: 3px solid transparent; color: var(--muted); font-size: 0.85rem; font-weight: 500; transition: all 0.15s; white-space: nowrap; }
-  .tab-btn:hover { color: var(--text); background: rgba(255,255,255,0.03); }
-  .tab-btn.tab-active { border-bottom-color: var(--accent); color: var(--text); }
-  .tab-section { display: none; }
-  .tab-section.tab-visible { display: block; }
-  /* ── Chart captions ── */
-  .chart-caption { font-size: 0.73rem; color: #5c657f; margin: 4px 0 10px 0; line-height: 1.55; font-style: italic; }
-  /* ── Insight cards ── */
-  .insight-card { background: var(--surface); border: 1px solid var(--border); border-left: 3px solid var(--accent); border-radius: 8px; padding: 12px 16px; font-size: 0.84rem; color: #c4cbdc; line-height: 1.6; }
-  .insight-card strong { color: var(--text); }
-  /* ── H3 filter ── */
-  .h3-filter { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; padding: 10px 14px; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 14px; }
-  .h3-filter label { display: flex; align-items: center; gap: 5px; font-size: 0.8rem; color: var(--muted); cursor: pointer; }
-  .h3-filter input[type=checkbox] { accent-color: var(--accent); cursor: pointer; }
-  .h3-filter .filter-label { font-size: 0.75rem; font-weight: 600; color: var(--muted); letter-spacing: 0.04em; text-transform: uppercase; }
-  /* ── Decision table ── */
-  .decision-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
-  .decision-table th { text-align: left; padding: 8px 10px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--muted); border-bottom: 1px solid var(--border); }
-  .decision-table td { padding: 9px 10px; border-bottom: 1px solid rgba(46,50,69,0.5); vertical-align: top; line-height: 1.45; }
-  .decision-table tr.discarded { background: rgba(248,113,113,0.04); }
-  .badge-selected { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; background: rgba(52,211,153,0.12); color: #34d399; }
-  .badge-discarded { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: 700; background: rgba(248,113,113,0.12); color: #f87171; }
-  @media (max-width: 900px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+  .max-w{max-width:1280px;margin:0 auto}
+  .p-4{padding:16px}.p-5{padding:20px}
+  .mb-2{margin-bottom:8px}.mb-3{margin-bottom:12px}.mb-4{margin-bottom:16px}.mb-6{margin-bottom:24px}
+  .mt-2{margin-top:8px}.mt-3{margin-top:12px}
+  .flex{display:flex}.items-center{align-items:center}.items-start{align-items:flex-start}
+  .justify-between{justify-content:space-between}.flex-wrap{flex-wrap:wrap}
+  .gap-2{gap:8px}.gap-3{gap:12px}
+  /* Takeaway */
+  .takeaway{display:flex;gap:8px;align-items:flex-start;margin-top:8px;padding:9px 12px;background:rgba(99,102,241,.06);border-left:2px solid var(--accent);border-radius:0 6px 6px 0}
+  .takeaway-icon{color:var(--accent);font-weight:700;font-size:.8rem;flex-shrink:0;margin-top:1px}
+  .takeaway-text{font-size:.78rem;color:#c4cbdc;line-height:1.5}
+  .takeaway-text strong{color:var(--text)}
+  /* Insight cards */
+  .insight-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:8px;padding:13px 16px;font-size:.83rem;color:#c4cbdc;line-height:1.6}
+  .insight-card strong{color:var(--text)}
+  /* City bars */
+  .city-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+  .city-label{width:130px;flex-shrink:0;font-size:.77rem;color:var(--muted);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .city-bar-wrap{flex:1;height:20px;background:var(--border);border-radius:4px;overflow:hidden}
+  .city-bar{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:6px;font-size:.7rem;font-weight:600;color:#fff;white-space:nowrap;transition:width .5s ease}
+  .city-price{width:80px;flex-shrink:0;font-size:.74rem;color:var(--muted)}
+  /* Heatmap */
+  .dd-cell{padding:8px 12px;text-align:center;border-radius:6px;font-size:.8rem;font-weight:600;cursor:default;transition:transform .1s}
+  .dd-cell:hover{transform:scale(1.04)}
+  /* Hypothesis cards */
+  .hyp-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px;position:relative;overflow:hidden}
+  .hyp-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:12px 12px 0 0}
+  .hyp-supported::before{background:#34d399}
+  .hyp-refined::before{background:#f59e0b}
+  .hyp-badge{display:inline-block;padding:2px 10px;border-radius:4px;font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px}
+  .hyp-title{font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:6px;line-height:1.35}
+  .hyp-metric{font-size:1.6rem;font-weight:700;letter-spacing:-.02em;margin:8px 0 4px}
+  .hyp-detail{font-size:.78rem;color:var(--muted);line-height:1.5}
+  /* Rec cards */
+  .rec-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid;border-radius:8px;padding:14px 16px}
+  .rec-tag{font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:5px}
+  .rec-title{font-size:.9rem;font-weight:600;color:var(--text);margin-bottom:5px;line-height:1.35}
+  .rec-body{font-size:.77rem;color:var(--muted);line-height:1.55}
+  /* H-filter */
+  .h3-filter{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;margin-bottom:14px}
+  .h3-filter label{display:flex;align-items:center;gap:5px;font-size:.8rem;color:var(--muted);cursor:pointer}
+  .h3-filter input[type=checkbox]{accent-color:var(--accent);cursor:pointer}
+  .filter-label{font-size:.72rem;font-weight:600;color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+  /* Decision table */
+  .decision-table{width:100%;border-collapse:collapse;font-size:.82rem}
+  .decision-table th{text-align:left;padding:8px 10px;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);border-bottom:1px solid var(--border)}
+  .decision-table td{padding:9px 10px;border-bottom:1px solid rgba(46,50,69,.5);vertical-align:top;line-height:1.45}
+  .decision-table tr.discarded{background:rgba(248,113,113,.04)}
+  .badge-selected{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.68rem;font-weight:700;background:rgba(52,211,153,.12);color:#34d399}
+  .badge-discarded{display:inline-block;padding:2px 8px;border-radius:4px;font-size:.68rem;font-weight:700;background:rgba(248,113,113,.12);color:#f87171}
+  /* Banner */
+  .synth-banner{background:linear-gradient(90deg,rgba(52,211,153,.12) 0%,rgba(52,211,153,.04) 100%);border:1px solid rgba(52,211,153,.3);border-radius:8px;padding:8px 14px;font-size:.77rem;color:#6ee7b7;font-weight:500;display:flex;align-items:center;gap:8px}
+  .pregunta-callout{background:linear-gradient(135deg,#1a1d27 0%,#1e2235 100%);border-left:3px solid var(--accent);border-radius:0 8px 8px 0;padding:12px 16px;margin-top:12px;font-size:.84rem;color:#c4cbdc;line-height:1.5;font-style:italic}
+  /* Disclaimer */
+  .disclaimer{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 18px;font-size:.75rem;color:var(--muted);line-height:1.6}
+  .disclaimer strong{color:var(--text)}
+  /* Loading */
+  #loading{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999}
+  .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  /* Leaflet dark theme override */
+  .leaflet-container{background:#1a1d27!important;border-radius:10px}
+  .leaflet-control-zoom a{background:var(--surface2)!important;color:var(--text)!important;border-color:var(--border)!important}
+  .leaflet-tooltip{background:var(--surface)!important;border:1px solid var(--border)!important;color:var(--text)!important;font-family:-apple-system,sans-serif!important;font-size:.8rem!important;padding:8px 12px!important;border-radius:6px!important;box-shadow:none!important}
+  .leaflet-tooltip::before{display:none}
+  #choroMap{height:440px;border-radius:10px;border:1px solid var(--border)}
+  /* Region stats */
+  .reg-stat-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)}
+  .reg-stat-row:last-child{border-bottom:none}
+  /* Model badges */
+  .model-champ-row{background:rgba(245,158,11,.06);border-left:2px solid #f59e0b}
+  /* Crisis label */
+  .crisis-label{font-size:.67rem;color:#f87171;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+  select{background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:.8rem;cursor:pointer;outline:none}
+  select:focus{border-color:var(--accent)}
+  @media(max-width:900px){.grid-2,.grid-3{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
 <div id="loading"><div class="spinner"></div></div>
 
-<!-- ── SIEMPRE VISIBLE: Encabezado ── -->
-<div class="px-6 py-6 max-w-screen-xl mx-auto">
-  <div class="mb-4">
-    <div class="flex items-start justify-between flex-wrap gap-3">
-      <div>
-        <h1 class="text-2xl font-bold tracking-tight">Mercado Residencial Danés</h1>
-        <p class="text-sm mt-1" style="color:var(--muted)">Divergencia regional y resiliencia macroeconómica · 1992–2024 · Precio real/m² (DKK base 2024)</p>
-      </div>
-      <div class="flex flex-wrap gap-2 items-center mt-1">
-        <span class="badge" style="background:#1e2a3a;color:#60a5fa">5 marts de datos</span>
-        <span class="badge" style="background:#1e3a2a;color:#34d399">4 regiones danesas</span>
-        <span class="badge" style="background:#2a1e3a;color:#a78bfa" id="badge-tx">— transacciones</span>
-      </div>
+<!-- ── Header ── -->
+<div class="px-6 py-6 max-w">
+  <div class="flex items-start justify-between flex-wrap gap-3 mb-3">
+    <div>
+      <h1 style="font-size:1.5rem;font-weight:700;letter-spacing:-.02em">Mercado Residencial Danés</h1>
+      <p style="font-size:.83rem;color:var(--muted);margin-top:3px">Divergencia regional y resiliencia macroeconómica · 1992–2024 · Precio real/m² (DKK base 2024)</p>
     </div>
-    <div class="pregunta-callout">
-      <span style="color:var(--accent);font-style:normal;font-weight:600">Pregunta analítica: </span>
-      ¿Cómo se han diferenciado los precios residenciales entre la región capital y las provincias danesas bajo distintos regímenes de tasas de interés e inflación, y qué tipologías de vivienda muestran mayor volatilidad y peores drawdowns durante las crisis financieras entre 1992 y 2024?
-    </div>
-    <div class="synth-banner mt-3">
-      <span style="font-size:0.95rem">●</span>
-      <span><strong>Datos reales · Gold layer GCP</strong> · 5 marts desde <code style="background:rgba(255,255,255,0.05);padding:1px 5px;border-radius:3px;font-size:0.74rem">gs://danish-housing-gold/marts/</code> · Dataset Kaggle 1992–2024 · 4 regiones · 5 tipologías</span>
+    <div class="flex flex-wrap gap-2 items-center">
+      <span class="badge" style="background:#1e2a3a;color:#60a5fa">5 marts Gold</span>
+      <span class="badge" style="background:#1e3a2a;color:#34d399">4 regiones</span>
+      <span class="badge" style="background:#2a1e3a;color:#a78bfa" id="badge-tx">—</span>
     </div>
   </div>
+  <div class="synth-banner">
+    <span style="font-size:.9rem">●</span>
+    <span><strong>Datos reales · Gold layer GCP</strong> · 5 marts desde <code style="background:rgba(255,255,255,.05);padding:1px 5px;border-radius:3px;font-size:.73rem">gs://danish-housing-gold/marts/</code> · Dataset Kaggle 1992–2024 · Proyecto académico Data Visualization UPC 2026-01</span>
+  </div>
 
-  <!-- ── SIEMPRE VISIBLE: KPIs ── -->
-  <div class="grid mb-2" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px">
-    <div class="card p-4">
-      <div class="kpi-label mb-1">Total Transacciones</div>
-      <div class="kpi-value" style="color:#60a5fa" id="kpi-tx">—</div>
-      <div class="text-xs mt-1" style="color:var(--muted)">1992–2024</div>
-    </div>
-    <div class="card p-4">
-      <div class="kpi-label mb-1">Precio Prom/m² (2024)</div>
+  <!-- KPIs con comparación -->
+  <div class="kpi-grid mt-3" id="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-label">Precio promedio/m²</div>
       <div class="kpi-value" style="color:#34d399" id="kpi-price">—</div>
-      <div class="text-xs mt-1" style="color:var(--muted)">DKK real (base 2024)</div>
+      <div class="kpi-sub">DKK real (base 2024) · último año</div>
+      <div class="kpi-delta delta-up" id="kpi-price-delta">— vs 1992</div>
     </div>
-    <div class="card p-4">
-      <div class="kpi-label mb-1">Peor Drawdown</div>
+    <div class="kpi-card">
+      <div class="kpi-label">Prima capital</div>
+      <div class="kpi-value" style="color:#6366f1" id="kpi-capital">—</div>
+      <div class="kpi-sub">Zealand vs. resto de regiones</div>
+      <div class="kpi-delta delta-neutral" id="kpi-capital-delta">— vs media provincial</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Peor drawdown</div>
       <div class="kpi-value" style="color:#f87171" id="kpi-dd">—</div>
-      <div class="text-xs mt-1" style="color:var(--muted)" id="kpi-dd-sub">—</div>
+      <div class="kpi-sub" id="kpi-dd-sub">—</div>
+      <div class="kpi-delta delta-down" id="kpi-dd-delta">— vs corrección 2022</div>
     </div>
-    <div class="card p-4">
-      <div class="kpi-label mb-1">Cobertura</div>
-      <div class="kpi-value" style="color:#a78bfa">33 años</div>
-      <div class="text-xs mt-1" style="color:var(--muted)">4 regiones · 5 tipologías</div>
+    <div class="kpi-card">
+      <div class="kpi-label">Total transacciones</div>
+      <div class="kpi-value" style="color:#60a5fa" id="kpi-tx">—</div>
+      <div class="kpi-sub">1992–2024 · 33 años de registro</div>
+      <div class="kpi-delta delta-neutral" id="kpi-tx-delta">pico: — / trimestre</div>
     </div>
   </div>
 </div>
 
-<!-- ── TAB BAR (sticky) ── -->
+<!-- ── Tab bar ── -->
 <nav class="tab-bar">
-  <div class="px-6 max-w-screen-xl mx-auto" style="display:flex;overflow-x:auto">
-    <button class="tab-btn tab-active" onclick="switchTab('resumen')" id="tab-btn-resumen">📊 Resumen</button>
-    <button class="tab-btn" onclick="switchTab('h2')" id="tab-btn-h2">H2: Regional</button>
-    <button class="tab-btn" onclick="switchTab('h1')" id="tab-btn-h1">H1: Macro</button>
-    <button class="tab-btn" onclick="switchTab('h3')" id="tab-btn-h3">H3: Tipologías</button>
+  <div class="px-6 max-w" style="display:flex;overflow-x:auto">
+    <button class="tab-btn tab-active" onclick="switchTab('resumen')" id="tab-btn-resumen">Resumen</button>
+    <button class="tab-btn" onclick="switchTab('precios')" id="tab-btn-precios">Precios</button>
+    <button class="tab-btn" onclick="switchTab('geografia')" id="tab-btn-geografia">Geografía</button>
+    <button class="tab-btn" onclick="switchTab('crisis')" id="tab-btn-crisis">Crisis y Riesgo</button>
+    <button class="tab-btn" onclick="switchTab('modelado')" id="tab-btn-modelado">Modelado</button>
+    <button class="tab-btn" onclick="switchTab('conclusiones')" id="tab-btn-conclusiones">Conclusiones</button>
   </div>
 </nav>
 
-<!-- ── CONTENIDO DE TABS ── -->
-<div class="px-6 py-4 max-w-screen-xl mx-auto">
+<div class="px-6 py-4 max-w">
 
-  <!-- ════════════════════════════════════════════════ -->
-  <!-- TAB: RESUMEN                                    -->
-  <!-- ════════════════════════════════════════════════ -->
-  <div class="tab-section tab-visible" data-tab="resumen">
+<!-- ═══════════════════════════════════════════ -->
+<!-- RESUMEN                                    -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="tab-section tab-visible" data-tab="resumen">
+  <div class="pregunta-callout mb-4">
+    <span style="color:var(--accent);font-style:normal;font-weight:600">Pregunta de investigación: </span>
+    ¿Cómo se diferencian los precios residenciales entre la región capital y las provincias danesas bajo distintos regímenes de tasas e inflación, y qué tipologías muestran mayor volatilidad y peores drawdowns durante las crisis financieras (1992–2024)?
+  </div>
 
-    <!-- Insights Exploratorios -->
-    <div class="section-heading" style="margin-top:8px">Insights Exploratorios</div>
-    <p style="font-size:0.8rem;color:var(--muted);margin-bottom:12px;line-height:1.5">Hallazgos derivados directamente de los 5 marts Gold (datos reales 1992–2024). Cada insight conecta la evidencia cuantitativa con la hipótesis de trabajo del proyecto.</p>
-    <div style="display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:24px">
-      <div class="insight-card" id="ins-1">Cargando datos…</div>
-      <div class="insight-card" id="ins-2">Cargando datos…</div>
-      <div class="insight-card" id="ins-3">Cargando datos…</div>
-      <div class="insight-card" id="ins-4">Cargando datos…</div>
-      <div class="insight-card" id="ins-5">Cargando datos…</div>
+  <!-- 3 hypothesis cards -->
+  <div class="grid-3 mb-4">
+    <div class="hyp-card hyp-supported">
+      <div class="hyp-badge" style="background:rgba(52,211,153,.15);color:#34d399">H1 · Soportada</div>
+      <div class="hyp-title">Tasas hipotecarias predicen caída de volumen con rezago 1–2 trimestres</div>
+      <div class="hyp-metric" style="color:#34d399" id="h1-metric">—</div>
+      <div class="hyp-detail" id="h1-detail">Cargando…</div>
+    </div>
+    <div class="hyp-card hyp-supported">
+      <div class="hyp-badge" style="background:rgba(52,211,153,.15);color:#34d399">H2 · Soportada</div>
+      <div class="hyp-title">Zealand duplica y protege mejor que provincias ante shocks macro</div>
+      <div class="hyp-metric" style="color:#6366f1" id="h2-metric">—</div>
+      <div class="hyp-detail" id="h2-detail">Cargando…</div>
+    </div>
+    <div class="hyp-card hyp-refined">
+      <div class="hyp-badge" style="background:rgba(245,158,11,.12);color:#f59e0b">H3 · Refinada</div>
+      <div class="hyp-title">Apartment/Townhouse más volátiles — no Summerhouse como se esperaba</div>
+      <div class="hyp-metric" style="color:#f59e0b" id="h3-metric">—</div>
+      <div class="hyp-detail" id="h3-detail">Cargando…</div>
+    </div>
+  </div>
+
+  <!-- 5 insights -->
+  <div class="section-heading">Hallazgos clave de los datos</div>
+  <div style="display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:24px">
+    <div class="insight-card" id="ins-1">Cargando…</div>
+    <div class="insight-card" id="ins-2">Cargando…</div>
+    <div class="insight-card" id="ins-3">Cargando…</div>
+    <div class="insight-card" id="ins-4">Cargando…</div>
+    <div class="insight-card" id="ins-5">Cargando…</div>
+  </div>
+
+  <!-- Recomendaciones -->
+  <div class="section-heading">Recomendaciones</div>
+  <div class="grid-2 mb-6" style="gap:12px">
+    <div class="rec-card" style="border-left-color:#60a5fa">
+      <div class="rec-tag" style="color:#60a5fa">Inversor</div>
+      <div class="rec-title">Priorizar Apartment/Villa en Zealand sobre Summerhouse provincial</div>
+      <div class="rec-body">El diferencial drawdown entre tipologías estables en Zealand y recreativas en periferia es sustancial. Zealand ofrece mayor protección pico-valle. Trade-off: entrada más cara y menor yield bruto.</div>
+    </div>
+    <div class="rec-card" style="border-left-color:#f87171">
+      <div class="rec-tag" style="color:#f87171">Analista de riesgo</div>
+      <div class="rec-title">Monitorear bonos hipotecarios como leading indicator (lag 2Q)</div>
+      <div class="rec-body">La correlación negativa volumen–tasas es robusta en 72%+ de trimestres. El yield del bono hipotecario danés sirve como alerta temprana para portfolios residenciales.</div>
+    </div>
+    <div class="rec-card" style="border-left-color:#34d399">
+      <div class="rec-tag" style="color:#34d399">Política pública</div>
+      <div class="rec-title">Focalizar vivienda asequible en Bornholm y Jutlandia</div>
+      <div class="rec-body">Estas regiones combinan peores drawdowns con menor recuperación post-2012. Intervención pública tiene mayor impacto marginal aquí que en Zealand, donde el problema es de oferta.</div>
+    </div>
+    <div class="rec-card" style="border-left-color:#a78bfa">
+      <div class="rec-tag" style="color:#a78bfa">Limitaciones</div>
+      <div class="rec-title">Correlación ≠ causalidad; sesgos de selección presentes</div>
+      <div class="rec-body">El dataset no captura ventas off-market ni calidad del inmueble. Resultados son descriptivos del mercado registrado, no predictivos. Validar con Danmarks Statistik antes de decisiones de inversión.</div>
+    </div>
+  </div>
+
+  <div class="disclaimer mb-6">
+    <strong>Nota metodológica:</strong> Análisis descriptivo, no predictivo. Precio real/m² deflactado con IPC danés base 2024. Datos 1992–1994 con menor completitud. Regiones del dataset (Zealand, Jutland, Fyn &amp; islands, Bornholm) son agregados propios — no coinciden 1:1 con las 5 regiones administrativas de Dinamarca. <strong>Fuente:</strong> Kaggle — Danish Residential Housing Prices 1992–2024; pipeline Medallion Bronze→Silver→Gold.
+  </div>
+</div><!-- /resumen -->
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- PRECIOS                                    -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="tab-section" data-tab="precios">
+  <div class="section-heading mb-3" style="margin-top:8px">
+    <span style="background:rgba(99,102,241,.15);color:var(--accent);padding:2px 10px;border-radius:4px;font-size:.7rem;font-weight:700;letter-spacing:.06em;margin-right:8px">H2</span>
+    Copenhague muestra respuesta más amortiguada ante shocks macro que el resto de regiones
+    <span style="margin-left:auto;font-size:.7rem;color:#34d399;font-weight:600;background:rgba(52,211,153,.1);padding:2px 8px;border-radius:4px">✓ Soportada</span>
+  </div>
+
+  <div class="grid-2 mb-4">
+    <div class="card p-5">
+      <div class="flex items-start justify-between mb-2 gap-2">
+        <div>
+          <div class="section-title">Índice de Precios Regional · Base 1992 = 100</div>
+          <div class="section-sub">Precio real DKK/m² · Zealand (incl. Copenhague) destacada</div>
+        </div>
+        <select id="reg-mode" onchange="renderRegionalIndex()">
+          <option value="index">Índice (1992=100)</option>
+          <option value="price">Precio DKK/m²</option>
+        </select>
+      </div>
+      <div class="flex flex-wrap gap-2 mb-2" id="reg-legend"></div>
+      <div class="crisis-label mb-2">▌ GFC 2007–2012 &nbsp;·&nbsp; ▌ COVID 2020–2021 &nbsp;·&nbsp; ◆ Eventos macro</div>
+      <div style="position:relative;height:240px"><canvas id="chartRegional"></canvas></div>
+      <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text"><strong>Divergencia confirmada:</strong> Zealand más que duplicó su índice mientras Fyn &amp; islands cayó por debajo de base 1992 durante la GFC. La brecha post-2012 se amplía: Zealand crece impulsada por escasez de oferta en la capital.</span></div>
     </div>
 
-    <!-- Modelado Predictivo -->
-    <div class="mb-6">
-      <div class="section-heading">Modelado Predictivo · Comparativa M1–M4 + Cross-Validation</div>
+    <div class="card p-5">
+      <div class="mb-2">
+        <div class="section-title">Bonos Hipotecarios · Evolución Temporal</div>
+        <div class="section-sub">Rendimiento bono hipotecario danés (%) · 1992–2024</div>
+      </div>
+      <div style="position:relative;height:145px;margin-bottom:12px"><canvas id="chartBonds"></canvas></div>
+      <div style="border-top:1px solid var(--border);padding-top:12px">
+        <div class="section-title mb-2">Evolución Anual por Región</div>
+        <div class="section-sub mb-2">DKK real/m² promedio anual</div>
+        <div class="flex flex-wrap gap-2 mb-2" id="annual-legend"></div>
+        <div style="position:relative;height:160px"><canvas id="chartAnnual"></canvas></div>
+      </div>
+      <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text"><strong>Régimen de tasas y precios:</strong> bajada de bonos hipotecarios (15%→1.5%) 1992–2020 coincide con boom de precios. Alza 2022 genera corrección sincronizada en todas las regiones, con Zealand absorbiendo mejor por demanda estructural elevada.</span></div>
+    </div>
+  </div>
+</div><!-- /precios -->
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- GEOGRAFÍA                                  -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="tab-section" data-tab="geografia">
+  <div class="section-heading mb-3" style="margin-top:8px">
+    Distribución Geográfica · Precio real/m² por Región y Ciudad
+  </div>
+
+  <div class="grid-2 mb-4" style="grid-template-columns:3fr 2fr">
+    <!-- Choropleth -->
+    <div class="card p-5">
+      <div class="flex items-start justify-between mb-3 gap-2">
+        <div>
+          <div class="section-title">Mapa Coroplético · Precio promedio por Región</div>
+          <div class="section-sub" id="choro-sub">Precio real DKK/m² · Hover para detalle</div>
+        </div>
+        <select id="choro-year" onchange="updateChoropleth()">
+          <option value="latest">Último año</option>
+          <option value="2024">2024</option>
+          <option value="2022">2022</option>
+          <option value="2019">2019</option>
+          <option value="2015">2015</option>
+          <option value="2012">2012 (mínimo GFC)</option>
+          <option value="2007">2007 (pico pre-GFC)</option>
+          <option value="2000">2000</option>
+          <option value="1992">1992 (base)</option>
+        </select>
+      </div>
+      <div id="choroMap"></div>
+      <!-- Color legend -->
+      <div class="flex items-center gap-2 mt-3">
+        <span style="font-size:.7rem;color:var(--muted)">Menor precio</span>
+        <div style="flex:1;height:8px;border-radius:4px;background:linear-gradient(to right,#312e81,#4f46e5,#6366f1,#818cf8,#a5b4fc,#c7d2fe)"></div>
+        <span style="font-size:.7rem;color:var(--muted)">Mayor precio</span>
+      </div>
+      <div class="takeaway mt-2"><span class="takeaway-icon">→</span><span class="takeaway-text"><strong>Concentración geográfica confirmada:</strong> Zealand (región capital) lidera en precio/m² en todos los años. Bornholm y Fyn muestran precios 2–3× menores, reflejando la segmentación estructural del mercado danés.</span></div>
+    </div>
+
+    <!-- Region stats + top cities -->
+    <div>
       <div class="card p-5 mb-4">
-        <div class="flex items-start justify-between mb-3 gap-2">
-          <div>
-            <div class="section-title">Comparativa de modelos · holdout train 1992-2017 → test 2018-2024</div>
-            <div class="section-sub">Métricas en escala nominal DKK (back-transform <code style="font-size:0.72rem">np.expm1</code>) · 41 features · anti-leak guard PASS · Optuna 30 trials TPE (GPU L4)</div>
-          </div>
-          <span class="badge" style="background:#1e2a3a;color:#60a5fa" id="badge-champion">— campeón</span>
-        </div>
-        <div id="model-comparison-table" class="mt-3"></div>
-        <div class="takeaway">
-          <span class="takeaway-icon">▸</span>
-          <span class="takeaway-text" id="model-takeaway"></span>
-        </div>
+        <div class="section-title mb-3">Comparativa por Región</div>
+        <div id="region-stats-table">Cargando…</div>
       </div>
-      <div class="grid-2 mb-4">
-        <div class="card p-5">
-          <div class="section-title">Feature importance · top 10 del campeón</div>
-          <div class="section-sub">Importancia normalizada XGBoost · features clean (sin derivadas del target)</div>
-          <div style="position:relative;height:320px;margin-top:8px"><canvas id="chartImportance"></canvas></div>
-        </div>
-        <div class="card p-5">
-          <div class="section-title">CV time-series · R² por fold</div>
-          <div class="section-sub">5 folds expandidos (TimeSeriesSplit) en train 1992-2017 · ventana creciente</div>
-          <div style="position:relative;height:320px;margin-top:8px"><canvas id="chartCV"></canvas></div>
-        </div>
-      </div>
-      <div class="card p-5 mb-4">
-        <div class="flex items-start justify-between mb-3 gap-2">
-          <div>
-            <div class="section-title">Predicciones del campeón vs. valor real · test set 2018-2024</div>
-            <div class="section-sub">Sample 4,900 transacciones estratificado por año · línea diagonal = predicción perfecta</div>
-          </div>
-          <span class="badge" style="background:#1e2a3a;color:#60a5fa" id="badge-pred-stats">— MAE</span>
-        </div>
-        <div style="position:relative;height:380px"><canvas id="chartPredScatter"></canvas></div>
-      </div>
-    </div>
-
-    <!-- Tabla de decisiones de gráficos -->
-    <div class="section-heading">Tabla de Decisiones de Visualización</div>
-    <p style="font-size:0.8rem;color:var(--muted);margin-bottom:12px;line-height:1.5">Tipos de gráfico evaluados durante la fase exploratoria. Los tipos marcados como descartados incluyen justificación técnica de la exclusión.</p>
-    <div class="card p-5 mb-6" style="overflow-x:auto">
-      <table class="decision-table">
-        <thead>
-          <tr>
-            <th style="width:160px">Tipo de gráfico</th>
-            <th style="width:160px">Propósito analítico</th>
-            <th style="width:90px">Decisión</th>
-            <th>Justificación técnica</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>Línea múltiple</strong> (dual axis)</td>
-            <td>Tendencia temporal por región + overlay macro</td>
-            <td><span class="badge-selected">✓ Seleccionado</span></td>
-            <td>Permite comparar trayectorias de 4 regiones en 33 años sin saturar el área. El eje dual integra la variable macro (bonos hipotecarios) sin requerir una vista separada. Las bandas de crisis contextualizan los shocks.</td>
-          </tr>
-          <tr>
-            <td><strong>Connected scatter</strong></td>
-            <td>Relación volumen–tasas hipotecarias</td>
-            <td><span class="badge-selected">✓ Seleccionado</span></td>
-            <td>Muestra simultáneamente la magnitud de la relación (dispersión) y su evolución en el tiempo (trayectoria). Más informativo que un scatter estático o una correlación en tabla.</td>
-          </tr>
-          <tr>
-            <td><strong>Small multiples</strong> (línea)</td>
-            <td>Comparación de volatilidad por tipología</td>
-            <td><span class="badge-selected">✓ Seleccionado</span></td>
-            <td>Evita el solapamiento de 5 series en un único eje. Cada panel destaca la tipología focal con el resto en gris, facilitando la comparación de forma de curva y picos sin perder contexto.</td>
-          </tr>
-          <tr>
-            <td><strong>Histograma de barras</strong></td>
-            <td>Distribución de precios entre ciudades</td>
-            <td><span class="badge-selected">✓ Seleccionado</span></td>
-            <td>Única vista que muestra cuántas ciudades hay en cada rango de precio — dato ausente en las series temporales. El doble eje (ciudades + transacciones) permite contrastar concentración geográfica con liquidez.</td>
-          </tr>
-          <tr>
-            <td><strong>Heatmap de color</strong></td>
-            <td>Drawdowns por región × tipología</td>
-            <td><span class="badge-selected">✓ Seleccionado</span></td>
-            <td>Permite leer simultáneamente 4 regiones × 5 tipologías (20 celdas) en una sola vista. El gradiente rojo→verde codifica la severidad sin necesitar cifras en cada celda.</td>
-          </tr>
-          <tr class="discarded">
-            <td><strong>Treemap</strong></td>
-            <td>Distribución por precio y volumen de ciudades</td>
-            <td><span class="badge-discarded">✗ Descartado</span></td>
-            <td>La jerarquía visual dificulta comparar magnitudes exactas entre rectángulos de tamaño similar. Además Chart.js no incluye treemap nativo sin plugins externos que añaden dependencias innecesarias. Se reemplazó con barras horizontales (Top 15 ciudades).</td>
-          </tr>
-          <tr class="discarded">
-            <td><strong>Mapa choropleth</strong></td>
-            <td>Distribución geográfica de precios por zip_code</td>
-            <td><span class="badge-discarded">✗ Descartado</span></td>
-            <td>Requiere join con shapefiles externos (PostNord / Statistics Denmark) que no están disponibles en el frontend sin un servidor GIS. La versión alpha usa el histograma de ciudades como proxy: comunica el mismo insight de dispersión geográfica con los datos ya disponibles.</td>
-          </tr>
-          <tr class="discarded">
-            <td><strong>Radar chart</strong></td>
-            <td>Comparar tipologías en múltiples dimensiones (volatilidad, drawdown, precio)</td>
-            <td><span class="badge-discarded">✗ Descartado</span></td>
-            <td>La lectura de ejes radiales es contraintuitiva para usuarios no especializados en dataviz. Con 5 tipologías y 3+ métricas, el polígono resultante no permite leer valores exactos. Los small multiples de línea son más directos para comparar trayectorias temporales.</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Recomendaciones -->
-    <div class="mb-6">
-      <div class="section-heading">Recomendaciones e Insights Accionables</div>
-      <div class="grid-2" style="gap:12px">
-        <div class="rec-card" style="border-left-color:#60a5fa">
-          <div class="rec-tag" style="color:#60a5fa">Inversor inmobiliario</div>
-          <div class="rec-title">Priorizar Apartment/Villa en Zealand sobre Summerhouse provincial</div>
-          <div class="rec-body">El diferencial de drawdown entre tipologías estables (Apartment/Villa en Zealand) y tipologías recreativas en regiones periféricas es sustancial durante crisis. Zealand ofrece mayor protección pico-valle. <strong>Trade-off:</strong> menor yield bruto y entrada más cara en la región capital.</div>
-        </div>
-        <div class="rec-card" style="border-left-color:#f87171">
-          <div class="rec-tag" style="color:#f87171">Analista de riesgo</div>
-          <div class="rec-title">Monitorear bonos hipotecarios como leading indicator (lag 2Q)</div>
-          <div class="rec-body">El connected scatter muestra una correlación negativa robusta volumen–tasas: trimestres con bonos altos coinciden con caídas de volumen. Recomendar usar el yield del bono hipotecario danés como variable de alerta temprana para portfolios expuestos al mercado residencial.</div>
-        </div>
-        <div class="rec-card" style="border-left-color:#34d399">
-          <div class="rec-tag" style="color:#34d399">Consultor público</div>
-          <div class="rec-title">Focalizar vivienda asequible en Bornholm, Jutland y Fyn &amp; islands</div>
-          <div class="rec-body">Estas regiones combinan los peores drawdowns con la menor recuperación post-2012. Intervención pública (subsidio o vivienda social) tiene mayor impacto marginal aquí que en Zealand, donde el problema es de oferta y no de demanda.</div>
-        </div>
-        <div class="rec-card" style="border-left-color:#a78bfa">
-          <div class="rec-tag" style="color:#a78bfa">Limitaciones del análisis</div>
-          <div class="rec-title">Correlación ≠ causalidad; sesgos de selección presentes</div>
-          <div class="rec-body">El dataset Kaggle no captura ventas off-market ni variables de calidad (renovación, cercanía a transporte). Los resultados son descriptivos del mercado registrado, no predictivos. Validar con datos externos (Danmarks Statistik) antes de decisiones de inversión.</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Disclaimer -->
-    <div class="disclaimer mb-6">
-      <strong>Nota metodológica:</strong>
-      Este dashboard es de naturaleza <strong>descriptiva</strong>, no predictiva.
-      Las correlaciones observadas entre variables macroeconómicas y precios no implican causalidad.
-      Los datos 1992–1994 pueden tener menor completitud por la transición al sistema digital de registro de transacciones.
-      El precio real/m² está deflactado con el IPC danés (base 2024), derivado de la tasa de inflación anual incluida en el dataset.
-      <strong>Fuente:</strong> Kaggle — Danish Residential Housing Prices 1992–2024; procesado en arquitectura Medallion (Bronze → Silver → Gold) y servido desde <code style="background:rgba(255,255,255,0.05);padding:1px 5px;border-radius:3px;font-size:0.74rem">gs://danish-housing-gold/marts/</code>.
-      Las regiones del dataset (Zealand, Jutland, Fyn &amp; islands, Bornholm) son agregados geográficos amplios; no coinciden 1:1 con las 5 regiones administrativas oficiales de Dinamarca.
-      Proyecto académico — Data Visualization, UPC 2026-01.
-    </div>
-
-  </div><!-- /tab resumen -->
-
-  <!-- ════════════════════════════════════════════════ -->
-  <!-- TAB: H2 REGIONAL                               -->
-  <!-- ════════════════════════════════════════════════ -->
-  <div class="tab-section" data-tab="h2">
-
-    <div class="section-heading mb-3" style="margin-top:8px">
-      <span style="background:rgba(99,102,241,0.15);color:var(--accent);padding:2px 10px;border-radius:4px;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;margin-right:8px">H2</span>
-      Copenhague muestra respuesta más amortiguada que Jutlandia ante shocks macro
-      <span style="margin-left:auto;font-size:0.72rem;color:#34d399;font-weight:600;background:rgba(52,211,153,0.1);padding:2px 8px;border-radius:4px">✓ Soportada</span>
-    </div>
-
-    <div class="grid-2 mb-4">
-
-      <!-- Vista 1: Índice regional + bonos en paneles apilados (TENDENCIA) -->
       <div class="card p-5">
         <div class="flex items-start justify-between mb-2 gap-2">
-          <div>
-            <div class="section-title">Índice Regional de Precios · Bonos Hipotecarios</div>
-            <div class="section-sub">Base 1992Q1 = 100 · Real DKK/m² · Zealand (incl. Copenhagen) destacada · Panel inferior: bonos hipotecarios</div>
-            <p class="chart-caption">Línea múltiple con eje dual: permite comparar trayectorias de 4 regiones en 33 años sin saturar el área. El eje dual integra los bonos hipotecarios sin una vista separada; las bandas de crisis contextualizan los shocks macro. Tipo: Tendencia.</p>
-          </div>
-          <select id="reg-mode" onchange="renderRegionalIndex()">
-            <option value="index">Índice (1992=100)</option>
-            <option value="price">Precio DKK/m²</option>
-          </select>
-        </div>
-        <div class="flex flex-wrap gap-2 mb-2" id="reg-legend"></div>
-        <div class="crisis-label mb-1">▌ Crisis GFC 2007–2012 &nbsp;·&nbsp; ▌ COVID 2020–2021 &nbsp;·&nbsp; ◆ Eventos macro anotados</div>
-        <div style="position:relative;height:220px"><canvas id="chartRegional"></canvas></div>
-        <div style="position:relative;height:80px;margin-top:4px"><canvas id="chartRegionalBonds"></canvas></div>
-        <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text" id="ti-regional"><strong>Efecto capital confirmado (H2):</strong> Zealand (que incluye København/Capital) más que duplicó su índice desde 1992. Durante el piso GFC (2009–2010), el índice mínimo de Zealand fue <strong>154.46</strong> mientras que Fyn &amp; islands cayó a <strong>91.51</strong> (por debajo de su base 1992). Jutlandia, aunque más resiliente que Fyn, también quedó por debajo de Zealand en todos los ciclos.</span></div>
-      </div>
-
-      <!-- Vista nueva: Distribución de precios (DISTRIBUCIÓN) -->
-      <div class="card p-5">
-        <div class="mb-2">
-          <div class="section-title">Distribución de Precios por Ciudad</div>
-          <div class="section-sub">Histograma: n° de ciudades por rango de precio real/m² (promedio ponderado histórico) · Línea: volumen total de transacciones en ese rango</div>
-          <p class="chart-caption">Gráfico de barras con línea de volumen: única vista que muestra cuántas ciudades caen en cada rango de precio — dato ausente en las series temporales. El doble eje permite contrastar concentración geográfica con liquidez. Escogido sobre treemap (requiere plugin) y mapa choropleth (requiere shapefiles externos). Tipo: Distribución.</p>
-        </div>
-        <div style="position:relative;height:240px"><canvas id="chartDistribution"></canvas></div>
-        <div class="takeaway mt-3"><span class="takeaway-icon">→</span><span class="takeaway-text" id="ti-dist">La distribución de precios entre ciudades muestra alta concentración en rangos bajos, con pocas ciudades en rangos superiores a 30,000 DKK/m². Cargando datos...</span></div>
-      </div>
-
-    </div>
-
-    <!-- Fila 2: Top ciudades + Evolución anual (COMPARACIÓN + TENDENCIA) -->
-    <div class="grid-2 mb-6">
-
-      <div class="card p-5">
-        <div class="flex items-start justify-between mb-2 gap-2">
-          <div>
-            <div class="section-title">Top 15 Ciudades</div>
-            <div class="section-sub">Precio real promedio/m² o volumen de transacciones</div>
-            <p class="chart-caption">Barras horizontales ordenadas: permiten comparar magnitudes exactas entre ciudades con etiquetas de valor internas. Escogidas sobre scatter de ciudades (difícil de leer con 15 puntos etiquetados) y treemap. Tipo: Comparación.</p>
-          </div>
+          <div class="section-title">Top 15 Ciudades</div>
           <select id="city-sort" onchange="renderCities()">
             <option value="price">Por precio/m²</option>
             <option value="tx">Por volumen</option>
           </select>
         </div>
+        <div class="section-sub mb-3">Precio real promedio ponderado · último año</div>
         <div id="cityBars"></div>
-        <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text"><strong>Concentración geográfica del precio:</strong> el ranking del último año en el dataset concentra las ciudades con mayor precio/m² en Zealand (la región de la capital), duplicando o más a las ciudades de Jutland y Fyn &amp; islands.</span></div>
+        <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text"><strong>Concentración en Zealand:</strong> los 10 municipios más caros son de la región capital. Jutlandia y Fyn no aparecen hasta pasado el top 20.</span></div>
       </div>
+    </div>
+  </div>
+</div><!-- /geografia -->
 
-      <div class="card p-5">
-        <div class="mb-2">
-          <div class="section-title">Evolución Anual de Precio Real/m²</div>
-          <div class="section-sub">Promedio anual por región (DKK real, base 2024)</div>
-          <p class="chart-caption">Línea anual por región: complementa el índice trimestral suavizando el ruido intra-año. Hace visible la divergencia estructural post-2012 entre Zealand y el resto. Tipo: Tendencia.</p>
+<!-- ═══════════════════════════════════════════ -->
+<!-- CRISIS Y RIESGO                            -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="tab-section" data-tab="crisis">
+  <div class="section-heading mb-3" style="margin-top:8px">
+    <span style="background:rgba(99,102,241,.15);color:var(--accent);padding:2px 10px;border-radius:4px;font-size:.7rem;font-weight:700;letter-spacing:.06em;margin-right:8px">H3</span>
+    Volatilidad y drawdowns por tipología — la vivienda urbana absorbe los peores shocks, no la segunda residencia
+    <span style="margin-left:auto;font-size:.7rem;color:#f59e0b;font-weight:600;background:rgba(245,158,11,.1);padding:2px 8px;border-radius:4px">~ Refinada</span>
+  </div>
+
+  <div class="h3-filter">
+    <span class="filter-label">Tipologías:</span>
+    <label><input type="checkbox" value="Apartment"   checked onchange="renderVolatility();renderDrawdownTimeline()"> <span style="color:#60a5fa;font-weight:600">Apartment</span></label>
+    <label><input type="checkbox" value="Villa"       checked onchange="renderVolatility();renderDrawdownTimeline()"> <span style="color:#34d399;font-weight:600">Villa</span></label>
+    <label><input type="checkbox" value="Townhouse"   checked onchange="renderVolatility();renderDrawdownTimeline()"> <span style="color:#f59e0b;font-weight:600">Townhouse</span></label>
+    <label><input type="checkbox" value="Summerhouse" checked onchange="renderVolatility();renderDrawdownTimeline()"> <span style="color:#f87171;font-weight:600">Summerhouse</span></label>
+    <label><input type="checkbox" value="Farm"        checked onchange="renderVolatility();renderDrawdownTimeline()"> <span style="color:#a78bfa;font-weight:600">Farm</span></label>
+  </div>
+
+  <div class="grid-2 mb-6">
+    <div class="card p-5">
+      <div class="section-title mb-1">Volatilidad Trimestral — Small Multiples</div>
+      <div class="section-sub mb-3">σ del cambio % trimestral · ventana móvil 4Q · tipología focal coloreada, resto en gris</div>
+      <div id="volMultiples" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
+      <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text" id="ti-vol">Cargando…</span></div>
+    </div>
+
+    <div class="card p-5">
+      <div class="section-title mb-1">Drawdowns Pico–Valle</div>
+      <div class="section-sub mb-3">Heatmap: caída máxima por región × tipología · Inferior: trayectoria temporal</div>
+      <div id="ddHeatmap"></div>
+      <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:10px">
+        <div style="font-size:.7rem;color:var(--muted);margin-bottom:4px;font-weight:600">Drawdown promedio por tipología · evolución trimestral</div>
+        <div style="position:relative;height:140px"><canvas id="chartDrawdownTimeline"></canvas></div>
+      </div>
+      <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text" id="ti-dd">Cargando…</span></div>
+    </div>
+  </div>
+</div><!-- /crisis -->
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- MODELADO                                   -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="tab-section" data-tab="modelado">
+  <div class="section-heading mb-3" style="margin-top:8px">Modelado Predictivo · Comparativa M1–M4</div>
+
+  <div id="no-model-msg" class="card p-5 mb-4" style="display:none">
+    <p style="color:var(--muted);font-size:.84rem">Los marts de modelado no están disponibles. Ejecuta <code>scripts/run_pipeline.py</code> o <code>scripts/export_marts.py</code> para generar los archivos de modelo.</p>
+  </div>
+
+  <div id="model-section">
+    <div class="card p-5 mb-4">
+      <div class="flex items-start justify-between mb-3 gap-2">
+        <div>
+          <div class="section-title">Comparativa de modelos · holdout train 1992-2017 → test 2018-2024</div>
+          <div class="section-sub">Métricas DKK back-transform · 41 features · anti-leak guard PASS · Optuna 30 trials TPE</div>
         </div>
-        <div class="flex flex-wrap gap-2 mb-2" id="annual-legend"></div>
-        <canvas id="chartAnnual"></canvas>
-        <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text"><strong>Divergencia post-2012:</strong> tras el suelo de la GFC, Zealand se desacopla del resto y crece a tasa superior. La corrección 2022 reaparece en todas las regiones, con Zealand mostrando la mayor sensibilidad al cambio de régimen de tasas.</span></div>
+        <span class="badge" style="background:#1e2a3a;color:#60a5fa" id="badge-champion">— campeón</span>
       </div>
-
+      <div id="model-comparison-table"></div>
+      <div class="takeaway mt-3"><span class="takeaway-icon">▸</span><span class="takeaway-text" id="model-takeaway"></span></div>
     </div>
 
-  </div><!-- /tab h2 -->
-
-  <!-- ════════════════════════════════════════════════ -->
-  <!-- TAB: H1 MACRO                                  -->
-  <!-- ════════════════════════════════════════════════ -->
-  <div class="tab-section" data-tab="h1">
-
-    <div class="section-heading mb-3" style="margin-top:8px">
-      <span style="background:rgba(99,102,241,0.15);color:var(--accent);padding:2px 10px;border-radius:4px;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;margin-right:8px">H1</span>
-      Relación negativa entre rendimiento de bonos hipotecarios y volumen transaccional (rezago 1–2 trimestres)
-      <span style="margin-left:auto;font-size:0.72rem;color:#34d399;font-weight:600;background:rgba(52,211,153,0.1);padding:2px 8px;border-radius:4px">✓ Soportada</span>
+    <div class="grid-2 mb-4">
+      <div class="card p-5">
+        <div class="section-title mb-1">Feature importance · top 10 del campeón</div>
+        <div class="section-sub mb-2">Importancia normalizada XGBoost</div>
+        <div style="position:relative;height:300px"><canvas id="chartImportance"></canvas></div>
+      </div>
+      <div class="card p-5">
+        <div class="section-title mb-1">CV time-series · R² por fold</div>
+        <div class="section-sub mb-2">5 folds expandidos (TimeSeriesSplit) · train 1992-2017</div>
+        <div style="position:relative;height:300px"><canvas id="chartCV"></canvas></div>
+      </div>
     </div>
 
-    <!-- Vista 5: Scatter volumen vs bonos + rolling correlation (RELACIÓN) -->
     <div class="card p-5 mb-6">
-      <div class="mb-2">
-        <div class="section-title">Correlación Volumen – Bonos Hipotecarios</div>
-        <div class="section-sub">Scatter: eje X = rendimiento bono lag 2Q · eje Y = n° transacciones · color = ciclo macro · Inferior: correlación rolling 8Q</div>
-        <p class="chart-caption">Connected scatter (scatter + showLine): conecta los puntos en orden cronológico dentro de cada período, mostrando simultáneamente la estructura de la relación (dispersión) y su trayectoria en el tiempo. Más informativo que un scatter estático o una tabla de correlaciones. La correlación rolling 8Q debajo añade la dimensión temporal sin duplicar el gráfico. Tipo: Relación.</p>
-      </div>
-      <div class="flex flex-wrap gap-2 mb-2" id="scatter-legend"></div>
-      <canvas id="chartScatter"></canvas>
-      <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:10px">
-        <div style="font-size:0.72rem;color:var(--muted);margin-bottom:4px;font-weight:600">Correlación rolling 8Q (volumen vs. bonos lag 2Q) · línea 0 = sin relación · relleno rojo = correlación negativa</div>
-        <div style="position:relative;height:110px"><canvas id="chartRollingCorr"></canvas></div>
-      </div>
-      <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text" id="ti-scatter"><strong>H1 confirmada:</strong> la correlación rolling media es <strong>negativa</strong> (mín. −0.96, máx. +0.87 sobre 125 trimestres). Regímenes de bonos bajos coinciden con volúmenes altos; alzas de tasas (GFC, 2022+) anticipan caídas de transacciones con rezago de 1–2 trimestres. La dispersión por período sugiere que la relación es más fuerte en ciclos alcistas de tasas.</span></div>
-    </div>
-
-  </div><!-- /tab h1 -->
-
-  <!-- ════════════════════════════════════════════════ -->
-  <!-- TAB: H3 TIPOLOGÍAS                             -->
-  <!-- ════════════════════════════════════════════════ -->
-  <div class="tab-section" data-tab="h3">
-
-    <div class="section-heading mb-3" style="margin-top:8px">
-      <span style="background:rgba(99,102,241,0.15);color:var(--accent);padding:2px 10px;border-radius:4px;font-size:0.72rem;font-weight:700;letter-spacing:0.06em;margin-right:8px">H3</span>
-      Volatilidad y drawdowns por tipología de vivienda — refinamiento de la hipótesis original
-      <span style="margin-left:auto;font-size:0.72rem;color:#f59e0b;font-weight:600;background:rgba(245,158,11,0.1);padding:2px 8px;border-radius:4px">~ Refinada</span>
-    </div>
-
-    <!-- Filtro de tipología -->
-    <div class="h3-filter">
-      <span class="filter-label">Filtrar tipologías:</span>
-      <label><input type="checkbox" value="Apartment"   checked onchange="renderVolatility();renderDrawdownTimeline()"> <span style="color:#60a5fa;font-weight:600">Apartment</span></label>
-      <label><input type="checkbox" value="Villa"       checked onchange="renderVolatility();renderDrawdownTimeline()"> <span style="color:#34d399;font-weight:600">Villa</span></label>
-      <label><input type="checkbox" value="Townhouse"   checked onchange="renderVolatility();renderDrawdownTimeline()"> <span style="color:#f59e0b;font-weight:600">Townhouse</span></label>
-      <label><input type="checkbox" value="Summerhouse" checked onchange="renderVolatility();renderDrawdownTimeline()"> <span style="color:#f87171;font-weight:600">Summerhouse</span></label>
-      <label><input type="checkbox" value="Farm"        checked onchange="renderVolatility();renderDrawdownTimeline()"> <span style="color:#a78bfa;font-weight:600">Farm</span></label>
-    </div>
-
-    <div class="grid-2 mb-6">
-
-      <!-- Vista 4: Volatilidad — H3 (COMPARACIÓN) -->
-      <div class="card p-5">
-        <div class="mb-2">
-          <div class="section-title">Volatilidad por Tipología — Small Multiples</div>
-          <div class="section-sub">Desv. estándar del cambio % trimestral · Ventana móvil 4Q · Cada panel destaca una tipología sobre el resto en gris</div>
-          <p class="chart-caption">Small multiples de línea: evitan el solapamiento de 5 series en un único eje. La tipología focal (coloreada) se compara contra el comportamiento global del mercado (resto en gris), facilitando la lectura de picos y valles individuales. Escogidos sobre radar chart (ejes radiales contraintuitivos) y línea múltiple superpuesta. Tipo: Comparación.</p>
+      <div class="flex items-start justify-between mb-3 gap-2">
+        <div>
+          <div class="section-title">Predicciones vs. valor real · test set 2018-2024</div>
+          <div class="section-sub">Sample estratificado por año · diagonal = predicción perfecta</div>
         </div>
-        <div id="volMultiples" style="display:grid;grid-template-columns:1fr 1fr;gap:8px"></div>
-        <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text" id="ti-vol"><strong>Townhouse lidera la volatilidad (0.102)</strong>, seguido de Apartment (0.089). Villa es la tipología más estable (0.023). <strong>Refinamiento de H3:</strong> la sensibilidad al ciclo de crédito es mayor en vivienda urbana de menor ticket (Apt/Townhouse, más dependiente de financiamiento hipotecario) que en segunda vivienda (Summerhouse, comprador con mayor solvencia relativa).</span></div>
+        <span class="badge" style="background:#1e2a3a;color:#60a5fa" id="badge-pred-stats">— MAE</span>
       </div>
-
-      <!-- Vista 3: Heatmap de drawdowns + trayectoria temporal — H3 (DISTRIBUCIÓN+TENDENCIA) -->
-      <div class="card p-5">
-        <div class="mb-2">
-          <div class="section-title">Drawdowns Pico–Valle — Crisis 2007–2012</div>
-          <div class="section-sub">Heatmap: caída máxima por región × tipología · Inferior: trayectoria temporal del drawdown promedio por tipología</div>
-          <p class="chart-caption">Heatmap: permite leer 20 celdas (4 regiones × 5 tipologías) en una sola vista; el gradiente rojo→verde codifica la severidad. Línea temporal inferior añade la dimensión de cuándo ocurrió la caída, complementando la magnitud del heatmap. Tipo: Comparación + Tendencia.</p>
-        </div>
-        <div id="ddHeatmap"></div>
-        <div style="margin-top:14px;border-top:1px solid var(--border);padding-top:10px">
-          <div style="font-size:0.72rem;color:var(--muted);margin-bottom:4px;font-weight:600">Trayectoria temporal del drawdown · promedio por tipología (usa filtro de tipologías)</div>
-          <div style="position:relative;height:140px"><canvas id="chartDrawdownTimeline"></canvas></div>
-        </div>
-        <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text" id="ti-dd"><strong>Refinamiento de H3:</strong> Apartment en Bornholm muestra el peor drawdown (−92.11%, n=5) y Townhouse hasta −80.73%. Summerhouse (−63.09%) y Villa (−44.06%) son más resilientes de lo esperado. La vulnerabilidad recae en vivienda urbana dependiente de crédito (Apt/Townhouse), no en segunda vivienda. Zealand (Capital) limita su caída por escasez crónica de oferta.</span></div>
-      </div>
-
+      <div style="position:relative;height:360px"><canvas id="chartPredScatter"></canvas></div>
     </div>
+  </div>
+</div><!-- /modelado -->
 
-  </div><!-- /tab h3 -->
+<!-- ═══════════════════════════════════════════ -->
+<!-- CONCLUSIONES (H1 Macro)                   -->
+<!-- ═══════════════════════════════════════════ -->
+<div class="tab-section" data-tab="conclusiones">
+  <div class="section-heading mb-3" style="margin-top:8px">
+    <span style="background:rgba(99,102,241,.15);color:var(--accent);padding:2px 10px;border-radius:4px;font-size:.7rem;font-weight:700;letter-spacing:.06em;margin-right:8px">H1</span>
+    Relación negativa bonos hipotecarios → volumen transaccional, rezago 1–2 trimestres
+    <span style="margin-left:auto;font-size:.7rem;color:#34d399;font-weight:600;background:rgba(52,211,153,.1);padding:2px 8px;border-radius:4px">✓ Soportada</span>
+  </div>
+
+  <div class="card p-5 mb-6">
+    <div class="section-title mb-1">Correlación Volumen – Bonos Hipotecarios</div>
+    <div class="section-sub mb-2">Scatter conectado: eje X = bono lag 2Q · eje Y = n° transacciones · color = período macro</div>
+    <div class="flex flex-wrap gap-2 mb-2" id="scatter-legend"></div>
+    <canvas id="chartScatter"></canvas>
+    <div style="margin-top:12px;border-top:1px solid var(--border);padding-top:10px">
+      <div style="font-size:.7rem;color:var(--muted);margin-bottom:4px;font-weight:600">Correlación rolling 8Q · volumen vs. bonos lag 2Q · relleno rojo = correlación negativa</div>
+      <div style="position:relative;height:110px"><canvas id="chartRollingCorr"></canvas></div>
+    </div>
+    <div class="takeaway"><span class="takeaway-icon">→</span><span class="takeaway-text" id="ti-scatter">Cargando…</span></div>
+  </div>
+
+  <!-- Tabla decisiones de visualización -->
+  <div class="section-heading">Decisiones de Visualización</div>
+  <div class="card p-5 mb-6" style="overflow-x:auto">
+    <table class="decision-table">
+      <thead><tr>
+        <th style="width:150px">Tipo de gráfico</th>
+        <th style="width:160px">Propósito</th>
+        <th style="width:90px">Decisión</th>
+        <th>Justificación</th>
+      </tr></thead>
+      <tbody>
+        <tr><td><strong>Línea múltiple</strong></td><td>Tendencia regional 33 años</td><td><span class="badge-selected">✓ Seleccionado</span></td><td>Compara 4 regiones en el tiempo sin saturar. Crisis y eventos macro anotados contextualizan los shocks.</td></tr>
+        <tr><td><strong>Connected scatter</strong></td><td>Relación volumen–tasas</td><td><span class="badge-selected">✓ Seleccionado</span></td><td>Muestra magnitud de la relación y su evolución temporal simultáneamente. Más informativo que scatter estático.</td></tr>
+        <tr><td><strong>Small multiples</strong></td><td>Comparar volatilidad por tipología</td><td><span class="badge-selected">✓ Seleccionado</span></td><td>Evita solapamiento de 5 series en un eje. Tipología focal coloreada, resto en gris facilita lectura de picos.</td></tr>
+        <tr><td><strong>Heatmap</strong></td><td>Drawdown región × tipología</td><td><span class="badge-selected">✓ Seleccionado</span></td><td>Lee 20 celdas (4×5) en una sola vista. Gradiente rojo→verde codifica severidad sin números en cada celda.</td></tr>
+        <tr><td><strong>Mapa coroplético</strong></td><td>Precio por región geográfica</td><td><span class="badge-selected">✓ Seleccionado</span></td><td>Comunica la distribución geográfica del precio directamente, sin necesidad de tabla. Leaflet + GeoJSON inline.</td></tr>
+        <tr class="discarded"><td><strong>Doble eje Y</strong></td><td>Overlay de dos variables</td><td><span class="badge-discarded">✗ Descartado</span></td><td>El doble eje Y distorsiona la percepción de escala. Paneles separados (bonos / precios) transmiten lo mismo sin ambigüedad.</td></tr>
+        <tr class="discarded"><td><strong>Pie / donut chart</strong></td><td>Composición por región</td><td><span class="badge-discarded">✗ Descartado</span></td><td>Los arcos son difíciles de comparar cuando hay más de 3 categorías. Barras horizontales son más precisas y legibles.</td></tr>
+        <tr class="discarded"><td><strong>Treemap</strong></td><td>Distribución ciudades por precio</td><td><span class="badge-discarded">✗ Descartado</span></td><td>Comparar áreas rectangulares similares es impreciso. Barras horizontales (Top 15) transmiten el mismo insight con mayor claridad.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div><!-- /conclusiones -->
 
 </div><!-- /tab-content -->
 
@@ -502,7 +512,7 @@
 
 // ── Paletas ────────────────────────────────────────────────────────────────────
 const REGION_COLORS = {
-  'Zealand':       '#60a5fa',
+  'Zealand':       '#6366f1',
   'Fyn & islands': '#34d399',
   'Jutland':       '#f59e0b',
   'Bornholm':      '#a78bfa',
@@ -523,48 +533,90 @@ const PERIOD_COLORS = {
   'Corrección 2022+': '#fb923c',
 };
 
+// ── GeoJSON simplificado de Dinamarca (4 regiones) ────────────────────────────
+const DENMARK_GEOJSON = {
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {"region": "Jutland"},
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[8.12,57.74],[9.0,57.51],[9.82,57.65],[10.62,57.74],
+          [10.90,57.40],[10.54,56.82],[10.65,56.22],[10.24,55.52],
+          [10.52,55.15],[9.48,54.92],[8.62,55.30],[8.12,55.72],
+          [8.00,56.30],[8.10,57.00],[8.12,57.74]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {"region": "Fyn & islands"},
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[9.78,55.72],[10.10,55.76],[10.68,55.66],
+          [10.70,55.08],[10.10,55.04],[9.78,55.32],[9.78,55.72]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {"region": "Zealand"},
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[11.18,55.40],[11.55,56.14],[12.00,56.18],
+          [12.60,56.10],[12.72,55.82],[12.68,55.32],[12.05,54.98],
+          [11.30,55.10],[11.18,55.40]]]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {"region": "Bornholm"},
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[14.68,55.31],[15.16,55.31],[15.16,54.95],
+          [14.68,54.95],[14.68,55.31]]]
+      }
+    }
+  ]
+};
+
 // ── Tabs ───────────────────────────────────────────────────────────────────────
-function switchTab(tabId) {
-  document.querySelectorAll('.tab-section').forEach(el => {
-    el.classList.toggle('tab-visible', el.dataset.tab === tabId);
-  });
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.classList.toggle('tab-active', btn.id === 'tab-btn-' + tabId);
-  });
+function switchTab(id) {
+  document.querySelectorAll('.tab-section').forEach(el =>
+    el.classList.toggle('tab-visible', el.dataset.tab === id));
+  document.querySelectorAll('.tab-btn').forEach(btn =>
+    btn.classList.toggle('tab-active', btn.id === 'tab-btn-' + id));
+  if (id === 'geografia' && !window._choroInited) initChoropleth();
 }
 
-// ── Parseo CSV ─────────────────────────────────────────────────────────────────
-function parseCSV(text) {
-  const lines = text.trim().split(/\r?\n/);
-  const headers = lines[0].split(',');
-  return lines.slice(1).map(line => {
-    const vals = line.split(',');
-    const obj = {};
-    headers.forEach((h, i) => obj[h] = vals[i]);
-    return obj;
+// ── CSV parser ─────────────────────────────────────────────────────────────────
+function parseCSV(txt) {
+  const lines = txt.trim().split(/\r?\n/);
+  const hdr = lines[0].split(',');
+  return lines.slice(1).map(l => {
+    const v = l.split(',');
+    const o = {};
+    hdr.forEach((h, i) => o[h] = v[i]);
+    return o;
   });
 }
 
 async function loadMarts() {
   const base = '/marts';
-  const fetchCSV = async (name, optional = false) => {
+  const get = async (name, opt = false) => {
     const r = await fetch(`${base}/${name}`);
-    if (!r.ok) {
-      if (optional) { console.warn(`${name}: HTTP ${r.status} (opcional, omitido)`); return []; }
-      throw new Error(`${name}: HTTP ${r.status}`);
-    }
+    if (!r.ok) { if (opt) return []; throw new Error(`${name}: HTTP ${r.status}`); }
     return parseCSV(await r.text());
   };
   const [ri, dd, vol, mc, mp, modelCmp, modelImp, modelCv, modelPred] = await Promise.all([
-    fetchCSV('mart_quarterly_regional_index.csv'),
-    fetchCSV('mart_drawdowns.csv'),
-    fetchCSV('mart_volatility.csv'),
-    fetchCSV('mart_macro_correlation.csv'),
-    fetchCSV('mart_transactions_map.csv'),
-    fetchCSV('mart_model_comparison.csv', true),
-    fetchCSV('mart_feature_importance.csv', true),
-    fetchCSV('mart_model_cv.csv', true),
-    fetchCSV('mart_predictions_sample.csv', true),
+    get('mart_quarterly_regional_index.csv'),
+    get('mart_drawdowns.csv'),
+    get('mart_volatility.csv'),
+    get('mart_macro_correlation.csv'),
+    get('mart_transactions_map.csv'),
+    get('mart_model_comparison.csv', true),
+    get('mart_feature_importance.csv', true),
+    get('mart_model_cv.csv', true),
+    get('mart_predictions_sample.csv', true),
   ]);
   return { ri, dd, vol, mc, mp, modelCmp, modelImp, modelCv, modelPred };
 }
@@ -579,51 +631,44 @@ function periodOfQ(q) {
   return 'Corrección 2022+';
 }
 
-function buildDataFromMarts({ ri, dd, vol, mc, mp }) {
-  const macroByQ = {};
-  mc.forEach(d => {
-    macroByQ[d.quarter] = { n: parseInt(d.n_transactions) || 0, bond: parseFloat(d.yield_avg) || null };
-  });
-
-  // regional_index
+function buildData({ ri, dd, vol, mc, mp }) {
+  // Regional index
   const regional_index = {};
   ri.forEach(d => {
     if (!regional_index[d.region]) regional_index[d.region] = [];
-    regional_index[d.region].push({ q: d.quarter, year: parseInt(d.year), price: parseFloat(d.avg_sqm_price_real) });
-  });
-  Object.keys(regional_index).forEach(region => {
-    const arr = regional_index[region]
-      .filter(d => !isNaN(d.price) && d.price > 0)
-      .sort((a, b) => a.q.localeCompare(b.q));
-    const base = arr[0]?.price || 1;
-    arr.forEach(d => {
-      d.idx = +(d.price / base * 100).toFixed(2);
-      d.n   = macroByQ[d.q]?.n || 0;
-      d.bond = macroByQ[d.q]?.bond ?? null;
+    regional_index[d.region].push({
+      q: d.quarter,
+      year: parseInt(d.year),
+      price: parseFloat(d.avg_sqm_price_real),
+      idx: parseFloat(d.regional_index),
+      bond: parseFloat(d.yield_mortgage_bonds_pct),
+      n: parseInt(d.n_transactions) || 0,
     });
-    regional_index[region] = arr;
   });
+  Object.keys(regional_index).forEach(r =>
+    regional_index[r] = regional_index[r]
+      .filter(d => !isNaN(d.price) && d.price > 0)
+      .sort((a, b) => a.q.localeCompare(b.q)));
 
-  // volatility
+  // Volatility
   const volatility = {};
   vol.forEach(d => {
     if (!volatility[d.house_type]) volatility[d.house_type] = [];
     volatility[d.house_type].push({ q: d.quarter, vol: parseFloat(d.volatility_4q) || null });
   });
-  Object.keys(volatility).forEach(t => { volatility[t].sort((a, b) => a.q.localeCompare(b.q)); });
+  Object.keys(volatility).forEach(t => volatility[t].sort((a, b) => a.q.localeCompare(b.q)));
 
-  // drawdown_summary
+  // Drawdown summary + timeline
   const ddByKey = {};
   dd.forEach(d => {
     const v = parseFloat(d.drawdown_pct);
     if (isNaN(v)) return;
-    const key = d.region + '|' + d.house_type;
-    if (!ddByKey[key]) ddByKey[key] = { region: d.region, house_type: d.house_type, worst_dd: 0, worst_q: null };
-    if (v < ddByKey[key].worst_dd) { ddByKey[key].worst_dd = v; ddByKey[key].worst_q = d.quarter; }
+    const k = d.region + '|' + d.house_type;
+    if (!ddByKey[k]) ddByKey[k] = { region: d.region, house_type: d.house_type, worst_dd: 0, worst_q: null };
+    if (v < ddByKey[k].worst_dd) { ddByKey[k].worst_dd = v; ddByKey[k].worst_q = d.quarter; }
   });
   const drawdown_summary = Object.values(ddByKey).map(o => ({ ...o, worst_dd: +o.worst_dd.toFixed(1) }));
 
-  // drawdown_timeline
   const ddTimeAgg = {};
   dd.forEach(d => {
     const v = parseFloat(d.drawdown_pct);
@@ -634,13 +679,13 @@ function buildDataFromMarts({ ri, dd, vol, mc, mp }) {
     ddTimeAgg[d.house_type][d.quarter][1] += 1;
   });
   const drawdown_timeline = {};
-  Object.keys(ddTimeAgg).forEach(type => {
-    drawdown_timeline[type] = Object.entries(ddTimeAgg[type])
-      .map(([q, [sum, cnt]]) => ({ q, dd: cnt > 0 ? +(sum / cnt).toFixed(2) : 0 }))
+  Object.keys(ddTimeAgg).forEach(t => {
+    drawdown_timeline[t] = Object.entries(ddTimeAgg[t])
+      .map(([q, [s, c]]) => ({ q, dd: c > 0 ? +(s / c).toFixed(2) : 0 }))
       .sort((a, b) => a.q.localeCompare(b.q));
   });
 
-  // macro
+  // Macro
   const macro = mc
     .map(d => ({
       q: d.quarter,
@@ -651,95 +696,116 @@ function buildDataFromMarts({ ri, dd, vol, mc, mp }) {
     }))
     .filter(d => !isNaN(d.bond_lag2) && !isNaN(d.yield));
 
-  // top_cities (last year, top 15, min 20 tx)
+  // Top cities
   const yearsMP = mp.map(d => parseInt(d.year)).filter(y => !isNaN(y));
   const lastYear = Math.max(...yearsMP);
   const cityAgg = {};
   mp.filter(d => parseInt(d.year) === lastYear).forEach(d => {
-    const p = parseFloat(d.avg_sqm_price_real);
-    const t = parseInt(d.n_transactions) || 0;
+    const p = parseFloat(d.avg_sqm_price_real), t = parseInt(d.n_transactions) || 0;
     if (isNaN(p) || t <= 0) return;
-    if (!cityAgg[d.city]) cityAgg[d.city] = { city: d.city, region: d.region, weighted: 0, totalTx: 0 };
-    cityAgg[d.city].weighted += p * t;
-    cityAgg[d.city].totalTx += t;
+    if (!cityAgg[d.city]) cityAgg[d.city] = { city: d.city, region: d.region, w: 0, n: 0 };
+    cityAgg[d.city].w += p * t; cityAgg[d.city].n += t;
   });
   const top_cities = Object.values(cityAgg)
-    .filter(c => c.totalTx >= 20)
-    .map(c => ({ city: c.city, region: c.region, avg_price: Math.round(c.weighted / c.totalTx), tx: c.totalTx }))
-    .sort((a, b) => b.avg_price - a.avg_price)
-    .slice(0, 15);
+    .filter(c => c.n >= 20)
+    .map(c => ({ city: c.city, region: c.region, avg_price: Math.round(c.w / c.n), tx: c.n }))
+    .sort((a, b) => b.avg_price - a.avg_price).slice(0, 15);
 
-  // reg_annual_price
-  const reg_annual_price = {};
-  const annualAgg = {};
+  // Annual price by region
+  const reg_annual = {};
+  const annAgg = {};
   ri.forEach(d => {
     const p = parseFloat(d.avg_sqm_price_real);
     if (isNaN(p) || p <= 0) return;
-    const key = d.region + '|' + d.year;
-    if (!annualAgg[key]) annualAgg[key] = { region: d.region, year: parseInt(d.year), sum: 0, cnt: 0 };
-    annualAgg[key].sum += p; annualAgg[key].cnt += 1;
+    const k = d.region + '|' + d.year;
+    if (!annAgg[k]) annAgg[k] = { region: d.region, year: parseInt(d.year), s: 0, c: 0 };
+    annAgg[k].s += p; annAgg[k].c++;
   });
-  Object.values(annualAgg).forEach(({ region, year, sum, cnt }) => {
-    if (!reg_annual_price[region]) reg_annual_price[region] = {};
-    reg_annual_price[region][year] = Math.round(sum / cnt);
+  Object.values(annAgg).forEach(({ region, year, s, c }) => {
+    if (!reg_annual[region]) reg_annual[region] = {};
+    reg_annual[region][year] = Math.round(s / c);
   });
 
-  // city_distribution: histograma de precios promedio ponderado histórico por ciudad
-  const allCityAgg = {};
-  mp.forEach(d => {
-    const p = parseFloat(d.avg_sqm_price_real);
-    const t = parseInt(d.n_transactions) || 0;
-    if (isNaN(p) || t <= 0) return;
-    if (!allCityAgg[d.city]) allCityAgg[d.city] = { weighted: 0, totalTx: 0, region: d.region };
-    allCityAgg[d.city].weighted += p * t;
-    allCityAgg[d.city].totalTx += t;
+  // Region prices by year (for choropleth)
+  const region_by_year = {};
+  ri.forEach(d => {
+    const y = parseInt(d.year), p = parseFloat(d.avg_sqm_price_real), n = parseInt(d.n_transactions) || 0;
+    if (isNaN(p) || p <= 0) return;
+    if (!region_by_year[y]) region_by_year[y] = {};
+    if (!region_by_year[y][d.region]) region_by_year[y][d.region] = { s: 0, c: 0 };
+    region_by_year[y][d.region].s += p * n; region_by_year[y][d.region].c += n;
   });
-  const allCities = Object.values(allCityAgg)
-    .filter(c => c.totalTx >= 5)
-    .map(c => ({ avg_price: Math.round(c.weighted / c.totalTx), tx: c.totalTx }));
-  const priceBins = [
-    { label: '< 10k', min: 0,     max: 10000    },
-    { label: '10–20k', min: 10000, max: 20000    },
-    { label: '20–30k', min: 20000, max: 30000    },
-    { label: '30–40k', min: 30000, max: 40000    },
-    { label: '> 40k',  min: 40000, max: Infinity },
-  ];
-  const city_distribution = priceBins.map(bin => {
-    const cities = allCities.filter(c => c.avg_price >= bin.min && c.avg_price < bin.max);
-    return { label: bin.label + ' DKK/m²', count: cities.length, totalTx: cities.reduce((s, c) => s + c.tx, 0) };
+  // Flatten to avg per region per year
+  const region_prices = {};
+  Object.entries(region_by_year).forEach(([y, regs]) => {
+    region_prices[parseInt(y)] = {};
+    Object.entries(regs).forEach(([reg, { s, c }]) => {
+      region_prices[parseInt(y)][reg] = c > 0 ? Math.round(s / c) : 0;
+    });
   });
 
   // KPIs
   const total_tx = mc.reduce((s, d) => s + (parseInt(d.n_transactions) || 0), 0);
-  const latestPrices = Object.values(regional_index).map(arr => arr[arr.length - 1]?.price).filter(p => p > 0);
-  const avg_price_latest = latestPrices.length ? Math.round(latestPrices.reduce((a, b) => a + b, 0) / latestPrices.length) : 0;
-  const latestYearAcrossRegions = Math.max(...Object.values(regional_index).map(arr => arr[arr.length-1]?.year || 0));
+  const peakQ = mc.reduce((a, b) => ((parseInt(b.n_transactions)||0) > (parseInt(a.n_transactions)||0)) ? b : a, mc[0] || {});
+  const allYears = Object.keys(region_prices).map(Number);
+  const latestY = Math.max(...allYears);
+  const latestPrices = region_prices[latestY] || {};
+  const zealandPrice = latestPrices['Zealand'] || 0;
+  const otherRegs = ['Fyn & islands', 'Jutland', 'Bornholm'];
+  const provincialPrices = otherRegs.map(r => latestPrices[r] || 0).filter(p => p > 0);
+  const avgProvincial = provincialPrices.length ? Math.round(provincialPrices.reduce((a, b) => a + b) / provincialPrices.length) : 0;
+  const avgAll = Object.values(latestPrices).filter(p => p > 0);
+  const avgPrice = avgAll.length ? Math.round(avgAll.reduce((a, b) => a + b) / avgAll.length) : 0;
+  // Price in 1992
+  const prices1992 = region_prices[1992] || {};
+  const avg1992Vals = Object.values(prices1992).filter(p => p > 0);
+  const avg1992 = avg1992Vals.length ? Math.round(avg1992Vals.reduce((a, b) => a + b) / avg1992Vals.length) : 0;
+  const priceGrowth = avg1992 > 0 ? Math.round((avgPrice - avg1992) / avg1992 * 100) : 0;
+  const capitalMultiple = avgProvincial > 0 ? (zealandPrice / avgProvincial).toFixed(1) : '—';
+  // Drawdowns
   const worstDD = drawdown_summary.reduce((a, b) => b.worst_dd < a.worst_dd ? b : a, { worst_dd: 0, region: '—', house_type: '—', worst_q: '—' });
+  const corrDD = drawdown_summary.filter(d => d.worst_q && d.worst_q >= '2022Q1')
+    .reduce((a, b) => b.worst_dd < a.worst_dd ? b : a, { worst_dd: 0 });
 
   return {
     kpis: {
-      total_tx, avg_price_2024: avg_price_latest, latest_year: latestYearAcrossRegions,
+      total_tx, peak_tx_q: peakQ?.quarter, peak_tx_n: parseInt(peakQ?.n_transactions) || 0,
+      avg_price: avgPrice, price_growth: priceGrowth,
+      zealand_price: zealandPrice, avg_provincial: avgProvincial,
+      capital_multiple: capitalMultiple,
       worst_dd_pct: worstDD.worst_dd, worst_dd_region: worstDD.region,
       worst_dd_type: worstDD.house_type, worst_dd_quarter: worstDD.worst_q || '—',
+      corr_dd_pct: corrDD.worst_dd,
+      latest_year: latestY,
     },
     regional_index, volatility, drawdown_summary, drawdown_timeline,
-    macro, macro_raw: mc, top_cities, reg_annual_price, city_distribution,
+    macro, macro_raw: mc, top_cities, reg_annual, region_prices, region_by_year,
   };
 }
 
 let DATA = null;
+let ALL_QS = [], CRISIS_START_I = -1, CRISIS_END_I = -1, COVID_START_I = -1, COVID_END_I = -1, MACRO_EVENTS = [];
 
-// ── Chart.js defaults ──────────────────────────────────────────────────────────
+function rebuildIndices() {
+  ALL_QS = Object.values(DATA.regional_index)
+    .reduce((a, b) => b.length > a.length ? b : a, []).map(d => d.q);
+  CRISIS_START_I = ALL_QS.findIndex(q => q === '2007Q1');
+  CRISIS_END_I   = ALL_QS.findIndex(q => q === '2012Q4');
+  COVID_START_I  = ALL_QS.findIndex(q => q === '2020Q1');
+  COVID_END_I    = ALL_QS.findIndex(q => q === '2021Q4');
+  MACRO_EVENTS = [
+    { q: '1995Q1', label: 'Reform hipotecaria', color: '#a78bfa' },
+    { q: '2008Q3', label: 'Lehman', color: '#f87171' },
+    { q: '2020Q2', label: 'COVID', color: '#34d399' },
+    { q: '2022Q3', label: 'Alza tasas', color: '#fb923c' },
+  ].map(e => ({ ...e, i: ALL_QS.findIndex(q => q === e.q) })).filter(e => e.i >= 0);
+}
+
 const CHART_DEFAULTS = {
-  responsive: true,
-  maintainAspectRatio: true,
-  animation: { duration: 400 },
+  responsive: true, maintainAspectRatio: true, animation: { duration: 300 },
   plugins: {
     legend: { display: false },
-    tooltip: {
-      backgroundColor: '#1a1d27', borderColor: '#2e3245', borderWidth: 1,
-      titleColor: '#e2e8f0', bodyColor: '#8892aa', padding: 10,
-    },
+    tooltip: { backgroundColor: '#1a1d27', borderColor: '#2e3245', borderWidth: 1, titleColor: '#e2e8f0', bodyColor: '#8892aa', padding: 10 },
   },
   scales: {
     x: { grid: { color: '#2e3245', lineWidth: 0.5 }, ticks: { color: '#8892aa', font: { size: 10 } } },
@@ -752,83 +818,49 @@ function hex2rgba(hex, a) {
   return `rgba(${r},${g},${b},${a})`;
 }
 
-function makeLegend(containerId, colorMap) {
-  const el = document.getElementById(containerId);
+function makeLegend(id, colorMap) {
+  const el = document.getElementById(id);
   if (!el) return;
   el.innerHTML = '';
   Object.entries(colorMap).forEach(([label, color]) => {
-    const chip = document.createElement('div');
-    chip.className = 'chip active';
-    chip.style.color = color;
-    chip.style.background = hex2rgba(color, 0.12);
-    chip.innerHTML = `<span class="legend-dot" style="background:${color}"></span>${label}`;
-    el.appendChild(chip);
+    const c = document.createElement('div');
+    c.className = 'chip active';
+    c.style.color = color;
+    c.style.background = hex2rgba(color, 0.12);
+    c.innerHTML = `<span class="legend-dot" style="background:${color}"></span>${label}`;
+    el.appendChild(c);
   });
 }
 
-let ALL_QS = [];
-let CRISIS_START_I = -1, CRISIS_END_I = -1;
-let COVID_START_I = -1, COVID_END_I = -1;
-let MACRO_EVENTS = [];
-
-function rebuildIndices() {
-  ALL_QS = Object.values(DATA.regional_index)
-    .reduce((a, b) => b.length > a.length ? b : a, [])
-    .map(d => d.q);
-  CRISIS_START_I = ALL_QS.findIndex(q => q === '2007Q1');
-  CRISIS_END_I   = ALL_QS.findIndex(q => q === '2012Q4');
-  COVID_START_I  = ALL_QS.findIndex(q => q === '2020Q1');
-  COVID_END_I    = ALL_QS.findIndex(q => q === '2021Q4');
-  MACRO_EVENTS = [
-    { q: '1995Q1', label: 'Liberaliz. hipotecaria', color: '#a78bfa' },
-    { q: '2008Q3', label: 'Lehman Bros.',           color: '#f87171' },
-    { q: '2020Q2', label: 'COVID-19',               color: '#34d399' },
-    { q: '2022Q3', label: 'Alza tasas post-COVID',  color: '#fb923c' },
-  ].map(e => ({ ...e, i: ALL_QS.findIndex(q => q === e.q) })).filter(e => e.i >= 0);
-}
-
-const crisisAnnotationsPlugin = {
-  id: 'crisisAnnotations',
+const crisisPlugin = {
+  id: 'crisis',
   beforeDraw(chart) {
-    const { ctx, chartArea, scales } = chart;
-    if (!chartArea) return;
+    const { ctx, chartArea: ca, scales } = chart;
+    if (!ca) return;
     ctx.save();
-    const x0 = scales.x.getPixelForValue(CRISIS_START_I);
-    const x1 = scales.x.getPixelForValue(CRISIS_END_I);
-    ctx.fillStyle = 'rgba(248,113,113,0.07)';
-    ctx.fillRect(x0, chartArea.top, x1 - x0, chartArea.height);
-    ctx.strokeStyle = 'rgba(248,113,113,0.25)';
-    ctx.lineWidth = 1; ctx.setLineDash([3, 3]);
-    ctx.beginPath(); ctx.moveTo(x0, chartArea.top); ctx.lineTo(x0, chartArea.bottom); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(x1, chartArea.top); ctx.lineTo(x1, chartArea.bottom); ctx.stroke();
-    if (COVID_START_I >= 0 && COVID_END_I >= 0) {
-      const xc0 = scales.x.getPixelForValue(COVID_START_I);
-      const xc1 = scales.x.getPixelForValue(COVID_END_I);
-      ctx.fillStyle = 'rgba(52,211,153,0.06)';
-      ctx.fillRect(xc0, chartArea.top, xc1 - xc0, chartArea.height);
-      ctx.strokeStyle = 'rgba(52,211,153,0.2)';
-      ctx.setLineDash([3, 3]);
-      ctx.beginPath(); ctx.moveTo(xc0, chartArea.top); ctx.lineTo(xc0, chartArea.bottom); ctx.stroke();
-      ctx.beginPath(); ctx.moveTo(xc1, chartArea.top); ctx.lineTo(xc1, chartArea.bottom); ctx.stroke();
-    }
+    [[CRISIS_START_I, CRISIS_END_I, 'rgba(248,113,113,.07)'],
+     [COVID_START_I, COVID_END_I, 'rgba(52,211,153,.05)']].forEach(([s, e, fill]) => {
+      if (s < 0 || e < 0) return;
+      const x0 = scales.x.getPixelForValue(s), x1 = scales.x.getPixelForValue(e);
+      ctx.fillStyle = fill;
+      ctx.fillRect(x0, ca.top, x1 - x0, ca.height);
+    });
     ctx.restore();
   },
   afterDatasetsDraw(chart) {
-    const { ctx, chartArea, scales } = chart;
-    if (!chartArea) return;
-    ctx.save(); ctx.setLineDash([2, 3]); ctx.lineWidth = 1;
-    ctx.font = '600 9.5px -apple-system, sans-serif';
+    const { ctx, chartArea: ca, scales } = chart;
+    if (!ca) return;
+    ctx.save();
+    ctx.setLineDash([2, 3]); ctx.lineWidth = 1;
+    ctx.font = '600 9px -apple-system,sans-serif';
     MACRO_EVENTS.forEach((ev, idx) => {
       const x = scales.x.getPixelForValue(ev.i);
       ctx.strokeStyle = ev.color;
-      ctx.beginPath(); ctx.moveTo(x, chartArea.top + 4); ctx.lineTo(x, chartArea.bottom); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x, ca.top + 4); ctx.lineTo(x, ca.bottom); ctx.stroke();
       ctx.fillStyle = ev.color;
-      ctx.beginPath();
-      const my = chartArea.top + 6;
-      ctx.moveTo(x, my - 4); ctx.lineTo(x + 4, my); ctx.lineTo(x, my + 4); ctx.lineTo(x - 4, my); ctx.closePath(); ctx.fill();
-      const ly = chartArea.top + 14 + (idx % 2) * 12;
-      const textW = ctx.measureText(ev.label).width;
-      const tx = Math.min(chartArea.right - textW - 4, Math.max(chartArea.left + 2, x + 5));
+      const ly = ca.top + 14 + (idx % 2) * 12;
+      const w = ctx.measureText(ev.label).width;
+      const tx = Math.min(ca.right - w - 4, Math.max(ca.left + 2, x + 4));
       ctx.fillText(ev.label, tx, ly);
     });
     ctx.restore();
@@ -838,460 +870,279 @@ const crisisAnnotationsPlugin = {
 // ── KPIs ───────────────────────────────────────────────────────────────────────
 function renderKPIs() {
   const k = DATA.kpis;
-  const fmtTx = n => n >= 1e6 ? (n/1e6).toFixed(2)+'M' : n >= 1e3 ? (n/1e3).toFixed(0)+'k' : n.toLocaleString();
-  document.getElementById('kpi-tx').textContent     = fmtTx(k.total_tx);
-  document.getElementById('kpi-price').textContent  = 'DKK ' + k.avg_price_2024.toLocaleString();
-  document.getElementById('kpi-dd').textContent     = k.worst_dd_pct.toFixed(1) + '%';
+  const fmt = n => n >= 1e6 ? (n/1e6).toFixed(2)+'M' : n >= 1e3 ? (n/1e3).toFixed(0)+'k' : n.toLocaleString();
+  document.getElementById('kpi-price').textContent = 'DKK ' + k.avg_price.toLocaleString();
+  document.getElementById('kpi-price-delta').textContent = `+${k.price_growth}% vs 1992`;
+  document.getElementById('kpi-capital').textContent = k.capital_multiple + '×';
+  document.getElementById('kpi-capital-delta').textContent = `DKK +${(k.zealand_price - k.avg_provincial).toLocaleString()} vs media provincial`;
+  document.getElementById('kpi-dd').textContent = k.worst_dd_pct.toFixed(1) + '%';
   document.getElementById('kpi-dd-sub').textContent = `${k.worst_dd_region} · ${k.worst_dd_type} · ${k.worst_dd_quarter}`;
-  const badge = document.getElementById('badge-tx');
-  if (badge) badge.textContent = fmtTx(k.total_tx) + ' transacciones';
+  const corrDD = k.corr_dd_pct !== 0 ? k.corr_dd_pct.toFixed(1) + '% vs corrección 2022+' : 'GFC · 5× más severo que COVID';
+  document.getElementById('kpi-dd-delta').textContent = corrDD;
+  document.getElementById('kpi-tx').textContent = fmt(k.total_tx);
+  document.getElementById('kpi-tx-delta').textContent = `pico: ${fmt(k.peak_tx_n)} / trimestre (${k.peak_tx_q || '—'})`;
+  document.getElementById('badge-tx').textContent = fmt(k.total_tx) + ' transacciones';
 }
 
-// ── 5 Insights exploratorios (data-driven) ────────────────────────────────────
-function updateInsights() {
-  const k  = DATA.kpis;
-  const ri = DATA.regional_index;
+// ── Hypothesis cards & insights ───────────────────────────────────────────────
+function renderSummary() {
+  const k = DATA.kpis;
   const vol = DATA.volatility;
-  const dist = DATA.city_distribution;
-  const mc_raw = DATA.macro_raw;
+  const ri = DATA.regional_index;
+  const mc = DATA.macro_raw;
 
-  // Insight 1: divergencia regional
-  const zealandLast = ri['Zealand']?.slice(-1)[0]?.idx?.toFixed(1) ?? '—';
-  const fynArr = ri['Fyn & islands'] || [];
-  const fynMin = fynArr.length ? Math.min(...fynArr.map(d => d.idx)).toFixed(1) : '—';
-  const el1 = document.getElementById('ins-1');
-  if (el1) el1.innerHTML = `<strong>1. Divergencia capital (H2 — Tendencia):</strong> Zealand alcanzó un índice de <strong>${zealandLast}</strong> (base 1992=100) al final del período, mientras Fyn &amp; islands tocó un mínimo de <strong>${fynMin}</strong> durante la GFC, cayendo por debajo de su nivel de 1992. La brecha de más de 100 pp refleja el efecto capital: restricciones de oferta en Copenhague sostienen los precios incluso en recesión, mientras las provincias absorben los shocks con mayor volatilidad.`;
-
-  // Insight 2: tipología más volátil
-  const avgVol = type => {
-    const arr = (vol[type] || []).filter(d => d.vol != null && !isNaN(d.vol));
-    return arr.length ? (arr.reduce((s, d) => s + d.vol, 0) / arr.length) : 0;
-  };
-  const typesSorted = Object.keys(TYPE_COLORS).map(t => ({ t, v: avgVol(t) })).filter(x => x.v > 0).sort((a, b) => b.v - a.v);
-  const top1 = typesSorted[0] || { t: '—', v: 0 };
-  const top2 = typesSorted[1] || { t: '—', v: 0 };
-  const summV = avgVol('Summerhouse');
-  const villaV = avgVol('Villa');
-  const el2 = document.getElementById('ins-2');
-  if (el2) el2.innerHTML = `<strong>2. Tipología más volátil ≠ la esperada (H3 — Comparación):</strong> <strong>${top1.t}</strong> lidera la volatilidad media (${top1.v.toFixed(3)}/trimestre), seguido de <strong>${top2.t}</strong> (${top2.v.toFixed(3)}). Summerhouse (${summV.toFixed(3)}) y Villa (${villaV.toFixed(3)}) son más resilientes. Esto contradice H3 original: la vivienda urbana de menor ticket es más sensible al ciclo de crédito que la segunda vivienda, probablemente porque el comprador de Summerhouse tiene mayor solvencia relativa.`;
-
-  // Insight 3: correlación H1
-  const corrVals = mc_raw.map(d => parseFloat(d.volume_bond_corr)).filter(v => !isNaN(v));
+  // H1
+  const corrVals = mc.map(d => parseFloat(d.volume_bond_corr)).filter(v => !isNaN(v));
   const negPct = corrVals.length ? Math.round(corrVals.filter(v => v < 0).length / corrVals.length * 100) : 0;
   const minCorr = corrVals.length ? Math.min(...corrVals).toFixed(2) : '—';
-  const el3 = document.getElementById('ins-3');
-  if (el3) el3.innerHTML = `<strong>3. Relación tasa–volumen (H1 — Relación):</strong> La correlación rolling 8Q entre rendimiento de bonos hipotecarios y volumen transaccional es negativa en el <strong>${negPct}%</strong> de los trimestres observados (mínimo: <strong>${minCorr}</strong>), consistente con el modelo de <em>match funding</em> danés. El signo negativo dominante confirma que alzas de tasas hipotecarias anticipan contracciones de volumen con rezago de 1–2 trimestres, aunque la magnitud varía según el régimen macro.`;
+  document.getElementById('h1-metric').textContent = negPct + '% trimestres';
+  document.getElementById('h1-detail').textContent = `Correlación negativa volumen–bonos en ${negPct}% de los ${corrVals.length} trimestres observados (mínimo: ${minCorr}). Alzas de tasas anticipan caídas de volumen con rezago 1–2Q.`;
 
-  // Insight 4: distribución de precios
-  const totalCities = dist.reduce((s, d) => s + d.count, 0);
-  const below20k = dist.slice(0, 2).reduce((s, d) => s + d.count, 0);
-  const above30k = dist.slice(3).reduce((s, d) => s + d.count, 0);
-  const below20pct = totalCities > 0 ? Math.round(below20k / totalCities * 100) : 0;
-  const el4 = document.getElementById('ins-4');
-  if (el4) el4.innerHTML = `<strong>4. Distribución de precios concentrada (Distribución):</strong> El <strong>${below20pct}%</strong> de ciudades del dataset tiene precio real promedio &lt; 20,000 DKK/m². Solo <strong>${above30k} ciudades</strong> superan los 30,000 DKK/m², concentradas mayoritariamente en Zealand. Esta distribución asimétrica confirma la segmentación estructural del mercado danés: un núcleo premium reducido en la capital y una amplia base de mercado en rangos accesibles en provincias.`;
+  // H2
+  const zealandArr = ri['Zealand'] || [];
+  const zealandLast = zealandArr.slice(-1)[0]?.idx?.toFixed(1) ?? '—';
+  const zealandMin = zealandArr.length ? Math.min(...zealandArr.map(d => d.idx)).toFixed(1) : '—';
+  const fynArr = ri['Fyn & islands'] || [];
+  const fynMin = fynArr.length ? Math.min(...fynArr.map(d => d.idx)).toFixed(1) : '—';
+  document.getElementById('h2-metric').textContent = k.capital_multiple + '× prima capital';
+  document.getElementById('h2-detail').textContent = `Zealand: índice ${zealandLast} (base 1992=100); mínimo GFC: ${zealandMin}. Fyn & islands: mínimo GFC ${fynMin} — por debajo de su nivel de 1992. Zealand mantiene precio por escasez crónica de oferta en Copenhague.`;
 
-  // Insight 5: peor drawdown
-  const el5 = document.getElementById('ins-5');
-  if (el5) el5.innerHTML = `<strong>5. La crisis 2008 como evento singular (Tendencia + Comparación):</strong> El peor drawdown pico-valle del dataset es <strong>${k.worst_dd_pct.toFixed(1)}%</strong> en <strong>${k.worst_dd_type}</strong> / ${k.worst_dd_region} (${k.worst_dd_quarter}). Este episodio supera la corrección post-COVID de 2022–2023 en todas las tipologías y regiones, confirmando que la GFC fue un shock de liquidez sin precedente en el período analizado. Los segmentos con mayor dependencia de crédito hipotecario (Apartment, Townhouse) absorben los drawdowns más severos.`;
+  // H3
+  const avgVol = t => { const a = (vol[t]||[]).filter(d => d.vol != null && !isNaN(d.vol)); return a.length ? a.reduce((s,d)=>s+d.vol,0)/a.length : 0; };
+  const typesSorted = Object.keys(TYPE_COLORS).map(t => ({ t, v: avgVol(t) })).filter(x => x.v > 0).sort((a,b) => b.v - a.v);
+  const top = typesSorted[0] || { t: '—', v: 0 };
+  document.getElementById('h3-metric').textContent = top.t + ' σ=' + top.v.toFixed(3);
+  document.getElementById('h3-detail').textContent = `${top.t} lidera volatilidad media (σ=${top.v.toFixed(3)}/trim). Villa (σ=${avgVol('Villa').toFixed(3)}) y Summerhouse (σ=${avgVol('Summerhouse').toFixed(3)}) son más resilientes. El comprador de segunda residencia tiene mayor solvencia relativa.`;
 
-  // Actualizar takeaway del histograma
-  const elDist = document.getElementById('ti-dist');
-  if (elDist) elDist.innerHTML = `El <strong>${below20pct}%</strong> de ciudades tiene precio promedio &lt; 20,000 DKK/m². Solo <strong>${above30k} ciudades</strong> superan 30,000 DKK/m², concentradas en Zealand. Esto confirma la segmentación estructural: un núcleo premium reducido en la capital y amplia base de mercado accesible en provincias.`;
+  // Insight cards
+  document.getElementById('ins-1').innerHTML = `<strong>1. Divergencia capital–provincias (H2):</strong> Zealand alcanzó un índice de <strong>${zealandLast}</strong> (base 1992=100) mientras Fyn &amp; islands cayó a <strong>${fynMin}</strong> durante la GFC — por debajo de su nivel de 1992. La brecha de +100 pp refleja escasez estructural de oferta en Copenhague frente a contracción de demanda provincial durante recesiones.`;
+  document.getElementById('ins-2').innerHTML = `<strong>2. Tipología más volátil ≠ la esperada (H3):</strong> <strong>${top.t}</strong> lidera volatilidad media (σ=${top.v.toFixed(3)}/trim). La segunda residencia (Summerhouse, σ=${avgVol('Summerhouse').toFixed(3)}) es más resistente. Esto revierte H3 original: la dependencia crediticia, no el tipo de uso, explica la sensibilidad al ciclo de tasas.`;
+  document.getElementById('ins-3').innerHTML = `<strong>3. Relación tasa–volumen robusta (H1):</strong> Correlación rolling 8Q negativa en <strong>${negPct}%</strong> de trimestres (mínimo: ${minCorr}). El modelo danés de <em>match funding</em> hipotecario amplifica la transmisión: alzas del bono hipotecario se reflejan directamente en cuotas variables, frenando la compra con lag de 1–2Q.`;
+  document.getElementById('ins-4').innerHTML = `<strong>4. Prima capital sostenida post-2012:</strong> Tras el suelo GFC, Zealand se desacopla y crece a tasa superior al resto. La corrección 2022 aparece en todas las regiones pero Zealand absorbe mejor por demanda estructural (migración interna + stock limitado). La brecha precio actual es de <strong>${k.capital_multiple}× vs media provincial</strong>.`;
+  document.getElementById('ins-5').innerHTML = `<strong>5. La GFC como evento singular:</strong> Peor drawdown del dataset: <strong>${k.worst_dd_pct.toFixed(1)}%</strong> en <strong>${k.worst_dd_type}</strong> / ${k.worst_dd_region} (${k.worst_dd_quarter}). Supera la corrección 2022–2023 en todas las tipologías y regiones. Los segmentos más dependientes de crédito (Apartment, Townhouse) absorben los drawdowns más severos, confirmando el canal de transmisión financiero.`;
 }
 
-// ── Vista 1: Índice Regional + Bonos ──────────────────────────────────────────
-let chartReg = null, chartRegBonds = null;
+// ── Regional Index ─────────────────────────────────────────────────────────────
+let chartReg = null;
 function renderRegionalIndex() {
   const mode = document.getElementById('reg-mode').value;
-  const regions = Object.keys(DATA.regional_index);
   const qs = ALL_QS;
-  const tickFn = (val, i) => qs[i]?.endsWith('Q1') ? qs[i].replace('Q1','') : '';
+  const tickFn = (v, i) => qs[i]?.endsWith('Q1') ? qs[i].replace('Q1','') : '';
+  const regions = Object.keys(DATA.regional_index);
 
-  const datasetsTop = regions.map(reg => {
+  const datasets = regions.map(reg => {
     const byQ = {};
     DATA.regional_index[reg].forEach(d => { byQ[d.q] = mode === 'index' ? d.idx : d.price; });
-    const isCapital = reg === 'Zealand';
-    const isJutland = reg === 'Jutland';
-    const isPrimary = isCapital || isJutland;
+    const isZ = reg === 'Zealand';
     return {
-      label: isCapital ? 'Zealand (incl. Capital)' : reg,
-      data: qs.map(q => byQ[q] ?? null),
+      label: reg, data: qs.map(q => byQ[q] ?? null),
       borderColor: REGION_COLORS[reg] || '#6366f1',
       backgroundColor: 'transparent',
-      borderWidth: isCapital ? 3 : isJutland ? 2.5 : 1.2,
-      borderDash: isPrimary ? [] : [4, 3],
+      borderWidth: isZ ? 2.5 : 1.4,
+      borderDash: isZ ? [] : [4, 3],
       pointRadius: 0, pointHoverRadius: 4, tension: 0.3, spanGaps: true,
-      order: isCapital ? 0 : isJutland ? 1 : 2,
+      order: isZ ? 0 : 1,
     };
   });
 
   if (chartReg) chartReg.destroy();
   chartReg = new Chart(document.getElementById('chartRegional'), {
     type: 'line',
-    data: { labels: qs, datasets: datasetsTop },
-    options: {
-      ...CHART_DEFAULTS, maintainAspectRatio: false,
-      plugins: {
-        ...CHART_DEFAULTS.plugins,
-        tooltip: {
-          ...CHART_DEFAULTS.plugins.tooltip, mode: 'index', intersect: false,
-          callbacks: { label: ctx => { const suffix = mode === 'index' ? '' : ' DKK'; return ` ${ctx.dataset.label}: ${ctx.parsed.y.toLocaleString()}${suffix}`; } }
-        }
-      },
-      scales: {
-        x: { ...CHART_DEFAULTS.scales.x, ticks: { display: false } },
-        y: { ...CHART_DEFAULTS.scales.y, ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => mode === 'index' ? v : (v/1000).toFixed(0)+'k' } }
-      }
-    },
-    plugins: [crisisAnnotationsPlugin],
-  });
-
-  const bondByQ = {};
-  DATA.macro.forEach(d => { bondByQ[d.q] = d.yield; });
-  if (chartRegBonds) chartRegBonds.destroy();
-  chartRegBonds = new Chart(document.getElementById('chartRegionalBonds'), {
-    type: 'line',
-    data: {
-      labels: qs,
-      datasets: [{ label: 'Bonos hipotecarios %', data: qs.map(q => bondByQ[q] ?? null), borderColor: '#fbbf24', backgroundColor: 'rgba(251,191,36,0.10)', borderWidth: 1.6, pointRadius: 0, pointHoverRadius: 3, tension: 0.4, fill: true }]
-    },
-    options: {
-      ...CHART_DEFAULTS, maintainAspectRatio: false,
-      plugins: { ...CHART_DEFAULTS.plugins, tooltip: { ...CHART_DEFAULTS.plugins.tooltip, mode: 'index', intersect: false, callbacks: { label: ctx => ` Bonos hipotecarios: ${ctx.parsed.y.toFixed(2)}%` } } },
-      scales: {
-        x: { ...CHART_DEFAULTS.scales.x, ticks: { ...CHART_DEFAULTS.scales.x.ticks, callback: tickFn } },
-        y: { ...CHART_DEFAULTS.scales.y, ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => v.toFixed(0)+'%', maxTicksLimit: 4 } }
-      }
-    },
-    plugins: [{
-      id: 'crisisBandSlim',
-      beforeDraw(chart) {
-        const { ctx, chartArea, scales } = chart;
-        if (!chartArea) return;
-        const x0 = scales.x.getPixelForValue(CRISIS_START_I);
-        const x1 = scales.x.getPixelForValue(CRISIS_END_I);
-        ctx.save(); ctx.fillStyle = 'rgba(248,113,113,0.07)';
-        ctx.fillRect(x0, chartArea.top, x1 - x0, chartArea.height); ctx.restore();
-      },
-      afterDatasetsDraw(chart) {
-        const { ctx, chartArea, scales } = chart;
-        if (!chartArea) return;
-        ctx.save(); ctx.setLineDash([2, 3]); ctx.lineWidth = 1;
-        MACRO_EVENTS.forEach(ev => {
-          const x = scales.x.getPixelForValue(ev.i);
-          ctx.strokeStyle = ev.color;
-          ctx.beginPath(); ctx.moveTo(x, chartArea.top); ctx.lineTo(x, chartArea.bottom); ctx.stroke();
-        });
-        ctx.restore();
-      }
-    }],
-  });
-
-  const REGION_LABELS = { 'Zealand': 'Zealand (incl. Capital)', 'Jutland': 'Jutland', 'Fyn & islands': 'Fyn & islands', 'Bornholm': 'Bornholm' };
-  makeLegend('reg-legend', Object.fromEntries(Object.entries(REGION_COLORS).map(([k, v]) => [REGION_LABELS[k] || k, v])));
-}
-
-// ── Distribución de precios (histograma) ──────────────────────────────────────
-let chartDistribution = null;
-function renderDistribution() {
-  const dist = DATA.city_distribution;
-  const labels = dist.map(d => d.label);
-  const counts = dist.map(d => d.count);
-  const txs    = dist.map(d => d.totalTx);
-  const barColors = ['#a78bfa','#60a5fa','#34d399','#f59e0b','#f87171'];
-
-  if (chartDistribution) chartDistribution.destroy();
-  chartDistribution = new Chart(document.getElementById('chartDistribution'), {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        {
-          label: 'N° de ciudades',
-          data: counts,
-          backgroundColor: barColors.map(c => hex2rgba(c, 0.75)),
-          borderColor: barColors,
-          borderWidth: 1,
-          yAxisID: 'y',
-        },
-        {
-          label: 'Total transacciones',
-          data: txs,
-          type: 'line',
-          borderColor: '#fbbf24',
-          backgroundColor: 'rgba(251,191,36,0.08)',
-          borderWidth: 2,
-          pointRadius: 5,
-          pointBackgroundColor: '#fbbf24',
-          tension: 0.3,
-          fill: true,
-          yAxisID: 'y2',
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: true, position: 'top', labels: { color: '#8892aa', font: { size: 10 }, padding: 12, boxWidth: 12 } },
-        tooltip: {
-          ...CHART_DEFAULTS.plugins.tooltip,
-          callbacks: {
-            label: ctx => ctx.datasetIndex === 0
-              ? ` ${ctx.parsed.y} ciudades`
-              : ` ${ctx.parsed.y.toLocaleString()} transacciones`,
-          }
-        }
-      },
-      scales: {
-        x: { ...CHART_DEFAULTS.scales.x },
-        y: {
-          ...CHART_DEFAULTS.scales.y, position: 'left',
-          title: { display: true, text: 'N° ciudades', color: '#8892aa', font: { size: 10 } },
-          ticks: { ...CHART_DEFAULTS.scales.y.ticks, maxTicksLimit: 6 },
-        },
-        y2: {
-          position: 'right',
-          grid: { drawOnChartArea: false },
-          ticks: { color: '#fbbf24', font: { size: 10 }, callback: v => (v/1000).toFixed(0)+'k' },
-          title: { display: true, text: 'Transacciones (k)', color: '#fbbf24', font: { size: 10 } },
-        }
-      }
-    }
-  });
-}
-
-// ── Vista 4: Volatilidad — small multiples (con filtro H3) ────────────────────
-let chartVolSmall = [];
-function renderVolatility() {
-  const checkboxes = document.querySelectorAll('.h3-filter input[type=checkbox]');
-  const activeTypes = checkboxes.length > 0
-    ? [...checkboxes].filter(cb => cb.checked).map(cb => cb.value)
-    : Object.keys(TYPE_COLORS);
-  const types = Object.keys(TYPE_COLORS).filter(t => DATA.volatility[t] && activeTypes.includes(t));
-  const qs = ALL_QS;
-  const container = document.getElementById('volMultiples');
-
-  const volByType = {};
-  types.forEach(t => {
-    const m = {};
-    DATA.volatility[t].forEach(d => { m[d.q] = d.vol; });
-    volByType[t] = qs.map(q => m[q] ?? null);
-  });
-  const allVals = Object.values(volByType).flat().filter(v => v != null && !isNaN(v));
-  const yMax = allVals.length ? Math.ceil(Math.max(...allVals) * 1.1) : 10;
-
-  chartVolSmall.forEach(c => c.destroy());
-  chartVolSmall = [];
-  container.innerHTML = '';
-
-  types.forEach(focal => {
-    const card = document.createElement('div');
-    card.style.cssText = 'background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 10px 6px';
-    card.innerHTML = `
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
-        <span style="font-size:0.78rem;font-weight:600;color:${TYPE_COLORS[focal]}">
-          <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${TYPE_COLORS[focal]};margin-right:5px"></span>${focal}
-        </span>
-        <span style="font-size:0.65rem;color:var(--muted)">vs resto en gris</span>
-      </div>
-      <div style="height:120px;position:relative"><canvas></canvas></div>`;
-    container.appendChild(card);
-
-    const datasets = types.map(t => ({
-      label: t,
-      data: volByType[t],
-      borderColor: t === focal ? TYPE_COLORS[t] : 'rgba(140,148,170,0.25)',
-      backgroundColor: 'transparent',
-      borderWidth: t === focal ? 2 : 1,
-      pointRadius: 0, tension: 0.3, spanGaps: false,
-      order: t === focal ? 0 : 1,
-    }));
-
-    const ch = new Chart(card.querySelector('canvas'), {
-      type: 'line',
-      data: { labels: qs, datasets },
-      options: {
-        ...CHART_DEFAULTS, maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            ...CHART_DEFAULTS.plugins.tooltip, mode: 'index', intersect: false,
-            filter: ctx => ctx.dataset.label === focal,
-            callbacks: { label: ctx => ctx.parsed.y != null ? ` ${focal}: ${ctx.parsed.y.toFixed(2)}%` : null }
-          }
-        },
-        scales: {
-          x: { ...CHART_DEFAULTS.scales.x, ticks: { ...CHART_DEFAULTS.scales.x.ticks, callback: (v, i) => qs[i]?.endsWith('Q1') && parseInt(qs[i]) % 4 === 0 ? qs[i].replace('Q1','') : '', maxRotation: 0 } },
-          y: { ...CHART_DEFAULTS.scales.y, max: yMax, ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => v + '%', maxTicksLimit: 4 } }
-        }
-      },
-      plugins: [crisisAnnotationsPlugin],
-    });
-    chartVolSmall.push(ch);
-  });
-}
-
-// ── Vista 5: Connected scatter Volumen vs Bonos ───────────────────────────────
-let chartScatter = null;
-function renderScatter() {
-  const byPeriod = {};
-  DATA.macro.forEach(d => {
-    if (!byPeriod[d.period]) byPeriod[d.period] = [];
-    byPeriod[d.period].push({ x: d.bond_lag2, y: d.n_tx, q: d.q });
-  });
-  const datasets = Object.entries(byPeriod).map(([period, pts]) => ({
-    label: period,
-    data: pts,
-    backgroundColor: hex2rgba(PERIOD_COLORS[period] || '#6366f1', 0.85),
-    borderColor: PERIOD_COLORS[period] || '#6366f1',
-    showLine: true, borderWidth: 1.3, pointRadius: 3, pointHoverRadius: 6, tension: 0,
-  }));
-  if (chartScatter) chartScatter.destroy();
-  chartScatter = new Chart(document.getElementById('chartScatter'), {
-    type: 'scatter',
-    data: { datasets },
-    options: {
-      ...CHART_DEFAULTS,
-      plugins: {
-        ...CHART_DEFAULTS.plugins,
-        tooltip: {
-          ...CHART_DEFAULTS.plugins.tooltip,
-          callbacks: {
-            title: ctx => `${ctx[0].raw.q} · ${ctx[0].dataset.label}`,
-            label: ctx => ` Bono lag2: ${ctx.parsed.x.toFixed(2)}% · Volumen: ${ctx.parsed.y.toLocaleString()}`
-          }
-        }
-      },
-      scales: {
-        x: { ...CHART_DEFAULTS.scales.x, title: { display: true, text: 'Rendimiento bono hipotecario rezago 2Q (%)', color: '#8892aa', font: { size: 10 } }, ticks: { ...CHART_DEFAULTS.scales.x.ticks, callback: v => v.toFixed(1)+'%' } },
-        y: { ...CHART_DEFAULTS.scales.y, title: { display: true, text: 'N° transacciones trimestrales', color: '#8892aa', font: { size: 10 } }, ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => (v/1000).toFixed(0)+'k' } }
-      }
-    }
-  });
-  makeLegend('scatter-legend', PERIOD_COLORS);
-}
-
-// ── H1: Correlación rolling 8Q ─────────────────────────────────────────────────
-let chartRollingCorr = null;
-function renderRollingCorr() {
-  const qs = ALL_QS;
-  const corrByQ = {};
-  DATA.macro_raw.forEach(d => { const v = parseFloat(d.volume_bond_corr); if (!isNaN(v)) corrByQ[d.quarter] = v; });
-  if (chartRollingCorr) chartRollingCorr.destroy();
-  chartRollingCorr = new Chart(document.getElementById('chartRollingCorr'), {
-    type: 'line',
-    data: {
-      labels: qs,
-      datasets: [
-        { label: 'Correlación rolling 8Q', data: qs.map(q => corrByQ[q] ?? null), borderColor: '#6366f1', backgroundColor: ctx => ctx.raw != null && ctx.raw < 0 ? 'rgba(248,113,113,0.12)' : 'rgba(99,102,241,0.08)', borderWidth: 1.8, pointRadius: 0, pointHoverRadius: 4, tension: 0.35, fill: 'origin', spanGaps: false },
-        { label: 'Sin correlación', data: qs.map(() => 0), borderColor: 'rgba(139,146,170,0.35)', borderWidth: 1, borderDash: [3, 3], pointRadius: 0, fill: false },
-      ],
-    },
-    options: {
-      ...CHART_DEFAULTS, maintainAspectRatio: false,
-      plugins: {
-        ...CHART_DEFAULTS.plugins,
-        tooltip: { ...CHART_DEFAULTS.plugins.tooltip, mode: 'index', intersect: false, filter: ctx => ctx.dataset.label !== 'Sin correlación', callbacks: { label: ctx => ctx.parsed.y != null ? ` Corr. vol–bonos: ${ctx.parsed.y.toFixed(3)}` : null } },
-      },
-      scales: {
-        x: { ...CHART_DEFAULTS.scales.x, ticks: { ...CHART_DEFAULTS.scales.x.ticks, callback: (v, i) => qs[i]?.endsWith('Q1') ? qs[i].replace('Q1','') : '' } },
-        y: { ...CHART_DEFAULTS.scales.y, min: -1.1, max: 1.1, ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => v.toFixed(1), maxTicksLimit: 5 } },
-      },
-    },
-    plugins: [crisisAnnotationsPlugin],
-  });
-}
-
-// ── Vista 3: Heatmap de drawdowns ──────────────────────────────────────────────
-function renderHeatmap() {
-  const dd = DATA.drawdown_summary;
-  const REGIONS = Object.keys(REGION_COLORS);
-  const TYPES   = Object.keys(TYPE_COLORS);
-  const lookup  = {};
-  dd.forEach(d => { lookup[d.region + '|' + d.house_type] = d.worst_dd; });
-  const vals = dd.map(d => d.worst_dd);
-  const minV = Math.min(...vals);
-  function cellColor(v) {
-    const t = Math.max(0, Math.min(1, (v - minV) / (0 - minV)));
-    return `rgb(${Math.round(239*(1-t)+30*t)},${Math.round(68*(1-t)+120*t)},${Math.round(68*(1-t)+60*t)})`;
-  }
-  let html = '<div style="overflow-x:auto"><table style="width:100%;border-collapse:separate;border-spacing:4px">';
-  html += '<thead><tr><th style="width:120px"></th>';
-  TYPES.forEach(t => { html += `<th style="font-size:0.7rem;color:var(--muted);font-weight:600;padding-bottom:6px;text-align:center">${t}</th>`; });
-  html += '</tr></thead><tbody>';
-  REGIONS.forEach(reg => {
-    html += `<tr><td style="font-size:0.74rem;color:var(--muted);font-weight:600;padding-right:8px;white-space:nowrap">${reg}</td>`;
-    TYPES.forEach(type => {
-      const v = lookup[reg + '|' + type];
-      if (v !== undefined) {
-        const bg = cellColor(v);
-        const tc = v < -25 ? '#fff' : '#1a1d27';
-        html += `<td><div class="dd-cell" style="background:${bg};color:${tc}" title="${reg} · ${type}: ${v}%">${v}%</div></td>`;
-      } else {
-        html += '<td><div class="dd-cell" style="background:var(--border);color:var(--muted)">N/A</div></td>';
-      }
-    });
-    html += '</tr>';
-  });
-  html += '</tbody></table></div>';
-  html += '<div class="flex items-center gap-2 mt-3" style="padding-left:120px">';
-  html += '<span style="font-size:0.7rem;color:var(--muted)">Peor</span>';
-  html += '<div style="flex:1;height:6px;border-radius:3px;background:linear-gradient(to right,rgb(239,68,68),rgb(30,120,60))"></div>';
-  html += '<span style="font-size:0.7rem;color:var(--muted)">Menor</span>';
-  html += '</div>';
-  document.getElementById('ddHeatmap').innerHTML = html;
-}
-
-// ── Drawdown timeline (con filtro H3) ─────────────────────────────────────────
-let chartDdTimeline = null;
-function renderDrawdownTimeline() {
-  const checkboxes = document.querySelectorAll('.h3-filter input[type=checkbox]');
-  const activeTypes = checkboxes.length > 0
-    ? [...checkboxes].filter(cb => cb.checked).map(cb => cb.value)
-    : Object.keys(TYPE_COLORS);
-  const types = Object.keys(TYPE_COLORS).filter(t => DATA.drawdown_timeline[t] && activeTypes.includes(t));
-  const qs = ALL_QS;
-  const datasets = types.map(type => {
-    const m = {};
-    DATA.drawdown_timeline[type].forEach(d => { m[d.q] = d.dd; });
-    return {
-      label: type,
-      data: qs.map(q => m[q] ?? null),
-      borderColor: TYPE_COLORS[type],
-      backgroundColor: hex2rgba(TYPE_COLORS[type], type === 'Summerhouse' ? 0.18 : 0.06),
-      borderWidth: type === 'Summerhouse' ? 2 : 1.3,
-      pointRadius: 0, tension: 0.3, fill: 'origin', spanGaps: true,
-    };
-  });
-  if (chartDdTimeline) chartDdTimeline.destroy();
-  chartDdTimeline = new Chart(document.getElementById('chartDrawdownTimeline'), {
-    type: 'line',
     data: { labels: qs, datasets },
     options: {
       ...CHART_DEFAULTS, maintainAspectRatio: false,
       plugins: {
         ...CHART_DEFAULTS.plugins,
-        tooltip: { ...CHART_DEFAULTS.plugins.tooltip, mode: 'index', intersect: false, callbacks: { label: ctx => ctx.parsed.y != null ? ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}%` : null } }
+        tooltip: { ...CHART_DEFAULTS.plugins.tooltip, mode: 'index', intersect: false,
+          callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y?.toLocaleString()}${mode==='price'?' DKK':''}` } }
       },
       scales: {
-        x: { ...CHART_DEFAULTS.scales.x, ticks: { ...CHART_DEFAULTS.scales.x.ticks, callback: (v, i) => qs[i]?.endsWith('Q1') && parseInt(qs[i]) % 4 === 0 ? qs[i].replace('Q1','') : '', maxRotation: 0 } },
-        y: { ...CHART_DEFAULTS.scales.y, max: 5, ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => v.toFixed(0)+'%', maxTicksLimit: 4 } }
+        x: { ...CHART_DEFAULTS.scales.x, ticks: { ...CHART_DEFAULTS.scales.x.ticks, callback: tickFn, maxTicksLimit: 12 } },
+        y: { ...CHART_DEFAULTS.scales.y, ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => mode==='index' ? v : (v/1000).toFixed(0)+'k' } }
       }
     },
-    plugins: [crisisAnnotationsPlugin],
+    plugins: [crisisPlugin],
+  });
+
+  makeLegend('reg-legend', REGION_COLORS);
+}
+
+// ── Bonds chart ────────────────────────────────────────────────────────────────
+let chartBonds = null;
+function renderBonds() {
+  const qs = ALL_QS;
+  const tickFn = (v, i) => qs[i]?.endsWith('Q1') ? qs[i].replace('Q1','') : '';
+  const bondByQ = {};
+  DATA.regional_index['Zealand']?.forEach(d => { if (!isNaN(d.bond)) bondByQ[d.q] = d.bond; });
+
+  if (chartBonds) chartBonds.destroy();
+  chartBonds = new Chart(document.getElementById('chartBonds'), {
+    type: 'line',
+    data: {
+      labels: qs,
+      datasets: [{
+        label: 'Bonos hipotecarios %',
+        data: qs.map(q => bondByQ[q] ?? null),
+        borderColor: '#fbbf24', backgroundColor: 'rgba(251,191,36,.1)',
+        borderWidth: 1.6, pointRadius: 0, tension: 0.4, fill: true, spanGaps: true,
+      }]
+    },
+    options: {
+      ...CHART_DEFAULTS, maintainAspectRatio: false,
+      plugins: { ...CHART_DEFAULTS.plugins, tooltip: { ...CHART_DEFAULTS.plugins.tooltip, callbacks: { label: ctx => ` Bonos: ${ctx.parsed.y?.toFixed(2)}%` } } },
+      scales: {
+        x: { ...CHART_DEFAULTS.scales.x, ticks: { ...CHART_DEFAULTS.scales.x.ticks, callback: tickFn, maxTicksLimit: 12 } },
+        y: { ...CHART_DEFAULTS.scales.y, ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => v.toFixed(0)+'%', maxTicksLimit: 4 } }
+      }
+    },
   });
 }
 
-// ── Top ciudades ───────────────────────────────────────────────────────────────
+// ── Annual evolution ───────────────────────────────────────────────────────────
+let chartAnnual = null;
+function renderAnnual() {
+  const reg = DATA.reg_annual;
+  const years = [...new Set(Object.values(reg).flatMap(r => Object.keys(r)))].sort();
+  const datasets = Object.keys(reg).map(region => ({
+    label: region,
+    data: years.map(y => reg[region][y] || null),
+    borderColor: REGION_COLORS[region], backgroundColor: hex2rgba(REGION_COLORS[region], .05),
+    fill: false, tension: 0.3, borderWidth: region === 'Zealand' ? 2.5 : 1.8,
+    pointRadius: 2, pointHoverRadius: 5, spanGaps: true,
+  }));
+
+  if (chartAnnual) chartAnnual.destroy();
+  chartAnnual = new Chart(document.getElementById('chartAnnual'), {
+    type: 'line',
+    data: { labels: years, datasets },
+    options: {
+      ...CHART_DEFAULTS,
+      plugins: { ...CHART_DEFAULTS.plugins, tooltip: { ...CHART_DEFAULTS.plugins.tooltip, mode: 'index', intersect: false,
+        callbacks: { label: ctx => ctx.parsed.y ? ` ${ctx.dataset.label}: DKK ${ctx.parsed.y.toLocaleString()}` : null } } },
+      scales: {
+        x: { ...CHART_DEFAULTS.scales.x },
+        y: { ...CHART_DEFAULTS.scales.y, ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => 'DKK '+(v/1000).toFixed(0)+'k' } }
+      }
+    },
+  });
+  makeLegend('annual-legend', REGION_COLORS);
+}
+
+// ── Choropleth (Leaflet) ───────────────────────────────────────────────────────
+let _leafletMap = null, _geoLayer = null;
+
+function priceColor(price, minP, maxP) {
+  const t = Math.max(0, Math.min(1, (price - minP) / (maxP - minP)));
+  // Dark indigo → bright indigo
+  const r = Math.round(49 + (99 - 49) * t);
+  const g = Math.round(46 + (102 - 46) * t);
+  const b = Math.round(129 + (241 - 129) * t);
+  return `rgb(${r},${g},${b})`;
+}
+
+function getRegionPricesForYear(year) {
+  const allYears = Object.keys(DATA.region_prices).map(Number).sort((a,b) => b-a);
+  const useYear = year === 'latest' ? allYears[0] : parseInt(year);
+  const prices = DATA.region_prices[useYear] || {};
+  // If year not found, use nearest available
+  if (Object.keys(prices).length === 0) {
+    const nearest = allYears.reduce((a, b) => Math.abs(b - useYear) < Math.abs(a - useYear) ? b : a, allYears[0]);
+    return { prices: DATA.region_prices[nearest] || {}, year: nearest };
+  }
+  return { prices, year: useYear };
+}
+
+function initChoropleth() {
+  window._choroInited = true;
+  if (!window.L) { document.getElementById('choroMap').innerHTML = '<p style="color:var(--muted);padding:20px;text-align:center">Leaflet no disponible. Verifica conexión a internet.</p>'; return; }
+
+  _leafletMap = L.map('choroMap', {
+    center: [56.2, 10.5], zoom: 6,
+    zoomControl: true, scrollWheelZoom: false,
+    attributionControl: false,
+  });
+
+  // Dark tile layer
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
+    subdomains: 'abcd', maxZoom: 19,
+  }).addTo(_leafletMap);
+
+  updateChoropleth();
+}
+
+function updateChoropleth() {
+  if (!_leafletMap) return;
+  const yearSel = document.getElementById('choro-year')?.value || 'latest';
+  const { prices, year } = getRegionPricesForYear(yearSel);
+  document.getElementById('choro-sub').textContent = `Precio real DKK/m² · Año ${year} · Hover para detalle`;
+
+  const priceVals = Object.values(prices).filter(p => p > 0);
+  if (!priceVals.length) return;
+  const minP = Math.min(...priceVals), maxP = Math.max(...priceVals);
+
+  if (_geoLayer) { _leafletMap.removeLayer(_geoLayer); }
+  _geoLayer = L.geoJSON(DENMARK_GEOJSON, {
+    style: feature => {
+      const reg = feature.properties.region;
+      const p = prices[reg] || 0;
+      return {
+        fillColor: p > 0 ? priceColor(p, minP, maxP) : '#2e3245',
+        weight: 1.5, opacity: 1, color: '#1a1d27',
+        fillOpacity: p > 0 ? 0.75 : 0.3,
+      };
+    },
+    onEachFeature: (feature, layer) => {
+      const reg = feature.properties.region;
+      const p = prices[reg];
+      const ntot = DATA.region_by_year[year]?.[reg];
+      const nStr = ntot ? ` · ${ntot.c.toLocaleString()} tx` : '';
+      layer.bindTooltip(
+        `<strong style="color:#e2e8f0">${reg}</strong><br/>` +
+        (p ? `DKK ${p.toLocaleString()}/m²${nStr}` : 'Sin datos'),
+        { sticky: true }
+      );
+      layer.on('mouseover', function() { this.setStyle({ weight: 3, color: '#6366f1' }); });
+      layer.on('mouseout', function() { _geoLayer.resetStyle(this); });
+    }
+  }).addTo(_leafletMap);
+
+  // Region stats table
+  renderRegionStats(prices);
+}
+
+function renderRegionStats(prices) {
+  const k = DATA.kpis;
+  const maxP = Math.max(...Object.values(prices).filter(p => p > 0));
+  let html = '';
+  const order = ['Zealand', 'Jutland', 'Fyn & islands', 'Bornholm'];
+  order.forEach(reg => {
+    const p = prices[reg];
+    if (!p) return;
+    const pct = (p / maxP * 100).toFixed(0);
+    const color = REGION_COLORS[reg] || '#6366f1';
+    html += `<div class="reg-stat-row">
+      <div>
+        <div style="font-size:.82rem;font-weight:600;color:${color}">${reg}</div>
+        <div style="margin-top:3px;height:5px;width:${pct}%;background:${color};border-radius:3px;min-width:4px;opacity:.7"></div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:.88rem;font-weight:700;color:var(--text)">DKK ${p.toLocaleString()}</div>
+        <div style="font-size:.7rem;color:var(--muted)">${pct}% del máximo</div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('region-stats-table').innerHTML = html || '<p style="color:var(--muted);font-size:.8rem">Sin datos para este año.</p>';
+}
+
+// ── Top cities ─────────────────────────────────────────────────────────────────
 function renderCities() {
-  const sort   = document.getElementById('city-sort').value;
-  const cities = [...DATA.top_cities].sort((a,b) => sort === 'tx' ? b.tx - a.tx : b.avg_price - a.avg_price);
-  const maxVal = sort === 'tx' ? Math.max(...cities.map(c=>c.tx)) : Math.max(...cities.map(c=>c.avg_price));
+  const sort = document.getElementById('city-sort').value;
+  const cities = [...DATA.top_cities].sort((a, b) => sort === 'tx' ? b.tx - a.tx : b.avg_price - a.avg_price);
+  const maxVal = Math.max(...cities.map(c => sort === 'tx' ? c.tx : c.avg_price));
   let html = '';
   cities.forEach(c => {
-    const val   = sort === 'tx' ? c.tx : c.avg_price;
-    const pct   = (val / maxVal * 100).toFixed(1);
+    const val = sort === 'tx' ? c.tx : c.avg_price;
+    const pct = (val / maxVal * 100).toFixed(1);
     const color = REGION_COLORS[c.region] || '#6366f1';
     const label = sort === 'tx' ? c.tx.toLocaleString() : 'DKK ' + c.avg_price.toLocaleString();
     html += `<div class="city-bar-row">
@@ -1303,110 +1154,258 @@ function renderCities() {
   document.getElementById('cityBars').innerHTML = html;
 }
 
-// ── Evolución anual ────────────────────────────────────────────────────────────
-let chartAnnual = null;
-function renderAnnual() {
-  const reg   = DATA.reg_annual_price;
-  const regs  = Object.keys(reg);
-  const years = [...new Set(regs.flatMap(r => Object.keys(reg[r])))].sort();
-  const datasets = regs.map(region => ({
-    label: region,
-    data: years.map(y => reg[region][y] || null),
-    borderColor: REGION_COLORS[region],
-    backgroundColor: hex2rgba(REGION_COLORS[region], 0.06),
-    fill: false, tension: 0.3,
-    borderWidth: region === 'Zealand' ? 2.5 : 1.8,
-    pointRadius: 2, pointHoverRadius: 5, spanGaps: true,
+// ── Volatility small multiples ─────────────────────────────────────────────────
+let chartVolSmall = [];
+function renderVolatility() {
+  const cbs = document.querySelectorAll('.h3-filter input[type=checkbox]');
+  const active = cbs.length ? [...cbs].filter(cb => cb.checked).map(cb => cb.value) : Object.keys(TYPE_COLORS);
+  const types = Object.keys(TYPE_COLORS).filter(t => DATA.volatility[t] && active.includes(t));
+  const qs = ALL_QS;
+  const container = document.getElementById('volMultiples');
+
+  const volByType = {};
+  types.forEach(t => {
+    const m = {};
+    DATA.volatility[t].forEach(d => { m[d.q] = d.vol; });
+    volByType[t] = qs.map(q => m[q] ?? null);
+  });
+  const allVals = Object.values(volByType).flat().filter(v => v != null && !isNaN(v));
+  const yMax = allVals.length ? Math.ceil(Math.max(...allVals) * 1.1 * 10) / 10 : 0.5;
+
+  chartVolSmall.forEach(c => c.destroy()); chartVolSmall = [];
+  container.innerHTML = '';
+
+  types.forEach(focal => {
+    const card = document.createElement('div');
+    card.style.cssText = 'background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:8px 10px 6px';
+    card.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+      <span style="font-size:.77rem;font-weight:600;color:${TYPE_COLORS[focal]}">
+        <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${TYPE_COLORS[focal]};margin-right:4px"></span>${focal}
+      </span>
+      <span style="font-size:.63rem;color:var(--muted)">vs resto en gris</span>
+    </div>
+    <div style="height:110px;position:relative"><canvas></canvas></div>`;
+    container.appendChild(card);
+
+    const ch = new Chart(card.querySelector('canvas'), {
+      type: 'line',
+      data: { labels: qs, datasets: types.map(t => ({
+        label: t, data: volByType[t],
+        borderColor: t === focal ? TYPE_COLORS[t] : 'rgba(140,148,170,.22)',
+        backgroundColor: 'transparent',
+        borderWidth: t === focal ? 2 : 0.8,
+        pointRadius: 0, tension: 0.3, spanGaps: false, order: t === focal ? 0 : 1,
+      })) },
+      options: {
+        ...CHART_DEFAULTS, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { ...CHART_DEFAULTS.plugins.tooltip, mode: 'index', intersect: false, filter: ctx => ctx.dataset.label === focal, callbacks: { label: ctx => ctx.parsed.y != null ? ` ${focal}: ${ctx.parsed.y.toFixed(3)}` : null } } },
+        scales: {
+          x: { ...CHART_DEFAULTS.scales.x, ticks: { ...CHART_DEFAULTS.scales.x.ticks, callback: (v, i) => qs[i]?.endsWith('Q1') && parseInt(qs[i]) % 5 === 0 ? qs[i].replace('Q1','') : '', maxRotation: 0 } },
+          y: { ...CHART_DEFAULTS.scales.y, max: yMax, ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => v.toFixed(2), maxTicksLimit: 4 } }
+        }
+      },
+      plugins: [crisisPlugin],
+    });
+    chartVolSmall.push(ch);
+  });
+
+  const avgVol = t => { const a = (DATA.volatility[t]||[]).filter(d => d.vol != null); return a.length ? a.reduce((s,d)=>s+d.vol,0)/a.length : 0; };
+  const ranked = types.map(t => ({ t, v: avgVol(t) })).sort((a,b) => b.v-a.v);
+  const el = document.getElementById('ti-vol');
+  if (el && ranked.length) el.innerHTML = `<strong>${ranked[0].t} lidera la volatilidad</strong> (σ media=${ranked[0].v.toFixed(3)}), seguido de ${ranked[1]?.t ?? '—'} (σ=${ranked[1]?.v.toFixed(3) ?? '—'}). Villa (σ=${avgVol('Villa').toFixed(3)}) es la tipología más estable. La sensibilidad al ciclo crediticio, no el tipo de uso, determina la volatilidad.`;
+}
+
+// ── Heatmap drawdowns ──────────────────────────────────────────────────────────
+function renderHeatmap() {
+  const dd = DATA.drawdown_summary;
+  const REGIONS = Object.keys(REGION_COLORS);
+  const TYPES = Object.keys(TYPE_COLORS);
+  const lookup = {};
+  dd.forEach(d => { lookup[d.region + '|' + d.house_type] = d.worst_dd; });
+  const vals = dd.map(d => d.worst_dd);
+  const minV = Math.min(...vals);
+  function cellColor(v) {
+    const t = Math.max(0, Math.min(1, (v - minV) / (0 - minV)));
+    return `rgb(${Math.round(239*(1-t)+30*t)},${Math.round(68*(1-t)+120*t)},${Math.round(68*(1-t)+60*t)})`;
+  }
+  let html = '<div style="overflow-x:auto"><table style="width:100%;border-collapse:separate;border-spacing:4px"><thead><tr><th style="width:110px"></th>';
+  TYPES.forEach(t => { html += `<th style="font-size:.68rem;color:var(--muted);font-weight:600;text-align:center;padding-bottom:5px">${t}</th>`; });
+  html += '</tr></thead><tbody>';
+  REGIONS.forEach(reg => {
+    html += `<tr><td style="font-size:.72rem;color:var(--muted);font-weight:600;padding-right:6px;white-space:nowrap">${reg}</td>`;
+    TYPES.forEach(type => {
+      const v = lookup[reg + '|' + type];
+      if (v !== undefined) {
+        const bg = cellColor(v), tc = v < -25 ? '#fff' : '#1a1d27';
+        html += `<td><div class="dd-cell" style="background:${bg};color:${tc}" title="${reg} · ${type}: ${v}%">${v}%</div></td>`;
+      } else {
+        html += '<td><div class="dd-cell" style="background:var(--border);color:var(--muted)">N/A</div></td>';
+      }
+    });
+    html += '</tr>';
+  });
+  html += '</tbody></table></div>';
+  html += '<div class="flex items-center gap-2 mt-3" style="padding-left:116px"><span style="font-size:.68rem;color:var(--muted)">Peor</span><div style="flex:1;height:5px;border-radius:3px;background:linear-gradient(to right,rgb(239,68,68),rgb(30,120,60))"></div><span style="font-size:.68rem;color:var(--muted)">Mejor</span></div>';
+  document.getElementById('ddHeatmap').innerHTML = html;
+  const k = DATA.kpis;
+  const el = document.getElementById('ti-dd');
+  if (el) el.innerHTML = `<strong>Peor drawdown: ${k.worst_dd_pct.toFixed(1)}% en ${k.worst_dd_type} / ${k.worst_dd_region}</strong> (${k.worst_dd_quarter}). Apartment y Townhouse absorben las caídas más severas por mayor dependencia de crédito hipotecario. Villa y Summerhouse son más resilientes que lo anticipado.`;
+}
+
+// ── Drawdown timeline ──────────────────────────────────────────────────────────
+let chartDdTimeline = null;
+function renderDrawdownTimeline() {
+  const cbs = document.querySelectorAll('.h3-filter input[type=checkbox]');
+  const active = cbs.length ? [...cbs].filter(cb => cb.checked).map(cb => cb.value) : Object.keys(TYPE_COLORS);
+  const types = Object.keys(TYPE_COLORS).filter(t => DATA.drawdown_timeline[t] && active.includes(t));
+  const qs = ALL_QS;
+  const datasets = types.map(type => {
+    const m = {}; DATA.drawdown_timeline[type].forEach(d => { m[d.q] = d.dd; });
+    return { label: type, data: qs.map(q => m[q] ?? null), borderColor: TYPE_COLORS[type], backgroundColor: hex2rgba(TYPE_COLORS[type], .06), borderWidth: 1.4, pointRadius: 0, tension: 0.3, fill: 'origin', spanGaps: true };
+  });
+  if (chartDdTimeline) chartDdTimeline.destroy();
+  chartDdTimeline = new Chart(document.getElementById('chartDrawdownTimeline'), {
+    type: 'line', data: { labels: qs, datasets },
+    options: {
+      ...CHART_DEFAULTS, maintainAspectRatio: false,
+      plugins: { ...CHART_DEFAULTS.plugins, tooltip: { ...CHART_DEFAULTS.plugins.tooltip, mode: 'index', intersect: false, callbacks: { label: ctx => ctx.parsed.y != null ? ` ${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}%` : null } } },
+      scales: {
+        x: { ...CHART_DEFAULTS.scales.x, ticks: { ...CHART_DEFAULTS.scales.x.ticks, callback: (v,i) => qs[i]?.endsWith('Q1') && parseInt(qs[i])%5===0 ? qs[i].replace('Q1','') : '', maxRotation: 0 } },
+        y: { ...CHART_DEFAULTS.scales.y, max: 5, ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => v.toFixed(0)+'%', maxTicksLimit: 4 } }
+      }
+    },
+    plugins: [crisisPlugin],
+  });
+}
+
+// ── Scatter H1 ────────────────────────────────────────────────────────────────
+let chartScatter = null;
+function renderScatter() {
+  const byPeriod = {};
+  DATA.macro.forEach(d => {
+    if (!byPeriod[d.period]) byPeriod[d.period] = [];
+    byPeriod[d.period].push({ x: d.bond_lag2, y: d.n_tx, q: d.q });
+  });
+  const datasets = Object.entries(byPeriod).map(([p, pts]) => ({
+    label: p, data: pts,
+    backgroundColor: hex2rgba(PERIOD_COLORS[p]||'#6366f1', .85),
+    borderColor: PERIOD_COLORS[p]||'#6366f1',
+    showLine: true, borderWidth: 1.3, pointRadius: 3, pointHoverRadius: 5, tension: 0,
   }));
-  if (chartAnnual) chartAnnual.destroy();
-  chartAnnual = new Chart(document.getElementById('chartAnnual'), {
-    type: 'line',
-    data: { labels: years, datasets },
+  if (chartScatter) chartScatter.destroy();
+  chartScatter = new Chart(document.getElementById('chartScatter'), {
+    type: 'scatter', data: { datasets },
     options: {
       ...CHART_DEFAULTS,
-      plugins: { ...CHART_DEFAULTS.plugins, tooltip: { ...CHART_DEFAULTS.plugins.tooltip, mode: 'index', intersect: false, callbacks: { label: ctx => ctx.parsed.y ? ` ${ctx.dataset.label}: DKK ${ctx.parsed.y.toLocaleString()}` : null } } },
+      plugins: { ...CHART_DEFAULTS.plugins, tooltip: { ...CHART_DEFAULTS.plugins.tooltip,
+        callbacks: { title: ctx => `${ctx[0].raw.q} · ${ctx[0].dataset.label}`, label: ctx => ` Bono lag2: ${ctx.parsed.x.toFixed(2)}% · Volumen: ${ctx.parsed.y.toLocaleString()}` }
+      } },
       scales: {
-        x: { ...CHART_DEFAULTS.scales.x },
-        y: { ...CHART_DEFAULTS.scales.y, ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => 'DKK '+(v/1000).toFixed(0)+'k' } }
+        x: { ...CHART_DEFAULTS.scales.x, title: { display: true, text: 'Rendimiento bono hipotecario rezago 2Q (%)', color: '#8892aa', font: { size: 10 } }, ticks: { ...CHART_DEFAULTS.scales.x.ticks, callback: v => v.toFixed(1)+'%' } },
+        y: { ...CHART_DEFAULTS.scales.y, title: { display: true, text: 'N° transacciones trimestre', color: '#8892aa', font: { size: 10 } }, ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => (v/1000).toFixed(0)+'k' } }
       }
     }
   });
-  makeLegend('annual-legend', REGION_COLORS);
+  makeLegend('scatter-legend', PERIOD_COLORS);
+
+  const k = DATA.kpis;
+  const corrVals = DATA.macro_raw.map(d => parseFloat(d.volume_bond_corr)).filter(v => !isNaN(v));
+  const negPct = corrVals.length ? Math.round(corrVals.filter(v => v < 0).length / corrVals.length * 100) : 0;
+  const el = document.getElementById('ti-scatter');
+  if (el) el.innerHTML = `<strong>H1 confirmada:</strong> correlación rolling negativa en <strong>${negPct}%</strong> de los trimestres. Regímenes de bonos bajos coinciden con volúmenes altos; alzas (GFC, 2022+) anticipan caídas con rezago 1–2Q.`;
 }
 
-// ── Sección Modelado ──────────────────────────────────────────────────────────
-const MODEL_COLORS = {
-  'M1_Linear': '#94a3b8', 'M2_Ridge': '#60a5fa',
-  'M3_RandomForest': '#34d399', 'M4_XGBoost': '#f59e0b',
-};
-let MODEL_STATE = null;
-let chartImportance, chartCV, chartPredScatter;
+// ── Rolling correlation ────────────────────────────────────────────────────────
+let chartRollingCorr = null;
+function renderRollingCorr() {
+  const qs = ALL_QS;
+  const corrByQ = {};
+  DATA.macro_raw.forEach(d => { const v = parseFloat(d.volume_bond_corr); if (!isNaN(v)) corrByQ[d.quarter] = v; });
+  if (chartRollingCorr) chartRollingCorr.destroy();
+  chartRollingCorr = new Chart(document.getElementById('chartRollingCorr'), {
+    type: 'line',
+    data: { labels: qs, datasets: [
+      { label: 'Correlación rolling 8Q', data: qs.map(q => corrByQ[q] ?? null), borderColor: '#6366f1', backgroundColor: 'rgba(248,113,113,.1)', borderWidth: 1.8, pointRadius: 0, tension: 0.35, fill: 'origin', spanGaps: false },
+      { label: '0', data: qs.map(() => 0), borderColor: 'rgba(139,146,170,.3)', borderWidth: 1, borderDash: [3,3], pointRadius: 0, fill: false },
+    ] },
+    options: {
+      ...CHART_DEFAULTS, maintainAspectRatio: false,
+      plugins: { ...CHART_DEFAULTS.plugins, tooltip: { ...CHART_DEFAULTS.plugins.tooltip, mode: 'index', intersect: false, filter: ctx => ctx.dataset.label !== '0', callbacks: { label: ctx => ctx.parsed.y != null ? ` Corr: ${ctx.parsed.y.toFixed(3)}` : null } } },
+      scales: {
+        x: { ...CHART_DEFAULTS.scales.x, ticks: { ...CHART_DEFAULTS.scales.x.ticks, callback: (v,i) => qs[i]?.endsWith('Q1') ? qs[i].replace('Q1','') : '' } },
+        y: { ...CHART_DEFAULTS.scales.y, min: -1.1, max: 1.1, ticks: { ...CHART_DEFAULTS.scales.y.ticks, callback: v => v.toFixed(1), maxTicksLimit: 5 } }
+      }
+    },
+    plugins: [crisisPlugin],
+  });
+}
+
+// ── Model section ──────────────────────────────────────────────────────────────
+const MODEL_COLORS = { 'M1_Linear':'#94a3b8','M2_Ridge':'#60a5fa','M3_RandomForest':'#34d399','M4_XGBoost':'#f59e0b' };
+let MODEL_STATE = null, chartImportance, chartCV, chartPredScatter;
 
 function fmtDKK(n) {
   if (!isFinite(n)) return '—';
-  if (Math.abs(n) >= 1e6) return (n/1e6).toFixed(2)+'M';
-  if (Math.abs(n) >= 1e3) return (n/1e3).toFixed(0)+'k';
+  if (Math.abs(n)>=1e6) return (n/1e6).toFixed(2)+'M';
+  if (Math.abs(n)>=1e3) return (n/1e3).toFixed(0)+'k';
   return n.toFixed(0);
 }
-function fmtPct(n, digits = 1) { return isFinite(n) ? n.toFixed(digits)+'%' : '—'; }
 
 function buildModelState({ modelCmp, modelImp, modelCv, modelPred }) {
-  if (!modelCmp || modelCmp.length === 0) { MODEL_STATE = null; return; }
+  if (!modelCmp || !modelCmp.length) { MODEL_STATE = null; return; }
   const comparison = modelCmp.map(r => ({
     model: r.model,
     train_r2: parseFloat(r.train_r2), test_r2: parseFloat(r.test_r2),
     train_mae: parseFloat(r.train_mae), test_mae: parseFloat(r.test_mae),
     train_mape: parseFloat(r.train_mape_pct), test_mape: parseFloat(r.test_mape_pct),
     test_rmse: parseFloat(r.test_rmse),
-    n_train: parseInt(r.n_train), n_test: parseInt(r.n_test),
   }));
   const champion = comparison.slice().sort((a,b) => b.test_r2 - a.test_r2)[0]?.model || null;
   MODEL_STATE = {
     comparison, champion,
-    importance: (modelImp || []).map(r => ({ model: r.model, feature: r.feature, importance: parseFloat(r.importance) })),
-    cv: (modelCv || []).map(r => ({ fold: parseInt(r.fold), model: r.model, train_start: parseInt(r.train_start), train_end: parseInt(r.train_end), test_start: parseInt(r.test_start), test_end: parseInt(r.test_end), n_train: parseInt(r.n_train), n_test: parseInt(r.n_test), r2: parseFloat(r.r2), mae: parseFloat(r.mae), mape: parseFloat(r.mape_pct) })),
-    predictions: (modelPred || []).map(r => ({ model: r.model, year: parseInt(r.year), y_true: parseFloat(r.y_true), y_pred: parseFloat(r.y_pred), residual: parseFloat(r.residual) })),
+    importance: (modelImp||[]).map(r => ({ model: r.model, feature: r.feature, importance: parseFloat(r.importance) })),
+    cv: (modelCv||[]).map(r => ({ fold: parseInt(r.fold), model: r.model, train_start: parseInt(r.train_start), train_end: parseInt(r.train_end), test_start: parseInt(r.test_start), test_end: parseInt(r.test_end), r2: parseFloat(r.r2) })),
+    predictions: (modelPred||[]).map(r => ({ model: r.model, year: parseInt(r.year), y_true: parseFloat(r.y_true), y_pred: parseFloat(r.y_pred), residual: parseFloat(r.residual) })),
   };
 }
 
 function renderModelComparison() {
-  if (!MODEL_STATE || !MODEL_STATE.comparison.length) return;
+  if (!MODEL_STATE) { document.getElementById('no-model-msg').style.display='block'; document.getElementById('model-section').style.display='none'; return; }
   const { comparison: rows, champion: champ } = MODEL_STATE;
-  const header = `<table style="width:100%;border-collapse:collapse;font-size:0.84rem"><thead><tr style="border-bottom:1px solid var(--border);color:var(--muted);font-size:0.74rem;text-transform:uppercase;letter-spacing:0.04em"><th style="text-align:left;padding:8px 6px">Modelo</th><th style="text-align:right;padding:8px 6px">train R²</th><th style="text-align:right;padding:8px 6px">test R²</th><th style="text-align:right;padding:8px 6px">test MAE</th><th style="text-align:right;padding:8px 6px">test MAPE</th><th style="text-align:right;padding:8px 6px">test RMSE</th></tr></thead><tbody>`;
+  const hdr = `<table style="width:100%;border-collapse:collapse;font-size:.83rem"><thead><tr style="border-bottom:1px solid var(--border);color:var(--muted);font-size:.7rem;text-transform:uppercase;letter-spacing:.04em"><th style="text-align:left;padding:8px 6px">Modelo</th><th style="text-align:right;padding:8px 6px">train R²</th><th style="text-align:right;padding:8px 6px">test R²</th><th style="text-align:right;padding:8px 6px">test MAE</th><th style="text-align:right;padding:8px 6px">test MAPE</th><th style="text-align:right;padding:8px 6px">test RMSE</th></tr></thead><tbody>`;
   const body = rows.map(r => {
-    const isChamp = r.model === champ;
-    const champBadge = isChamp ? '<span style="color:#f59e0b;font-size:0.7rem;margin-left:6px">★ campeón</span>' : '';
-    return `<tr style="border-bottom:1px solid var(--border);${isChamp ? `background:rgba(245,158,11,0.06);border-left:2px solid ${MODEL_COLORS[r.model]||'#f59e0b'}` : ''}"><td style="padding:10px 8px;font-weight:${isChamp?600:500};color:${MODEL_COLORS[r.model]||'var(--text)'}">${r.model}${champBadge}</td><td style="text-align:right;padding:10px 6px;color:var(--muted)">${r.train_r2.toFixed(3)}</td><td style="text-align:right;padding:10px 6px;font-weight:${isChamp?600:500}">${r.test_r2.toFixed(3)}</td><td style="text-align:right;padding:10px 6px">${fmtDKK(r.test_mae)} DKK</td><td style="text-align:right;padding:10px 6px">${fmtPct(r.test_mape,1)}</td><td style="text-align:right;padding:10px 6px;color:var(--muted)">${fmtDKK(r.test_rmse)} DKK</td></tr>`;
+    const isC = r.model === champ;
+    return `<tr class="${isC?'model-champ-row':''}" style="border-bottom:1px solid var(--border)"><td style="padding:10px 8px;font-weight:${isC?600:400};color:${MODEL_COLORS[r.model]||'var(--text)'}">${r.model}${isC ? ' <span style="color:#f59e0b;font-size:.68rem">★ campeón</span>' : ''}</td><td style="text-align:right;padding:10px 6px;color:var(--muted)">${r.train_r2.toFixed(3)}</td><td style="text-align:right;padding:10px 6px;font-weight:${isC?600:400}">${r.test_r2.toFixed(3)}</td><td style="text-align:right;padding:10px 6px">${fmtDKK(r.test_mae)} DKK</td><td style="text-align:right;padding:10px 6px">${r.test_mape.toFixed(1)}%</td><td style="text-align:right;padding:10px 6px;color:var(--muted)">${fmtDKK(r.test_rmse)} DKK</td></tr>`;
   }).join('');
-  document.getElementById('model-comparison-table').innerHTML = header + body + '</tbody></table>';
-  const champRow = rows.find(r => r.model === champ);
-  document.getElementById('badge-champion').textContent = champ ? `★ ${champ} · R²=${champRow.test_r2.toFixed(3)}` : '— campeón';
-  const linealMape = rows.find(r => r.model === 'M1_Linear')?.test_mape || 0;
-  document.getElementById('model-takeaway').innerHTML = `<strong>${champ}</strong> reduce el error medio a <strong>${fmtDKK(champRow.test_mae)} DKK</strong> (MAPE ${fmtPct(champRow.test_mape)}), vs. ${fmtPct(linealMape)} del baseline lineal. El gap train→test de R²=${champRow.train_r2.toFixed(2)}→${champRow.test_r2.toFixed(2)} refleja distribution shift en el período 2018-2024 (boom post-COVID). Anti-leak guard validó las 41 features.`;
+  document.getElementById('model-comparison-table').innerHTML = hdr + body + '</tbody></table>';
+  const cr = rows.find(r => r.model === champ);
+  document.getElementById('badge-champion').textContent = champ ? `★ ${champ} · R²=${cr.test_r2.toFixed(3)}` : '—';
+  const linMape = rows.find(r => r.model === 'M1_Linear')?.test_mape || 0;
+  document.getElementById('model-takeaway').innerHTML = `<strong>${champ}</strong> logra MAE de <strong>${fmtDKK(cr.test_mae)} DKK</strong> (MAPE ${cr.test_mape.toFixed(1)}%) vs. ${linMape.toFixed(1)}% del baseline lineal. Gap train→test de R²=${cr.train_r2.toFixed(2)}→${cr.test_r2.toFixed(2)} refleja distribution shift en el boom post-COVID.`;
 }
 
 function renderFeatureImportance() {
   if (!MODEL_STATE) return;
-  const imp = MODEL_STATE.importance.filter(r => r.model === MODEL_STATE.champion).sort((a,b) => b.importance - a.importance).slice(0,10);
+  const imp = MODEL_STATE.importance.filter(r => r.model === MODEL_STATE.champion).sort((a,b) => b.importance-a.importance).slice(0,10);
   if (!imp.length) return;
   if (chartImportance) chartImportance.destroy();
   chartImportance = new Chart(document.getElementById('chartImportance'), {
     type: 'bar',
-    data: { labels: imp.map(r => r.feature), datasets: [{ label: 'Importance (%)', data: imp.map(r => +(r.importance*100).toFixed(2)), backgroundColor: '#f59e0b', borderColor: '#fb923c', borderWidth: 1 }] },
-    options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.x.toFixed(2)+'%' } } }, scales: { x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.08)' } }, y: { ticks: { color: '#e2e8f0', font: { size: 11 } }, grid: { display: false } } } },
+    data: { labels: imp.map(r => r.feature), datasets: [{ data: imp.map(r => +(r.importance*100).toFixed(2)), backgroundColor: '#f59e0b', borderColor: '#fb923c', borderWidth: 1 }] },
+    options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.x.toFixed(2)+'%' } } }, scales: { x: { ticks: { color:'#94a3b8' }, grid: { color:'rgba(148,163,184,.08)' } }, y: { ticks: { color:'#e2e8f0', font: { size:11 } }, grid: { display:false } } } },
   });
 }
 
 function renderCV() {
   if (!MODEL_STATE || !MODEL_STATE.cv.length) return;
-  const folds = [...new Set(MODEL_STATE.cv.map(r => r.fold))].sort((a,b) => a-b);
+  const folds = [...new Set(MODEL_STATE.cv.map(r => r.fold))].sort((a,b)=>a-b);
   const models = [...new Set(MODEL_STATE.cv.map(r => r.model))];
-  const datasets = models.map(m => ({ label: m, data: folds.map(f => { const row = MODEL_STATE.cv.find(r => r.fold===f && r.model===m); return row ? +row.r2.toFixed(3) : null; }), borderColor: MODEL_COLORS[m]||'#94a3b8', backgroundColor: MODEL_COLORS[m]||'#94a3b8', borderWidth: m===MODEL_STATE.champion?3:1.5, pointRadius: m===MODEL_STATE.champion?5:3, pointHoverRadius: 6, tension: 0.2 }));
-  const foldLabels = folds.map(f => { const r = MODEL_STATE.cv.find(x => x.fold===f); return r ? `F${f}\n${r.test_start}-${r.test_end}` : `F${f}`; });
+  const datasets = models.map(m => ({ label: m, data: folds.map(f => { const row = MODEL_STATE.cv.find(r => r.fold===f && r.model===m); return row ? +row.r2.toFixed(3) : null; }), borderColor: MODEL_COLORS[m]||'#94a3b8', backgroundColor: MODEL_COLORS[m]||'#94a3b8', borderWidth: m===MODEL_STATE.champion?3:1.5, pointRadius: m===MODEL_STATE.champion?5:3, tension: 0.2 }));
+  const foldLabels = folds.map(f => { const r = MODEL_STATE.cv.find(x => x.fold===f); return r ? `F${f} ${r.test_start}-${r.test_end}` : `F${f}`; });
   if (chartCV) chartCV.destroy();
   chartCV = new Chart(document.getElementById('chartCV'), {
     type: 'line', data: { labels: foldLabels, datasets },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 11 }, padding: 8, boxWidth: 12 } }, tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: R²=${ctx.parsed.y.toFixed(3)}` } } }, scales: { x: { ticks: { color: '#94a3b8', font: { size: 10 } }, grid: { color: 'rgba(148,163,184,0.08)' } }, y: { ticks: { color: '#94a3b8' }, title: { display: true, text: 'R² (escala nominal)', color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.08)' }, beginAtZero: true } } },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position:'bottom', labels: { color:'#94a3b8', font:{size:11}, padding:8, boxWidth:12 } }, tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: R²=${ctx.parsed.y?.toFixed(3)}` } } }, scales: { x: { ticks: { color:'#94a3b8', font:{size:10} }, grid:{color:'rgba(148,163,184,.08)'} }, y: { ticks: { color:'#94a3b8' }, title: { display:true, text:'R²', color:'#94a3b8' }, grid:{color:'rgba(148,163,184,.08)'}, beginAtZero:true } } },
   });
 }
 
@@ -1414,17 +1413,16 @@ function renderPredScatter() {
   if (!MODEL_STATE || !MODEL_STATE.predictions.length) return;
   const preds = MODEL_STATE.predictions;
   const years = [...new Set(preds.map(p => p.year))].sort();
-  const yearPalette = ['#60a5fa','#34d399','#f59e0b','#f87171','#a78bfa','#fb923c','#22d3ee'];
-  const colorOf = y => yearPalette[years.indexOf(y) % yearPalette.length];
-  const datasets = years.map(y => ({ label: String(y), data: preds.filter(p => p.year===y).map(p => ({ x: p.y_true, y: p.y_pred })), backgroundColor: colorOf(y)+'cc', borderColor: 'transparent', pointRadius: 2, pointHoverRadius: 4 }));
-  const maxV = Math.max(...preds.map(p => Math.max(p.y_true,p.y_pred)))*1.05;
-  datasets.push({ label: 'y_pred = y_true', data: [{x:0,y:0},{x:maxV,y:maxV}], type: 'line', borderColor: 'rgba(226,232,240,0.4)', borderDash: [4,4], borderWidth: 1, pointRadius: 0, fill: false });
+  const palette = ['#60a5fa','#34d399','#f59e0b','#f87171','#a78bfa','#fb923c','#22d3ee'];
+  const datasets = years.map((y, i) => ({ label: String(y), data: preds.filter(p => p.year===y).map(p => ({ x:p.y_true, y:p.y_pred })), backgroundColor: palette[i%palette.length]+'cc', borderColor:'transparent', pointRadius:2, pointHoverRadius:4 }));
+  const maxV = Math.max(...preds.map(p => Math.max(p.y_true, p.y_pred))) * 1.05;
+  datasets.push({ label:'Predicción perfecta', data:[{x:0,y:0},{x:maxV,y:maxV}], type:'line', borderColor:'rgba(226,232,240,.35)', borderDash:[4,4], borderWidth:1, pointRadius:0, fill:false });
   const mae = preds.reduce((s,p) => s+Math.abs(p.residual),0)/preds.length;
   document.getElementById('badge-pred-stats').textContent = `MAE muestral ${fmtDKK(mae)} DKK · n=${preds.length}`;
   if (chartPredScatter) chartPredScatter.destroy();
   chartPredScatter = new Chart(document.getElementById('chartPredScatter'), {
-    type: 'scatter', data: { datasets },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#94a3b8', font: { size: 11 }, padding: 8, boxWidth: 12 } }, tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: real=${fmtDKK(ctx.parsed.x)} pred=${fmtDKK(ctx.parsed.y)}` } } }, scales: { x: { type: 'linear', ticks: { color: '#94a3b8', callback: v => fmtDKK(v) }, title: { display: true, text: 'y_true (DKK)', color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.06)' } }, y: { type: 'linear', ticks: { color: '#94a3b8', callback: v => fmtDKK(v) }, title: { display: true, text: 'y_pred (DKK)', color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.06)' } } } },
+    type:'scatter', data:{datasets},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#94a3b8',font:{size:11},padding:8,boxWidth:12}},tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: real=${fmtDKK(ctx.parsed.x)} pred=${fmtDKK(ctx.parsed.y)}`}}},scales:{x:{type:'linear',ticks:{color:'#94a3b8',callback:v=>fmtDKK(v)},title:{display:true,text:'y_true (DKK)',color:'#94a3b8'},grid:{color:'rgba(148,163,184,.06)'}},y:{type:'linear',ticks:{color:'#94a3b8',callback:v=>fmtDKK(v)},title:{display:true,text:'y_pred (DKK)',color:'#94a3b8'},grid:{color:'rgba(148,163,184,.06)'}}}},
   });
 }
 
@@ -1432,44 +1430,32 @@ function renderPredScatter() {
 window.addEventListener('load', async () => {
   try {
     const raw = await loadMarts();
-    DATA = buildDataFromMarts(raw);
+    DATA = buildData(raw);
     rebuildIndices();
-
     renderKPIs();
-    updateInsights();
-
-    // H2 tab charts
+    renderSummary();
     renderRegionalIndex();
-    renderDistribution();
-    renderCities();
+    renderBonds();
     renderAnnual();
-
-    // H1 tab charts
+    renderCities();
     renderScatter();
     renderRollingCorr();
-
-    // H3 tab charts
     renderVolatility();
     renderHeatmap();
     renderDrawdownTimeline();
-
-    // Modelado (opcional)
     buildModelState(raw);
-    if (MODEL_STATE && MODEL_STATE.comparison.length) {
+    if (MODEL_STATE) {
       renderModelComparison();
       renderFeatureImportance();
       renderCV();
       renderPredScatter();
+    } else {
+      document.getElementById('no-model-msg').style.display = 'block';
+      document.getElementById('model-section').style.display = 'none';
     }
-  } catch (err) {
+  } catch(err) {
     console.error('Error cargando marts:', err);
-    document.getElementById('loading').innerHTML =
-      `<div style="text-align:center;color:#f87171;padding:20px;max-width:480px">
-        <div style="font-size:1.5rem;margin-bottom:8px">⚠</div>
-        <div style="font-weight:600;margin-bottom:6px">Error cargando datos</div>
-        <div style="font-size:0.82rem;color:#94a3b8">${err.message}</div>
-        <div style="font-size:0.75rem;color:#64748b;margin-top:10px">Verifica que data/marts/*.csv existen y que el server HTTP los está sirviendo.</div>
-       </div>`;
+    document.getElementById('loading').innerHTML = `<div style="text-align:center;color:#f87171;padding:20px;max-width:480px"><div style="font-size:1.4rem;margin-bottom:8px">⚠</div><div style="font-weight:600;margin-bottom:6px">Error cargando datos</div><div style="font-size:.82rem;color:#94a3b8">${err.message}</div><div style="font-size:.75rem;color:#64748b;margin-top:10px">Verifica que data/marts/*.csv existen y el servidor HTTP los está sirviendo.</div></div>`;
     return;
   }
   document.getElementById('loading').style.display = 'none';
