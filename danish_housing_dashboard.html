@@ -1284,6 +1284,7 @@ async function initChoropleth() {
     center: [56.0, 11.3], zoom: 6,
     zoomControl: true, scrollWheelZoom: false,
     attributionControl: false,
+    minZoom: 5, zoomSnap: 0, zoomDelta: 0.5,
   });
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
     subdomains: 'abcd', maxZoom: 19,
@@ -1308,6 +1309,26 @@ async function initChoropleth() {
     return;
   }
   updateChoropleth();
+  fitChoroToData();
+}
+
+// Ajusta zoom/centro a la geometría real para que Dinamarca llene el contenedor.
+// Se hace tras invalidateSize porque la pestaña venía oculta y Leaflet pudo leer
+// un tamaño de contenedor incorrecto (dejando el mapa chico en contenedores anchos).
+function fitChoroToData() {
+  if (!_leafletMap || !_geoLayer) return;
+  const apply = () => {
+    try {
+      _leafletMap.invalidateSize();
+      const b = _geoLayer.getBounds();
+      if (b.isValid()) {
+        _leafletMap.fitBounds(b, { padding: [6, 6] });
+        _leafletMap.setMaxBounds(b.pad(0.6));
+      }
+    } catch (_) {}
+  };
+  requestAnimationFrame(apply);
+  setTimeout(apply, 200);   // fallback por si el layout aún no estaba listo
 }
 
 function updateChoropleth() {
