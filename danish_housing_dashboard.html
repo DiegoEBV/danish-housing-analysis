@@ -243,20 +243,20 @@
       <div class="card p-4">
         <div class="flex items-start justify-between mb-2">
           <div>
-            <div class="section-title">Volatilidad vs Drawdown por Tipología</div>
-            <div class="section-sub">Eje X: volatilidad media trimestral &nbsp;|&nbsp; Eje Y: peor drawdown pico-valle &nbsp;|&nbsp; Tamaño: volumen total &nbsp;|&nbsp; Color: tipología</div>
+            <div class="section-title">Volatilidad y Drawdown por Tipología</div>
+            <div class="section-sub">Barras agrupadas · volatilidad media trimestral (σ%) y peor drawdown pico-valle · ordenado por riesgo</div>
           </div>
         </div>
-        <div style="position:relative;height:260px"><canvas id="chartBubble"></canvas></div>
+        <div style="position:relative;height:280px"><canvas id="chartBubble"></canvas></div>
         <div class="takeaway mt-2"><span class="takeaway-icon">→</span><span class="takeaway-text" id="ti-bubble">Cargando…</span></div>
       </div>
 
       <!-- Fila inferior: barras + tabla críticos -->
       <div class="rs-bottom">
 
-        <!-- Barras: drawdown por tipología -->
+        <!-- Barras: drawdown por región -->
         <div class="card p-4">
-          <div class="section-title mb-1">Drawdown por tipología</div>
+          <div class="section-title mb-1">Drawdown por región</div>
           <div class="section-sub mb-3">Caída pico-valle máxima · peor durante GFC</div>
           <div id="rs-dd-bars">Cargando…</div>
         </div>
@@ -994,85 +994,96 @@ function renderSummary() {
     n: txByType[t] || 10,
   })).filter(d => d.vol > 0);
 
-  // ── Bubble chart ─────────────────────────────────────────────────────────────
-  const maxN = Math.max(...bubbleData.map(d => d.n));
-  const datasets = bubbleData.map(d => ({
-    label: d.t,
-    data: [{
-      x: +d.vol.toFixed(3),                    // volatilidad en % (volatility_4q ya viene en %)
-      y: +d.dd.toFixed(1),                    // drawdown (negativo)
-      r: Math.max(8, Math.sqrt(d.n / maxN) * 38),
-    }],
-    backgroundColor: hex2rgba(TYPE_COLORS[d.t], 0.75),
-    borderColor: TYPE_COLORS[d.t],
-    borderWidth: 1.5,
-  }));
+  // ── Barras agrupadas horizontales: volatilidad + drawdown por tipología ────────
+  // Ordenar de mayor a menor riesgo (drawdown más negativo primero)
+  const sorted = [...bubbleData].sort((a,b) => a.dd - b.dd);
+
+  const labels  = sorted.map(d => d.t);
+  const volVals = sorted.map(d => +d.vol.toFixed(2));
+  const ddVals  = sorted.map(d => +Math.abs(d.dd).toFixed(1));
+  const barColors = sorted.map(d => TYPE_COLORS[d.t] || '#6366f1');
 
   if (chartBubble) chartBubble.destroy();
   chartBubble = new Chart(document.getElementById('chartBubble'), {
-    type: 'bubble',
-    data: { datasets },
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        {
+          label: 'Volatilidad σ (%)',
+          data: volVals,
+          backgroundColor: sorted.map(d => hex2rgba(TYPE_COLORS[d.t]||'#6366f1', 0.55)),
+          borderColor:     sorted.map(d => TYPE_COLORS[d.t]||'#6366f1'),
+          borderWidth: 1.5,
+          borderRadius: 3,
+        },
+        {
+          label: '|Drawdown| (%)',
+          data: ddVals,
+          backgroundColor: sorted.map(d => hex2rgba(TYPE_COLORS[d.t]||'#6366f1', 0.25)),
+          borderColor:     sorted.map(d => TYPE_COLORS[d.t]||'#6366f1'),
+          borderWidth: 1.5,
+          borderRadius: 3,
+          borderDash: [4, 3],
+        },
+      ],
+    },
     options: {
-      responsive: true, maintainAspectRatio: false, animation: { duration: 500 },
+      indexAxis: 'y',
+      responsive: true, maintainAspectRatio: false, animation: { duration: 400 },
       plugins: {
-        legend: { display: true, position: 'right', labels: { color: '#8892aa', font: { size: 11 }, padding: 10, boxWidth: 12,
-          generateLabels: chart => chart.data.datasets.map((ds, i) => ({
-            text: ds.label, fillStyle: ds.backgroundColor, strokeStyle: ds.borderColor,
-            lineWidth: 1.5, hidden: false, index: i, datasetIndex: i,
-          }))
-        } },
+        legend: { display: true, position: 'top', labels: { color: '#8892aa', font: { size: 11 }, padding: 14, boxWidth: 12 } },
         tooltip: {
           backgroundColor: '#1a1d27', borderColor: '#2e3245', borderWidth: 1,
           titleColor: '#e2e8f0', bodyColor: '#8892aa', padding: 10,
           callbacks: {
-            title: ctx => ctx[0].dataset.label,
-            label: ctx => [
-              ` Volatilidad: ${ctx.parsed.x.toFixed(2)}% / trim`,
-              ` Peor drawdown: ${ctx.parsed.y.toFixed(1)}%`,
-              ` Región más afectada: ${bubbleData.find(d => d.t === ctx.dataset.label)?.region || '—'}`,
-            ],
-          }
+            label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.x.toFixed(2)}%`,
+            afterBody: (items) => {
+              const t = sorted[items[0].dataIndex];
+              return t ? [`  Región más afectada: ${t.region}`] : [];
+            },
+          },
         },
       },
       scales: {
         x: {
-          title: { display: true, text: 'Volatilidad media trimestral (%)', color: '#8892aa', font: { size: 10 } },
-          grid: { color: '#2e3245', lineWidth: 0.5 }, ticks: { color: '#8892aa', font: { size: 10 }, callback: v => v.toFixed(1)+'%' },
+          title: { display: true, text: '% (σ volatilidad · |drawdown máx|)', color: '#8892aa', font: { size: 10 } },
+          grid: { color: '#2e3245', lineWidth: 0.5 },
+          ticks: { color: '#8892aa', callback: v => v + '%' },
         },
         y: {
-          title: { display: true, text: 'Peor drawdown (%)', color: '#8892aa', font: { size: 10 } },
-          grid: { color: '#2e3245', lineWidth: 0.5 }, ticks: { color: '#8892aa', font: { size: 10 }, callback: v => v.toFixed(0)+'%' },
-          max: 5,
+          grid: { display: false },
+          ticks: { color: '#e2e8f0', font: { size: 12 } },
         },
       },
     },
   });
 
-  // Takeaway burbuja
-  const riskiest = [...bubbleData].sort((a,b) => a.dd - b.dd)[0];
-  const safest   = [...bubbleData].sort((a,b) => b.dd - a.dd)[0];
+  // Takeaway
+  const riskiest = sorted[0];
+  const safest   = sorted[sorted.length - 1];
   const el = document.getElementById('ti-bubble');
-  if (el && riskiest) el.innerHTML = `<strong>${riskiest.t}</strong> concentra el mayor riesgo (drawdown ${riskiest.dd.toFixed(1)}%, vol σ=${riskiest.vol.toFixed(3)}). <strong>${safest?.t}</strong> es la tipología más estable (drawdown ${safest.dd.toFixed(1)}%). La posición superior-izquierda indica menor volatilidad Y menor drawdown — zona de menor riesgo.`;
+  if (el && riskiest) el.innerHTML = `<strong>${riskiest.t}</strong> registra el mayor riesgo: drawdown ${riskiest.dd.toFixed(1)}% y volatilidad σ=${riskiest.vol.toFixed(2)}%. <strong>${safest.t}</strong> es la tipología más estable (drawdown ${safest.dd.toFixed(1)}%). Las barras sólidas muestran volatilidad; las transparentes, profundidad de caída.`;
 
-  // ── Barras drawdown por tipología ────────────────────────────────────────────
-  const sorted = [...bubbleData].sort((a,b) => a.dd - b.dd);
-  const minDd  = Math.min(...sorted.map(d => d.dd));
+  // ── Barras drawdown por región (panel inferior-izquierdo) ─────────────────────
+  const worstDdByRegion = {};
+  dd.forEach(d => {
+    if (!worstDdByRegion[d.region] || d.worst_dd < worstDdByRegion[d.region])
+      worstDdByRegion[d.region] = d.worst_dd;
+  });
+  const regEntries = Object.entries(worstDdByRegion).sort((a,b) => a[1]-b[1]);
+  const minReg = Math.min(...regEntries.map(e => e[1]));
   let barsHtml = '';
-  sorted.forEach(d => {
-    const pct = minDd !== 0 ? (d.dd / minDd * 100).toFixed(1) : 0;
-    const color = TYPE_COLORS[d.t] || '#6366f1';
-    // color rojo a verde según severidad
-    const severity = d.dd / minDd; // 1=peor, 0=mejor
+  regEntries.forEach(([reg, val]) => {
+    const pct = minReg !== 0 ? (val / minReg * 100).toFixed(1) : 0;
+    const severity = val / minReg;
     const barColor = severity > 0.8 ? '#f87171' : severity > 0.5 ? '#f59e0b' : '#34d399';
     barsHtml += `<div class="rs-bar-row">
-      <div class="rs-bar-label">${d.t}</div>
-      <div class="rs-bar-wrap">
-        <div class="rs-bar-fill" style="width:${pct}%;background:${barColor}">${d.dd.toFixed(1)}%</div>
-      </div>
-      <div class="rs-bar-val" style="color:${barColor}">${d.dd.toFixed(1)}%</div>
+      <div class="rs-bar-label">${reg}</div>
+      <div class="rs-bar-wrap"><div class="rs-bar-fill" style="width:${pct}%;background:${barColor}">${val.toFixed(1)}%</div></div>
     </div>`;
   });
-  document.getElementById('rs-dd-bars').innerHTML = barsHtml;
+  document.getElementById('rs-dd-bars').innerHTML = barsHtml || '<span style="color:var(--muted);font-size:.8rem">Sin datos</span>';
 
   // ── Tabla casos críticos ─────────────────────────────────────────────────────
   const corrVals = mc.map(d => parseFloat(d.volume_bond_corr)).filter(v => !isNaN(v));
