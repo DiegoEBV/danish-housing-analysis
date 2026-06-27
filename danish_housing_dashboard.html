@@ -5,8 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Mercado Residencial Danés 1992–2024</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+<link rel="stylesheet" href="/MarkerCluster.css"/>
+<link rel="stylesheet" href="/MarkerCluster.Default.css"/>
 <script src="/chart.umd.min.js"></script>
+<script src="/chartjs-chart-matrix.min.js"></script>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="/leaflet.markercluster.js"></script>
+<script src="/chroma.min.js"></script>
+<script src="/topojson-client.min.js"></script>
 <style>
   *{box-sizing:border-box;margin:0;padding:0}
   :root{
@@ -386,7 +392,7 @@
     <div class="card p-5">
       <div class="flex items-start justify-between mb-3 gap-2">
         <div>
-          <div class="section-title">Mapa Coroplético · Precio promedio por Región</div>
+          <div class="section-title">Mapa Coroplético · Precio real/m² por Código Postal</div>
           <div class="section-sub" id="choro-sub">Precio real DKK/m² · Hover para detalle</div>
         </div>
         <select id="choro-year" onchange="updateChoropleth()">
@@ -402,13 +408,9 @@
         </select>
       </div>
       <div id="choroMap"></div>
-      <!-- Color legend -->
-      <div class="flex items-center gap-2 mt-3">
-        <span style="font-size:.7rem;color:var(--muted)">Menor precio</span>
-        <div style="flex:1;height:8px;border-radius:4px;background:linear-gradient(to right,#312e81,#4f46e5,#6366f1,#818cf8,#a5b4fc,#c7d2fe)"></div>
-        <span style="font-size:.7rem;color:var(--muted)">Mayor precio</span>
-      </div>
-      <div class="takeaway mt-2"><span class="takeaway-icon">→</span><span class="takeaway-text"><strong>Concentración geográfica confirmada:</strong> Zealand (región capital) lidera en precio/m² en todos los años. Bornholm y Fyn muestran precios 2–3× menores, reflejando la segmentación estructural del mercado danés.</span></div>
+      <!-- Color legend (dynamic, quantile bins) -->
+      <div id="choro-legend" class="flex items-center mt-3" style="gap:2px;flex-wrap:wrap;font-size:.66rem;color:var(--muted)"></div>
+      <div class="takeaway mt-2"><span class="takeaway-icon">→</span><span class="takeaway-text"><strong>Concentración geográfica confirmada:</strong> el detalle por código postal (≈900 áreas) revela que el premio de precio se concentra en el centro de Copenhague y la franja costera de Zealand, mientras Jutlandia, Fyn y Bornholm quedan 2–3× por debajo.</span></div>
     </div>
 
     <!-- Region stats + top cities -->
@@ -656,7 +658,7 @@ function switchTab(id) {
   // Charts inicializados en pestañas ocultas quedan con dimensiones 0 — forzar resize
   requestAnimationFrame(() => {
     [chartReg, chartBonds, chartAnnual, chartScatter, chartRollingCorr,
-     chartDdTimeline, chartImportance, chartCV, chartPredScatter,
+     chartDdTimeline, chartDdHeatmap, chartImportance, chartCV, chartPredScatter,
      ...chartVolSmall].forEach(c => { try { c?.resize(); } catch(_) {} });
   });
 }
@@ -817,6 +819,26 @@ function buildData({ ri, dd, vol, mc, mp }) {
     });
   });
 
+  // Zip-level prices by year (for granular choropleth + city points) — from mp
+  const zipAgg = {};
+  mp.forEach(d => {
+    const y = parseInt(d.year), p = parseFloat(d.avg_sqm_price_real), n = parseInt(d.n_transactions) || 0;
+    const zip = (d.zip_code || '').trim();
+    if (isNaN(y) || isNaN(p) || p <= 0 || !zip) return;
+    if (!zipAgg[y]) zipAgg[y] = {};
+    if (!zipAgg[y][zip]) zipAgg[y][zip] = { s: 0, c: 0, city: d.city, region: d.region };
+    zipAgg[y][zip].s += p * n; zipAgg[y][zip].c += n;
+  });
+  const zip_prices = {};
+  Object.entries(zipAgg).forEach(([y, zips]) => {
+    zip_prices[parseInt(y)] = {};
+    Object.entries(zips).forEach(([zip, o]) => {
+      zip_prices[parseInt(y)][zip] = {
+        price: o.c > 0 ? Math.round(o.s / o.c) : 0, n: o.c, city: o.city, region: o.region,
+      };
+    });
+  });
+
   // KPIs
   const total_tx = mc.reduce((s, d) => s + (parseInt(d.n_transactions) || 0), 0);
   const peakQ = mc.reduce((a, b) => ((parseInt(b.n_transactions)||0) > (parseInt(a.n_transactions)||0)) ? b : a, mc[0] || {});
@@ -852,7 +874,7 @@ function buildData({ ri, dd, vol, mc, mp }) {
       latest_year: latestY,
     },
     regional_index, volatility, drawdown_summary, drawdown_timeline,
-    macro, macro_raw: mc, top_cities, reg_annual, region_prices, region_by_year,
+    macro, macro_raw: mc, top_cities, reg_annual, region_prices, region_by_year, zip_prices,
   };
 }
 
@@ -1239,85 +1261,121 @@ function renderAnnual() {
 }
 
 // ── Choropleth (Leaflet) ───────────────────────────────────────────────────────
-let _leafletMap = null, _geoLayer = null;
+let _leafletMap = null, _geoLayer = null, _cityLayer = null, _dkGeo = null, _colorScale = null;
 
-function priceColor(price, minP, maxP) {
-  const t = Math.max(0, Math.min(1, (price - minP) / (maxP - minP)));
-  // Dark indigo → bright indigo
-  const r = Math.round(49 + (99 - 49) * t);
-  const g = Math.round(46 + (102 - 46) * t);
-  const b = Math.round(129 + (241 - 129) * t);
-  return `rgb(${r},${g},${b})`;
-}
-
-function getRegionPricesForYear(year) {
-  const allYears = Object.keys(DATA.region_prices).map(Number).sort((a,b) => b-a);
-  const useYear = year === 'latest' ? allYears[0] : parseInt(year);
-  const prices = DATA.region_prices[useYear] || {};
-  // If year not found, use nearest available
-  if (Object.keys(prices).length === 0) {
-    const nearest = allYears.reduce((a, b) => Math.abs(b - useYear) < Math.abs(a - useYear) ? b : a, allYears[0]);
-    return { prices: DATA.region_prices[nearest] || {}, year: nearest };
+// Resolve a requested year to the nearest year that actually has zip-level data
+function getZipDataForYear(year) {
+  const allYears = Object.keys(DATA.zip_prices).map(Number).sort((a, b) => b - a);
+  let useYear = year === 'latest' ? allYears[0] : parseInt(year);
+  let zips = DATA.zip_prices[useYear];
+  if (!zips || !Object.keys(zips).length) {
+    useYear = allYears.reduce((a, b) => Math.abs(b - useYear) < Math.abs(a - useYear) ? b : a, allYears[0]);
+    zips = DATA.zip_prices[useYear] || {};
   }
-  return { prices, year: useYear };
+  return { zips, year: useYear };
 }
 
-function initChoropleth() {
+async function initChoropleth() {
   window._choroInited = true;
-  if (!window.L) { document.getElementById('choroMap').innerHTML = '<p style="color:var(--muted);padding:20px;text-align:center">Leaflet no disponible. Verifica conexión a internet.</p>'; return; }
+  const el = document.getElementById('choroMap');
+  if (!window.L) { el.innerHTML = '<p style="color:var(--muted);padding:20px;text-align:center">Leaflet no disponible. Verifica conexión a internet.</p>'; return; }
 
   _leafletMap = L.map('choroMap', {
-    center: [56.2, 10.5], zoom: 6,
+    center: [56.0, 11.3], zoom: 6,
     zoomControl: true, scrollWheelZoom: false,
     attributionControl: false,
   });
-
-  // Dark tile layer
   L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
     subdomains: 'abcd', maxZoom: 19,
   }).addTo(_leafletMap);
 
+  // City points overlay (clustered) — toggled via Leaflet's layer control
+  _cityLayer = L.markerClusterGroup({
+    chunkedLoading: true, maxClusterRadius: 45, showCoverageOnHover: false,
+  });
+  L.control.layers(null, { 'Ciudades (puntos)': _cityLayer },
+    { collapsed: false, position: 'topright' }).addTo(_leafletMap);
+
+  // Load postal-area geometry once (TopoJSON → GeoJSON)
+  try {
+    const r = await fetch('/dk-postnumre.topojson');
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const topo = await r.json();
+    const objName = Object.keys(topo.objects)[0];
+    _dkGeo = topojson.feature(topo, topo.objects[objName]);
+  } catch (e) {
+    el.innerHTML = '<p style="color:var(--muted);padding:20px;text-align:center">No se pudo cargar el mapa de códigos postales (' + e.message + ').</p>';
+    return;
+  }
   updateChoropleth();
 }
 
 function updateChoropleth() {
-  if (!_leafletMap) return;
+  if (!_leafletMap || !_dkGeo) return;
   const yearSel = document.getElementById('choro-year')?.value || 'latest';
-  const { prices, year } = getRegionPricesForYear(yearSel);
-  document.getElementById('choro-sub').textContent = `Precio real DKK/m² · Año ${year} · Hover para detalle`;
+  const { zips, year } = getZipDataForYear(yearSel);
+  document.getElementById('choro-sub').textContent =
+    `Precio real DKK/m² · ${Object.keys(zips).length} códigos postales · Año ${year}`;
 
-  const priceVals = Object.values(prices).filter(p => p > 0);
+  const priceVals = Object.values(zips).map(z => z.price).filter(p => p > 0);
   if (!priceVals.length) return;
-  const minP = Math.min(...priceVals), maxP = Math.max(...priceVals);
 
-  if (_geoLayer) { _leafletMap.removeLayer(_geoLayer); }
-  _geoLayer = L.geoJSON(DENMARK_GEOJSON, {
+  // Quantile bins: København es un outlier brutal → una escala lineal aplana el resto
+  const bins = chroma.limits(priceVals, 'q', 7);
+  _colorScale = chroma.scale(['#312e81', '#4f46e5', '#6366f1', '#818cf8', '#a5b4fc', '#fcd34d', '#f97316'])
+    .domain(bins).mode('lab');
+  const fill = p => (p > 0 ? _colorScale(p).hex() : '#2a2e3f');
+
+  // Choropleth por área postal
+  if (_geoLayer) _leafletMap.removeLayer(_geoLayer);
+  _geoLayer = L.geoJSON(_dkGeo, {
     style: feature => {
-      const reg = feature.properties.region;
-      const p = prices[reg] || 0;
-      return {
-        fillColor: p > 0 ? priceColor(p, minP, maxP) : '#2e3245',
-        weight: 1.5, opacity: 1, color: '#1a1d27',
-        fillOpacity: p > 0 ? 0.75 : 0.3,
-      };
+      const z = zips[feature.properties.nr];
+      const p = z ? z.price : 0;
+      return { fillColor: fill(p), weight: 0.4, opacity: 1, color: '#11141c', fillOpacity: p > 0 ? 0.82 : 0.12 };
     },
     onEachFeature: (feature, layer) => {
-      const reg = feature.properties.region;
-      const p = prices[reg];
-      const ntot = DATA.region_by_year[year]?.[reg];
-      const nStr = ntot ? ` · ${ntot.c.toLocaleString()} tx` : '';
+      const nr = feature.properties.nr, z = zips[nr];
+      const name = feature.properties.navn || (z && z.city) || '';
       layer.bindTooltip(
-        `<strong style="color:#e2e8f0">${reg}</strong><br/>` +
-        (p ? `DKK ${p.toLocaleString()}/m²${nStr}` : 'Sin datos'),
-        { sticky: true }
-      );
-      layer.on('mouseover', function() { this.setStyle({ weight: 3, color: '#6366f1' }); });
-      layer.on('mouseout', function() { _geoLayer.resetStyle(this); });
-    }
+        `<strong style="color:#e2e8f0">${nr} ${name}</strong><br/>` +
+        (z && z.price ? `DKK ${z.price.toLocaleString()}/m² · ${z.n.toLocaleString()} tx` : 'Sin datos'),
+        { sticky: true });
+      layer.on('mouseover', function () { this.setStyle({ weight: 2, color: '#e2e8f0' }); this.bringToFront(); });
+      layer.on('mouseout', function () { _geoLayer.resetStyle(this); });
+    },
   }).addTo(_leafletMap);
 
-  // Region stats table
-  renderRegionStats(prices);
+  // City points (clustered) — rebuilt per year on the persistent cluster group
+  _cityLayer.clearLayers();
+  _dkGeo.features.forEach(f => {
+    const z = zips[f.properties.nr];
+    if (!z || !z.price) return;
+    const lon = +f.properties.visueltcenter_x, lat = +f.properties.visueltcenter_y;
+    if (isNaN(lon) || isNaN(lat)) return;
+    const m = L.circleMarker([lat, lon], {
+      radius: 4, weight: 1, color: '#11141c', fillColor: fill(z.price), fillOpacity: 0.95,
+    });
+    m.bindTooltip(`<strong>${f.properties.nr} ${f.properties.navn || z.city}</strong><br/>DKK ${z.price.toLocaleString()}/m² · ${z.n.toLocaleString()} tx`, { sticky: true });
+    _cityLayer.addLayer(m);
+  });
+
+  renderChoroLegend(bins);
+  renderRegionStats(DATA.region_prices[year] || {});
+}
+
+function renderChoroLegend(bins) {
+  const el = document.getElementById('choro-legend');
+  if (!el || !_colorScale) return;
+  let html = '<span style="margin-right:4px;font-weight:600">DKK/m²</span>';
+  for (let i = 0; i < bins.length - 1; i++) {
+    const mid = (bins[i] + bins[i + 1]) / 2;
+    const lo = Math.round(bins[i] / 1000), hi = Math.round(bins[i + 1] / 1000);
+    html += `<span style="display:inline-flex;align-items:center;gap:3px;margin-right:7px">` +
+      `<span style="width:14px;height:10px;border-radius:2px;background:${_colorScale(mid).hex()};display:inline-block"></span>` +
+      `${lo}–${hi}k</span>`;
+  }
+  el.innerHTML = html;
 }
 
 function renderRegionStats(prices) {
@@ -1426,37 +1484,80 @@ function renderVolatility() {
 }
 
 // ── Heatmap drawdowns ──────────────────────────────────────────────────────────
+let chartDdHeatmap = null;
 function renderHeatmap() {
   const dd = DATA.drawdown_summary;
-  const REGIONS = Object.keys(REGION_COLORS);
+  const REGIONS = Object.keys(REGION_COLORS);   // top → bottom order we want
   const TYPES = Object.keys(TYPE_COLORS);
   const lookup = {};
   dd.forEach(d => { lookup[d.region + '|' + d.house_type] = d.worst_dd; });
   const vals = dd.map(d => d.worst_dd);
-  const minV = Math.min(...vals);
-  function cellColor(v) {
-    const t = Math.max(0, Math.min(1, (v - minV) / (0 - minV)));
-    return `rgb(${Math.round(239*(1-t)+30*t)},${Math.round(68*(1-t)+120*t)},${Math.round(68*(1-t)+60*t)})`;
-  }
-  let html = '<div style="overflow-x:auto"><table style="width:100%;border-collapse:separate;border-spacing:4px"><thead><tr><th style="width:110px"></th>';
-  TYPES.forEach(t => { html += `<th style="font-size:.68rem;color:var(--muted);font-weight:600;text-align:center;padding-bottom:5px">${t}</th>`; });
-  html += '</tr></thead><tbody>';
-  REGIONS.forEach(reg => {
-    html += `<tr><td style="font-size:.72rem;color:var(--muted);font-weight:600;padding-right:6px;white-space:nowrap">${reg}</td>`;
-    TYPES.forEach(type => {
-      const v = lookup[reg + '|' + type];
-      if (v !== undefined) {
-        const bg = cellColor(v), tc = v < -25 ? '#fff' : '#1a1d27';
-        html += `<td><div class="dd-cell" style="background:${bg};color:${tc}" title="${reg} · ${type}: ${v}%">${v}%</div></td>`;
-      } else {
-        html += '<td><div class="dd-cell" style="background:var(--border);color:var(--muted)">N/A</div></td>';
-      }
-    });
-    html += '</tr>';
+  const minV = Math.min(...vals, -1);
+  const scale = chroma.scale(['#ef4444', '#fbbf24', '#1e7a3c']).domain([minV, minV * 0.4, 0]).mode('lab');
+
+  // Build matrix points (x = tipología, y = región)
+  const points = [];
+  REGIONS.forEach(reg => TYPES.forEach(type => {
+    points.push({ x: type, y: reg, v: lookup[reg + '|' + type] });
+  }));
+
+  const host = document.getElementById('ddHeatmap');
+  host.innerHTML =
+    '<div style="position:relative;height:210px"><canvas id="ddHeatmapCanvas"></canvas></div>' +
+    '<div class="flex items-center gap-2 mt-2" style="padding-left:4px"><span style="font-size:.68rem;color:var(--muted)">Peor</span>' +
+    '<div style="flex:1;height:5px;border-radius:3px;background:linear-gradient(to right,#ef4444,#fbbf24,#1e7a3c)"></div>' +
+    '<span style="font-size:.68rem;color:var(--muted)">Mejor</span></div>';
+
+  if (chartDdHeatmap) chartDdHeatmap.destroy();
+  chartDdHeatmap = new Chart(document.getElementById('ddHeatmapCanvas'), {
+    type: 'matrix',
+    data: {
+      datasets: [{
+        label: 'Drawdown',
+        data: points,
+        backgroundColor: c => { const v = c.raw.v; return v == null ? 'rgba(255,255,255,0.04)' : scale(v).hex(); },
+        borderColor: 'rgba(17,20,28,0.9)', borderWidth: 2,
+        width: c => ((c.chart.chartArea || {}).width || 0) / TYPES.length - 3,
+        height: c => ((c.chart.chartArea || {}).height || 0) / REGIONS.length - 3,
+      }],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      layout: { padding: { top: 2 } },
+      scales: {
+        x: { type: 'category', labels: TYPES, position: 'top', offset: true,
+             grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10.5 } }, border: { display: false } },
+        y: { type: 'category', labels: [...REGIONS].reverse(), offset: true,
+             grid: { display: false }, ticks: { color: '#94a3b8', font: { size: 10.5 } }, border: { display: false } },
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: {
+          title: () => '',
+          label: c => { const r = c.raw; return `${r.y} · ${r.x}: ${r.v == null ? 'N/A' : r.v + '%'}`; },
+        } },
+      },
+    },
+    plugins: [{
+      id: 'cellLabels',
+      afterDatasetsDraw(chart) {
+        const { ctx } = chart;
+        const meta = chart.getDatasetMeta(0);
+        ctx.save();
+        ctx.font = '600 10.5px -apple-system, sans-serif';
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        meta.data.forEach((el, i) => {
+          const v = points[i].v;
+          const cp = el.getCenterPoint ? el.getCenterPoint() : { x: el.x, y: el.y };
+          if (v == null) { ctx.fillStyle = '#64748b'; ctx.fillText('N/A', cp.x, cp.y); return; }
+          ctx.fillStyle = v < -25 ? '#fff' : '#11141c';
+          ctx.fillText(v + '%', cp.x, cp.y);
+        });
+        ctx.restore();
+      },
+    }],
   });
-  html += '</tbody></table></div>';
-  html += '<div class="flex items-center gap-2 mt-3" style="padding-left:116px"><span style="font-size:.68rem;color:var(--muted)">Peor</span><div style="flex:1;height:5px;border-radius:3px;background:linear-gradient(to right,rgb(239,68,68),rgb(30,120,60))"></div><span style="font-size:.68rem;color:var(--muted)">Mejor</span></div>';
-  document.getElementById('ddHeatmap').innerHTML = html;
+
   const k = DATA.kpis;
   const el = document.getElementById('ti-dd');
   if (el) el.innerHTML = `<strong>Peor drawdown: ${k.worst_dd_pct.toFixed(1)}% en ${k.worst_dd_type} / ${k.worst_dd_region}</strong> (${k.worst_dd_quarter}). Apartment y Townhouse absorben las caídas más severas por mayor dependencia de crédito hipotecario. Villa y Summerhouse son más resilientes que lo anticipado.`;
