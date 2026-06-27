@@ -124,6 +124,36 @@
   .model-champ-row{background:rgba(245,158,11,.06);border-left:2px solid #f59e0b}
   /* Crisis label */
   .crisis-label{font-size:.67rem;color:#f87171;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+  /* Resumen ejecutivo */
+  .rs-title-bar{background:linear-gradient(135deg,#1a1d27 0%,#1e2236 100%);border:1px solid #2e3245;border-left:4px solid var(--accent);border-radius:10px;padding:14px 20px;margin-bottom:14px}
+  .rs-title-bar h2{font-size:1.08rem;font-weight:700;color:var(--text);line-height:1.35}
+  .rs-title-bar p{font-size:.74rem;color:var(--muted);margin-top:4px}
+  .rs-main{display:grid;grid-template-columns:1fr 270px;gap:14px;align-items:start}
+  .rs-left{display:flex;flex-direction:column;gap:12px}
+  .rs-bottom{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .insights-panel{background:linear-gradient(160deg,#1e2a1a 0%,#1e2236 100%);border:1px solid rgba(245,158,11,.35);border-radius:12px;padding:18px}
+  .ins-panel-title{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#f59e0b;margin-bottom:4px}
+  .ins-panel-sub{font-size:.72rem;color:var(--muted);margin-bottom:14px}
+  .ins-item{padding:12px 0;border-bottom:1px solid rgba(245,158,11,.15)}
+  .ins-item:last-child{border-bottom:none;padding-bottom:0}
+  .ins-num{font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#f59e0b;margin-bottom:3px}
+  .ins-item-title{font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:4px;line-height:1.3}
+  .ins-item-metric{font-size:.8rem;font-weight:700;color:#f87171;margin-bottom:4px}
+  .ins-item-body{font-size:.75rem;color:var(--muted);line-height:1.5}
+  .ins-action-list{font-size:.75rem;color:#c4cbdc;line-height:1.7;margin-top:4px;padding-left:0;list-style:none}
+  .ins-action-list li::before{content:'→ ';color:#f59e0b;font-weight:700}
+  /* Resumen data bars */
+  .rs-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+  .rs-bar-label{width:110px;flex-shrink:0;font-size:.77rem;color:var(--muted);text-align:right;white-space:nowrap}
+  .rs-bar-wrap{flex:1;height:22px;background:var(--border);border-radius:4px;overflow:hidden;position:relative}
+  .rs-bar-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:8px;font-size:.72rem;font-weight:600;color:#fff;white-space:nowrap;transition:width .6s ease}
+  .rs-bar-val{width:70px;flex-shrink:0;font-size:.74rem;font-weight:600;text-align:right}
+  /* Critical table */
+  .crit-table{width:100%;border-collapse:collapse;font-size:.8rem}
+  .crit-table th{font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);padding:5px 8px;border-bottom:1px solid var(--border);text-align:left}
+  .crit-table td{padding:8px 8px;border-bottom:1px solid rgba(46,50,69,.4);vertical-align:middle}
+  .crit-table tr:last-child td{border-bottom:none}
+  @media(max-width:1000px){.rs-main{grid-template-columns:1fr}.rs-bottom{grid-template-columns:1fr}}
   select{background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-size:.8rem;cursor:pointer;outline:none}
   select:focus{border-color:var(--accent)}
   @media(max-width:900px){.grid-2,.grid-3{grid-template-columns:1fr}}
@@ -198,71 +228,104 @@
 <!-- RESUMEN                                    -->
 <!-- ═══════════════════════════════════════════ -->
 <div class="tab-section tab-visible" data-tab="resumen">
-  <div class="pregunta-callout mb-4">
-    <span style="color:var(--accent);font-style:normal;font-weight:600">Pregunta de investigación: </span>
-    ¿Cómo se diferencian los precios residenciales entre la región capital y las provincias danesas bajo distintos regímenes de tasas e inflación, y qué tipologías muestran mayor volatilidad y peores drawdowns durante las crisis financieras (1992–2024)?
+
+  <!-- Barra de título con pregunta analítica -->
+  <div class="rs-title-bar">
+    <h2>¿Qué tipologías y regiones concentran el mayor riesgo residencial y cómo influye el ciclo de tasas hipotecarias?</h2>
+    <p>Período: 1992–2024 &nbsp;|&nbsp; ~1.5M transacciones &nbsp;|&nbsp; Filtros: tipología, región, ciclo macro &nbsp;|&nbsp; Crisis de referencia: GFC 2007–2012</p>
   </div>
 
-  <!-- 3 hypothesis cards -->
-  <div class="grid-3 mb-4">
-    <div class="hyp-card hyp-supported">
-      <div class="hyp-badge" style="background:rgba(52,211,153,.15);color:#34d399">H1 · Soportada</div>
-      <div class="hyp-title">Tasas hipotecarias predicen caída de volumen con rezago 1–2 trimestres</div>
-      <div class="hyp-metric" style="color:#34d399" id="h1-metric">—</div>
-      <div class="hyp-detail" id="h1-detail">Cargando…</div>
-    </div>
-    <div class="hyp-card hyp-supported">
-      <div class="hyp-badge" style="background:rgba(52,211,153,.15);color:#34d399">H2 · Soportada</div>
-      <div class="hyp-title">Zealand duplica y protege mejor que provincias ante shocks macro</div>
-      <div class="hyp-metric" style="color:#6366f1" id="h2-metric">—</div>
-      <div class="hyp-detail" id="h2-detail">Cargando…</div>
-    </div>
-    <div class="hyp-card hyp-refined">
-      <div class="hyp-badge" style="background:rgba(245,158,11,.12);color:#f59e0b">H3 · Refinada</div>
-      <div class="hyp-title">Apartment/Townhouse más volátiles — no Summerhouse como se esperaba</div>
-      <div class="hyp-metric" style="color:#f59e0b" id="h3-metric">—</div>
-      <div class="hyp-detail" id="h3-detail">Cargando…</div>
-    </div>
-  </div>
+  <div class="rs-main">
+    <!-- Columna izquierda -->
+    <div class="rs-left">
 
-  <!-- 5 insights -->
-  <div class="section-heading">Hallazgos clave de los datos</div>
-  <div style="display:grid;grid-template-columns:1fr;gap:8px;margin-bottom:24px">
-    <div class="insight-card" id="ins-1">Cargando…</div>
-    <div class="insight-card" id="ins-2">Cargando…</div>
-    <div class="insight-card" id="ins-3">Cargando…</div>
-    <div class="insight-card" id="ins-4">Cargando…</div>
-    <div class="insight-card" id="ins-5">Cargando…</div>
-  </div>
+      <!-- Gráfico burbuja: volatilidad vs drawdown por tipología -->
+      <div class="card p-4">
+        <div class="flex items-start justify-between mb-2">
+          <div>
+            <div class="section-title">Volatilidad vs Drawdown por Tipología</div>
+            <div class="section-sub">Eje X: volatilidad media trimestral &nbsp;|&nbsp; Eje Y: peor drawdown pico-valle &nbsp;|&nbsp; Tamaño: volumen total &nbsp;|&nbsp; Color: tipología</div>
+          </div>
+        </div>
+        <div style="position:relative;height:260px"><canvas id="chartBubble"></canvas></div>
+        <div class="takeaway mt-2"><span class="takeaway-icon">→</span><span class="takeaway-text" id="ti-bubble">Cargando…</span></div>
+      </div>
 
-  <!-- Recomendaciones -->
-  <div class="section-heading">Recomendaciones</div>
-  <div class="grid-2 mb-6" style="gap:12px">
-    <div class="rec-card" style="border-left-color:#60a5fa">
-      <div class="rec-tag" style="color:#60a5fa">Inversor</div>
-      <div class="rec-title">Priorizar Apartment/Villa en Zealand sobre Summerhouse provincial</div>
-      <div class="rec-body">El diferencial drawdown entre tipologías estables en Zealand y recreativas en periferia es sustancial. Zealand ofrece mayor protección pico-valle. Trade-off: entrada más cara y menor yield bruto.</div>
-    </div>
-    <div class="rec-card" style="border-left-color:#f87171">
-      <div class="rec-tag" style="color:#f87171">Analista de riesgo</div>
-      <div class="rec-title">Monitorear bonos hipotecarios como leading indicator (lag 2Q)</div>
-      <div class="rec-body">La correlación negativa volumen–tasas es robusta en 72%+ de trimestres. El yield del bono hipotecario danés sirve como alerta temprana para portfolios residenciales.</div>
-    </div>
-    <div class="rec-card" style="border-left-color:#34d399">
-      <div class="rec-tag" style="color:#34d399">Política pública</div>
-      <div class="rec-title">Focalizar vivienda asequible en Bornholm y Jutlandia</div>
-      <div class="rec-body">Estas regiones combinan peores drawdowns con menor recuperación post-2012. Intervención pública tiene mayor impacto marginal aquí que en Zealand, donde el problema es de oferta.</div>
-    </div>
-    <div class="rec-card" style="border-left-color:#a78bfa">
-      <div class="rec-tag" style="color:#a78bfa">Limitaciones</div>
-      <div class="rec-title">Correlación ≠ causalidad; sesgos de selección presentes</div>
-      <div class="rec-body">El dataset no captura ventas off-market ni calidad del inmueble. Resultados son descriptivos del mercado registrado, no predictivos. Validar con Danmarks Statistik antes de decisiones de inversión.</div>
-    </div>
-  </div>
+      <!-- Fila inferior: barras + tabla críticos -->
+      <div class="rs-bottom">
 
-  <div class="disclaimer mb-6">
-    <strong>Nota metodológica:</strong> Análisis descriptivo, no predictivo. Precio real/m² deflactado con IPC danés base 2024. Datos 1992–1994 con menor completitud. Regiones del dataset (Zealand, Jutland, Fyn &amp; islands, Bornholm) son agregados propios — no coinciden 1:1 con las 5 regiones administrativas de Dinamarca. <strong>Fuente:</strong> Kaggle — Danish Residential Housing Prices 1992–2024; pipeline Medallion Bronze→Silver→Gold.
-  </div>
+        <!-- Barras: drawdown por tipología -->
+        <div class="card p-4">
+          <div class="section-title mb-1">Drawdown por tipología</div>
+          <div class="section-sub mb-3">Caída pico-valle máxima · peor durante GFC</div>
+          <div id="rs-dd-bars">Cargando…</div>
+        </div>
+
+        <!-- Tabla: casos críticos -->
+        <div class="card p-4">
+          <div class="section-title mb-1">Casos críticos</div>
+          <div class="section-sub mb-3">Combinaciones región × tipología con mayor riesgo</div>
+          <table class="crit-table">
+            <thead><tr>
+              <th>Tipología</th><th>Región</th><th>Drawdown</th><th>Volatilidad</th>
+            </tr></thead>
+            <tbody id="rs-crit-table"><tr><td colspan="4" style="color:var(--muted)">Cargando…</td></tr></tbody>
+          </table>
+        </div>
+
+      </div><!-- /rs-bottom -->
+    </div><!-- /rs-left -->
+
+    <!-- Panel de insights -->
+    <div class="insights-panel">
+      <div class="ins-panel-title">Panel de Insights</div>
+      <div class="ins-panel-sub">Dónde priorizar análisis e intervención</div>
+
+      <div class="ins-item">
+        <div class="ins-num">1 — FOCO</div>
+        <div class="ins-item-title" id="ins-foco-title">Cargando…</div>
+        <div class="ins-item-metric" id="ins-foco-metric">—</div>
+        <div class="ins-item-body" id="ins-foco-body">—</div>
+      </div>
+
+      <div class="ins-item">
+        <div class="ins-num">2 — DRIVER</div>
+        <div class="ins-item-title" id="ins-driver-title">Cargando…</div>
+        <div class="ins-item-metric" id="ins-driver-metric">—</div>
+        <div class="ins-item-body" id="ins-driver-body">—</div>
+      </div>
+
+      <div class="ins-item">
+        <div class="ins-num">3 — ACCIÓN</div>
+        <div class="ins-item-title" id="ins-accion-title">Cargando…</div>
+        <div class="ins-item-body" id="ins-accion-body">—</div>
+        <ul class="ins-action-list" id="ins-accion-list"></ul>
+      </div>
+
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(245,158,11,.15)">
+        <div style="font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:8px">Hipótesis</div>
+        <div style="display:flex;flex-direction:column;gap:5px">
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="font-size:.68rem;font-weight:700;color:#34d399;background:rgba(52,211,153,.1);padding:1px 6px;border-radius:3px">H1 ✓</span>
+            <span style="font-size:.74rem;color:var(--muted)" id="hyp-h1-short">Tasas → volumen (lag 2Q)</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="font-size:.68rem;font-weight:700;color:#34d399;background:rgba(52,211,153,.1);padding:1px 6px;border-radius:3px">H2 ✓</span>
+            <span style="font-size:.74rem;color:var(--muted)" id="hyp-h2-short">Zealand —× prima capital</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="font-size:.68rem;font-weight:700;color:#f59e0b;background:rgba(245,158,11,.1);padding:1px 6px;border-radius:3px">H3 ~</span>
+            <span style="font-size:.74rem;color:var(--muted)">Apartment &gt; Summerhouse en volatilidad</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(245,158,11,.15);font-size:.7rem;color:var(--muted);line-height:1.6">
+        <strong style="color:var(--text)">Nota:</strong> Análisis descriptivo 1992–2024. Precio deflactado IPC danés base 2024. GFC 2007–2012 como evento de estrés de referencia. Fuente: Kaggle Danish Residential Housing Prices.
+      </div>
+    </div><!-- /insights-panel -->
+  </div><!-- /rs-main -->
+
 </div><!-- /resumen -->
 
 <!-- ═══════════════════════════════════════════ -->
@@ -894,42 +957,168 @@ function renderKPIs() {
   document.getElementById('badge-tx').textContent = fmt(k.total_tx) + ' transacciones';
 }
 
-// ── Hypothesis cards & insights ───────────────────────────────────────────────
+// ── Resumen ejecutivo ──────────────────────────────────────────────────────────
+let chartBubble = null;
+
 function renderSummary() {
-  const k = DATA.kpis;
+  const k   = DATA.kpis;
   const vol = DATA.volatility;
-  const ri = DATA.regional_index;
-  const mc = DATA.macro_raw;
+  const ri  = DATA.regional_index;
+  const mc  = DATA.macro_raw;
+  const dd  = DATA.drawdown_summary;
 
-  // H1
+  // ── Datos derivados ──────────────────────────────────────────────────────────
+  const avgVol = t => {
+    const a = (vol[t]||[]).filter(d => d.vol != null && !isNaN(d.vol));
+    return a.length ? a.reduce((s,d) => s+d.vol, 0) / a.length : 0;
+  };
+  const worstDdByType = {};
+  dd.forEach(d => {
+    if (!worstDdByType[d.house_type] || d.worst_dd < worstDdByType[d.house_type].worst_dd)
+      worstDdByType[d.house_type] = d;
+  });
+  const totalTxByType = {};
+  mc.forEach(d => {
+    // aproximación desde macro; usar los marts de vol para volumen si disponible
+  });
+  // Usar drawdown_summary para counts aproximados
+  const txByType = {};
+  dd.forEach(d => { txByType[d.house_type] = (txByType[d.house_type]||0) + (parseInt(d.n_transactions)||0) + 1; });
+
+  const types = Object.keys(TYPE_COLORS);
+  const bubbleData = types.map(t => ({
+    t,
+    vol: avgVol(t),
+    dd: worstDdByType[t]?.worst_dd ?? 0,
+    region: worstDdByType[t]?.region ?? '—',
+    n: txByType[t] || 10,
+  })).filter(d => d.vol > 0);
+
+  // ── Bubble chart ─────────────────────────────────────────────────────────────
+  const maxN = Math.max(...bubbleData.map(d => d.n));
+  const datasets = bubbleData.map(d => ({
+    label: d.t,
+    data: [{
+      x: +(d.vol * 100).toFixed(3),           // volatilidad en %
+      y: +d.dd.toFixed(1),                    // drawdown (negativo)
+      r: Math.max(8, Math.sqrt(d.n / maxN) * 38),
+    }],
+    backgroundColor: hex2rgba(TYPE_COLORS[d.t], 0.75),
+    borderColor: TYPE_COLORS[d.t],
+    borderWidth: 1.5,
+  }));
+
+  if (chartBubble) chartBubble.destroy();
+  chartBubble = new Chart(document.getElementById('chartBubble'), {
+    type: 'bubble',
+    data: { datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false, animation: { duration: 500 },
+      plugins: {
+        legend: { display: true, position: 'right', labels: { color: '#8892aa', font: { size: 11 }, padding: 10, boxWidth: 12,
+          generateLabels: chart => chart.data.datasets.map((ds, i) => ({
+            text: ds.label, fillStyle: ds.backgroundColor, strokeStyle: ds.borderColor,
+            lineWidth: 1.5, hidden: false, index: i, datasetIndex: i,
+          }))
+        } },
+        tooltip: {
+          backgroundColor: '#1a1d27', borderColor: '#2e3245', borderWidth: 1,
+          titleColor: '#e2e8f0', bodyColor: '#8892aa', padding: 10,
+          callbacks: {
+            title: ctx => ctx[0].dataset.label,
+            label: ctx => [
+              ` Volatilidad: ${ctx.parsed.x.toFixed(2)}% / trim`,
+              ` Peor drawdown: ${ctx.parsed.y.toFixed(1)}%`,
+              ` Región más afectada: ${bubbleData.find(d => d.t === ctx.dataset.label)?.region || '—'}`,
+            ],
+          }
+        },
+      },
+      scales: {
+        x: {
+          title: { display: true, text: 'Volatilidad media trimestral (%)', color: '#8892aa', font: { size: 10 } },
+          grid: { color: '#2e3245', lineWidth: 0.5 }, ticks: { color: '#8892aa', font: { size: 10 }, callback: v => v.toFixed(1)+'%' },
+        },
+        y: {
+          title: { display: true, text: 'Peor drawdown (%)', color: '#8892aa', font: { size: 10 } },
+          grid: { color: '#2e3245', lineWidth: 0.5 }, ticks: { color: '#8892aa', font: { size: 10 }, callback: v => v.toFixed(0)+'%' },
+          max: 5,
+        },
+      },
+    },
+  });
+
+  // Takeaway burbuja
+  const riskiest = [...bubbleData].sort((a,b) => a.dd - b.dd)[0];
+  const safest   = [...bubbleData].sort((a,b) => b.dd - a.dd)[0];
+  const el = document.getElementById('ti-bubble');
+  if (el && riskiest) el.innerHTML = `<strong>${riskiest.t}</strong> concentra el mayor riesgo (drawdown ${riskiest.dd.toFixed(1)}%, vol σ=${riskiest.vol.toFixed(3)}). <strong>${safest?.t}</strong> es la tipología más estable (drawdown ${safest.dd.toFixed(1)}%). La posición superior-izquierda indica menor volatilidad Y menor drawdown — zona de menor riesgo.`;
+
+  // ── Barras drawdown por tipología ────────────────────────────────────────────
+  const sorted = [...bubbleData].sort((a,b) => a.dd - b.dd);
+  const minDd  = Math.min(...sorted.map(d => d.dd));
+  let barsHtml = '';
+  sorted.forEach(d => {
+    const pct = minDd !== 0 ? (d.dd / minDd * 100).toFixed(1) : 0;
+    const color = TYPE_COLORS[d.t] || '#6366f1';
+    // color rojo a verde según severidad
+    const severity = d.dd / minDd; // 1=peor, 0=mejor
+    const barColor = severity > 0.8 ? '#f87171' : severity > 0.5 ? '#f59e0b' : '#34d399';
+    barsHtml += `<div class="rs-bar-row">
+      <div class="rs-bar-label">${d.t}</div>
+      <div class="rs-bar-wrap">
+        <div class="rs-bar-fill" style="width:${pct}%;background:${barColor}">${d.dd.toFixed(1)}%</div>
+      </div>
+      <div class="rs-bar-val" style="color:${barColor}">${d.dd.toFixed(1)}%</div>
+    </div>`;
+  });
+  document.getElementById('rs-dd-bars').innerHTML = barsHtml;
+
+  // ── Tabla casos críticos ─────────────────────────────────────────────────────
   const corrVals = mc.map(d => parseFloat(d.volume_bond_corr)).filter(v => !isNaN(v));
+  const avgVolByType = {};
+  types.forEach(t => { avgVolByType[t] = avgVol(t); });
+  const critical = [...dd]
+    .sort((a,b) => a.worst_dd - b.worst_dd)
+    .slice(0, 5);
+  let tableHtml = '';
+  critical.forEach(d => {
+    const v = avgVolByType[d.house_type] || 0;
+    const ddColor = d.worst_dd < -50 ? '#f87171' : d.worst_dd < -25 ? '#f59e0b' : '#34d399';
+    tableHtml += `<tr>
+      <td><span style="color:${TYPE_COLORS[d.house_type]||'#fff'};font-weight:600">${d.house_type}</span></td>
+      <td style="color:var(--muted)">${d.region}</td>
+      <td><strong style="color:${ddColor}">${d.worst_dd.toFixed(1)}%</strong></td>
+      <td style="color:var(--muted)">${v > 0 ? v.toFixed(3) : '—'}</td>
+    </tr>`;
+  });
+  document.getElementById('rs-crit-table').innerHTML = tableHtml;
+
+  // ── Panel de insights ────────────────────────────────────────────────────────
   const negPct = corrVals.length ? Math.round(corrVals.filter(v => v < 0).length / corrVals.length * 100) : 0;
-  const minCorr = corrVals.length ? Math.min(...corrVals).toFixed(2) : '—';
-  document.getElementById('h1-metric').textContent = negPct + '% trimestres';
-  document.getElementById('h1-detail').textContent = `Correlación negativa volumen–bonos en ${negPct}% de los ${corrVals.length} trimestres observados (mínimo: ${minCorr}). Alzas de tasas anticipan caídas de volumen con rezago 1–2Q.`;
-
-  // H2
   const zealandArr = ri['Zealand'] || [];
-  const zealandLast = zealandArr.slice(-1)[0]?.idx?.toFixed(1) ?? '—';
-  const zealandMin = zealandArr.length ? Math.min(...zealandArr.map(d => d.idx)).toFixed(1) : '—';
-  const fynArr = ri['Fyn & islands'] || [];
-  const fynMin = fynArr.length ? Math.min(...fynArr.map(d => d.idx)).toFixed(1) : '—';
-  document.getElementById('h2-metric').textContent = k.capital_multiple + '× prima capital';
-  document.getElementById('h2-detail').textContent = `Zealand: índice ${zealandLast} (base 1992=100); mínimo GFC: ${zealandMin}. Fyn & islands: mínimo GFC ${fynMin} — por debajo de su nivel de 1992. Zealand mantiene precio por escasez crónica de oferta en Copenhague.`;
+  const zealandLast = zealandArr.slice(-1)[0]?.idx?.toFixed(0) ?? '—';
 
-  // H3
-  const avgVol = t => { const a = (vol[t]||[]).filter(d => d.vol != null && !isNaN(d.vol)); return a.length ? a.reduce((s,d)=>s+d.vol,0)/a.length : 0; };
-  const typesSorted = Object.keys(TYPE_COLORS).map(t => ({ t, v: avgVol(t) })).filter(x => x.v > 0).sort((a,b) => b.v - a.v);
-  const top = typesSorted[0] || { t: '—', v: 0 };
-  document.getElementById('h3-metric').textContent = top.t + ' σ=' + top.v.toFixed(3);
-  document.getElementById('h3-detail').textContent = `${top.t} lidera volatilidad media (σ=${top.v.toFixed(3)}/trim). Villa (σ=${avgVol('Villa').toFixed(3)}) y Summerhouse (σ=${avgVol('Summerhouse').toFixed(3)}) son más resilientes. El comprador de segunda residencia tiene mayor solvencia relativa.`;
+  // FOCO
+  document.getElementById('ins-foco-title').textContent = `${critical[0]?.house_type || '—'} en ${critical[0]?.region || '—'}`;
+  document.getElementById('ins-foco-metric').textContent = `Drawdown ${critical[0]?.worst_dd.toFixed(1) || '—'}% · Vol σ=${avgVolByType[critical[0]?.house_type]?.toFixed(3) || '—'}`;
+  document.getElementById('ins-foco-body').textContent = `Combinación región+tipología con mayor caída pico-valle en el dataset. Concentra riesgo de crédito hipotecario y menor demanda estructural.`;
 
-  // Insight cards
-  document.getElementById('ins-1').innerHTML = `<strong>1. Divergencia capital–provincias (H2):</strong> Zealand alcanzó un índice de <strong>${zealandLast}</strong> (base 1992=100) mientras Fyn &amp; islands cayó a <strong>${fynMin}</strong> durante la GFC — por debajo de su nivel de 1992. La brecha de +100 pp refleja escasez estructural de oferta en Copenhague frente a contracción de demanda provincial durante recesiones.`;
-  document.getElementById('ins-2').innerHTML = `<strong>2. Tipología más volátil ≠ la esperada (H3):</strong> <strong>${top.t}</strong> lidera volatilidad media (σ=${top.v.toFixed(3)}/trim). La segunda residencia (Summerhouse, σ=${avgVol('Summerhouse').toFixed(3)}) es más resistente. Esto revierte H3 original: la dependencia crediticia, no el tipo de uso, explica la sensibilidad al ciclo de tasas.`;
-  document.getElementById('ins-3').innerHTML = `<strong>3. Relación tasa–volumen robusta (H1):</strong> Correlación rolling 8Q negativa en <strong>${negPct}%</strong> de trimestres (mínimo: ${minCorr}). El modelo danés de <em>match funding</em> hipotecario amplifica la transmisión: alzas del bono hipotecario se reflejan directamente en cuotas variables, frenando la compra con lag de 1–2Q.`;
-  document.getElementById('ins-4').innerHTML = `<strong>4. Prima capital sostenida post-2012:</strong> Tras el suelo GFC, Zealand se desacopla y crece a tasa superior al resto. La corrección 2022 aparece en todas las regiones pero Zealand absorbe mejor por demanda estructural (migración interna + stock limitado). La brecha precio actual es de <strong>${k.capital_multiple}× vs media provincial</strong>.`;
-  document.getElementById('ins-5').innerHTML = `<strong>5. La GFC como evento singular:</strong> Peor drawdown del dataset: <strong>${k.worst_dd_pct.toFixed(1)}%</strong> en <strong>${k.worst_dd_type}</strong> / ${k.worst_dd_region} (${k.worst_dd_quarter}). Supera la corrección 2022–2023 en todas las tipologías y regiones. Los segmentos más dependientes de crédito (Apartment, Townhouse) absorben los drawdowns más severos, confirmando el canal de transmisión financiero.`;
+  // DRIVER
+  document.getElementById('ins-driver-title').textContent = 'Dependencia crediticia + periferia';
+  document.getElementById('ins-driver-metric').textContent = `Corr. tasas–volumen negativa ${negPct}% trimestres`;
+  document.getElementById('ins-driver-body').textContent = `Las alzas del bono hipotecario danés impactan con lag 1–2Q el volumen. Regiones periféricas (Bornholm, Jutland) sin escasez de oferta absorben el ajuste vía precio, no vía demanda reprimida.`;
+
+  // ACCIÓN
+  document.getElementById('ins-accion-title').textContent = 'Diversificación tipología + región';
+  document.getElementById('ins-accion-body').textContent = 'Para mitigar riesgo en próximo ciclo alcista de tasas:';
+  document.getElementById('ins-accion-list').innerHTML = `
+    <li>Priorizar Villa/Apartment en Zealand (escasez de oferta protege precio)</li>
+    <li>Monitorear bono hipotecario danés como leading indicator (lag 2Q)</li>
+    <li>Evitar Apartment/Townhouse en regiones periféricas en ciclos de alza</li>`;
+
+  // Hipótesis cortas
+  document.getElementById('hyp-h2-short').textContent = `Zealand ${k.capital_multiple}× prima vs provincias`;
 }
 
 // ── Regional Index ─────────────────────────────────────────────────────────────
