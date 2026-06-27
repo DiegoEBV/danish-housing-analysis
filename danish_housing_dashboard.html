@@ -586,6 +586,12 @@ function switchTab(id) {
   document.querySelectorAll('.tab-btn').forEach(btn =>
     btn.classList.toggle('tab-active', btn.id === 'tab-btn-' + id));
   if (id === 'geografia' && !window._choroInited) initChoropleth();
+  // Charts inicializados en pestañas ocultas quedan con dimensiones 0 — forzar resize
+  requestAnimationFrame(() => {
+    [chartReg, chartBonds, chartAnnual, chartScatter, chartRollingCorr,
+     chartDdTimeline, chartImportance, chartCV, chartPredScatter,
+     ...chartVolSmall].forEach(c => { try { c?.resize(); } catch(_) {} });
+  });
 }
 
 // ── CSV parser ─────────────────────────────────────────────────────────────────
