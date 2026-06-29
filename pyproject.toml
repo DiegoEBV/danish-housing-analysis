@@ -10,7 +10,7 @@ authors = [
 
 dependencies = [
     # Core
-    "pandas>=2.1.0",
+    "pandas>=3.0.4",
     "numpy>=2.4.6",
     "scipy>=1.11.0",
     "pyyaml>=6.0.0",
