@@ -4,7 +4,8 @@
   status = 200
 
 [[redirects]]
+  # Servir los marts directo desde los CSV commiteados (data/marts/*.csv), sin depender de GCS.
+  # Los marts estan git-tracked (ver .gitignore) y Netlify los publica -> no requiere GCP/auth.
   from = "/marts/*"
-  to = "https://storage.googleapis.com/danish-housing-gold/marts/:splat"
+  to = "/data/marts/:splat"
   status = 200
-  force = true

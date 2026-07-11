@@ -91,13 +91,26 @@ def upload_gold(client, cfg: dict) -> None:
     bucket = cfg["gcp"]["buckets"]["gold"]
     prefix = cfg["gcp"]["prefixes"]["gold"]
 
-    # Buscar marts en gold_dir y marts_dir (segun donde haya corrido el pipeline)
-    candidate_dirs = [Path(cfg["paths"]["gold_dir"]), Path(cfg["paths"]["marts_dir"])]
+    # Buscar marts en, por orden de prioridad:
+    #   1. data/marts/ — marts GIT-TRACKED (fuente de verdad del deploy: incluye k=4,
+    #      RFM, predictions_sample; es lo que alimenta el dashboard).
+    #   2. marts_dir / gold_dir — output efimero del pipeline (data/processed/*),
+    #      solo presente si se corrio run_pipeline/export_marts en esta maquina.
+    # Se deduplica por nombre (gana la primera aparicion = data/marts).
+    candidate_dirs = [
+        Path("data/marts"),
+        Path(cfg["paths"]["marts_dir"]),
+        Path(cfg["paths"]["gold_dir"]),
+    ]
+    seen: set[str] = set()
     found_any = False
     for d in candidate_dirs:
         if not d.exists():
             continue
-        for f in list(d.glob("*.csv")) + list(d.glob("*.parquet")):
+        for f in sorted(list(d.glob("*.csv")) + list(d.glob("*.parquet"))):
+            if f.name in seen:
+                continue
+            seen.add(f.name)
             upload_file(client, bucket, f, f"{prefix}{f.name}")
             found_any = True
     if not found_any:
