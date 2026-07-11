@@ -74,6 +74,12 @@ uv run python scripts/run_pipeline.py --config configs/analysis.yaml --sample 10
 # Marts standalone (lee Silver, escribe Gold)
 uv run python scripts/export_marts.py --config configs/analysis.yaml
 
+# Segmentacion no supervisada TF (PCA + KMeans + t-SNE sobre mart_transactions_map)
+uv run python scripts/run_segmentation.py --config configs/analysis.yaml
+
+# QA tecnico automatizado (integridad + reconciliacion informe/dashboard vs marts)
+uv run python scripts/run_qa.py
+
 # Subir capas a GCS (requiere gcloud auth application-default login)
 uv run python scripts/upload_to_gcs.py --layer all --config configs/analysis.yaml
 
@@ -159,8 +165,12 @@ Entry point: `run_cleaning_pipeline(df, config)` → `(cleaned_df, audit_log_df)
 | `mart_volatility.csv` | Volatilidad rolling 4Q por house_type |
 | `mart_macro_correlation.csv` | Volumen vs. bond yields con lag 2Q |
 | `mart_transactions_map.csv` | Agregado por `zip_code` para vista de mapa |
+| `mart_zip_segments.csv` | Segmentación no supervisada por `zip_code` (PCA/KMeans/t-SNE) — Entrega 6 |
+| `mart_segment_profiles.csv` | Perfil (centroide) por cluster de segmentación — Entrega 6 |
 
 Versiones sintéticas (sin data real) se generan con `scripts/generate_tableau.py`.
+
+**Segmentación no supervisada (TF)**: `scripts/run_segmentation.py` aplica PCA + KMeans (k por silueta) + t-SNE sobre features de riesgo-retorno por `zip_code` derivadas de `mart_transactions_map`. Parámetros en `configs/analysis.yaml -> segmentation`. Metodología en `docs/segmentation-pca-clustering-methodology.md`. Es la técnica de la Entrega 6 — reemplaza analíticamente a la "segmentación por reglas" de TB4 (que se conserva para los filtros del dashboard).
 
 ## Scripts vs. Notebooks
 

@@ -145,6 +145,40 @@ Fuente para la Vista 2 (mapa choropleth por código postal).
 | `importance` | float | Importancia Gini del Random Forest |
 | `rank` | int | Ranking de importancia (1 = más importante) |
 
+### mart_zip_segments.csv (TF · segmentación no supervisada)
+
+Una fila por código postal segmentado (grano `zip_code`). Generado por
+`scripts/run_segmentation.py` (PCA + KMeans + t-SNE sobre `mart_transactions_map`).
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| `zip_code` | str | Código postal danés (4 dígitos) |
+| `city` | str | Ciudad de referencia |
+| `region` | str | Región (Zealand, Jutland, Fyn & islands, Bornholm) |
+| `n_years` | int | Años de historia usados |
+| `price_level` | float | Nivel de precio real/m² (mediana ventana reciente) |
+| `cagr_real` | float | Crecimiento anual compuesto del precio real |
+| `volatility` | float | Desv. estándar del cambio interanual |
+| `max_drawdown` | float | Peor caída pico-valle (%) |
+| `liquidity_log` | float | log(1 + volumen medio de transacciones) |
+| `growth_recent` | float | Crecimiento en la ventana reciente (5 años) |
+| `pca1`, `pca2` | float | Coordenadas en el espacio PCA (2D) |
+| `tsne1`, `tsne2` | float | Coordenadas en el embedding t-SNE (2D) |
+| `cluster` | int | Id de cluster KMeans |
+| `cluster_label` | str | Etiqueta interpretable (p. ej. "Precio alto / dinámico / estable") |
+
+### mart_segment_profiles.csv (TF · perfil por cluster)
+
+Una fila por cluster (centroide interpretable).
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| `cluster` | int | Id de cluster |
+| `n_zips` | int | Número de zips en el cluster |
+| `price_level`, `cagr_real`, `volatility`, `max_drawdown`, `liquidity_log`, `growth_recent` | float | Media del centroide en cada feature |
+| `cluster_label` | str | Etiqueta interpretable |
+| `region_dominante` | str | Región más frecuente en el cluster |
+
 ---
 
 ## Notas de Calidad de Datos
