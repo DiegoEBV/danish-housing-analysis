@@ -467,10 +467,10 @@
       <div id="choroMap" role="img" aria-label="Mapa coroplético de Dinamarca por código postal, coloreado según precio real por metro cuadrado o segmento de riesgo-retorno; el detalle numérico de cada zona está disponible en las tablas adyacentes"></div>
       <!-- Color legend (dynamic, quantile bins) -->
       <div id="choro-legend" class="flex items-center mt-3" style="gap:2px;flex-wrap:wrap;font-size:.66rem;color:var(--muted)"></div>
-      <!-- Segment legend (2 categorías + gris "sin datos") -->
+      <!-- Segment legend (dinámica: 1 entrada por arquetipo + gris "sin datos") -->
       <div id="segment-legend" class="items-center mt-3" style="display:none;gap:2px;flex-wrap:wrap;font-size:.7rem;color:var(--muted)"></div>
       <div class="takeaway mt-2" id="choro-takeaway-price"><span class="takeaway-icon">→</span><span class="takeaway-text"><strong>Concentración geográfica confirmada:</strong> el detalle por código postal (≈900 áreas) revela que el premio de precio se concentra en el centro de Copenhague y la franja costera de Zealand, mientras Jutlandia, Fyn y Bornholm quedan 2–3× por debajo.</span></div>
-      <div class="takeaway mt-2" id="choro-takeaway-segmento" style="display:none"><span class="takeaway-icon">→</span><span class="takeaway-text"><strong>Dónde concentrar o evitar exposición:</strong> los códigos postales en naranja combinan menor retorno y drawdowns mucho más profundos — evítalos o exige mayor prima de riesgo. Los azules ofrecen el mejor binomio riesgo-retorno para concentrar exposición.</span></div>
+      <div class="takeaway mt-2" id="choro-takeaway-segmento" style="display:none"><span class="takeaway-icon">→</span><span class="takeaway-text"><strong>Dónde concentrar o evitar exposición:</strong> los 4 arquetipos separan el riesgo dentro de una misma región — evita el <strong style="color:#c2410d">Volátil / alto riesgo</strong> (naranja, drawdowns más profundos), concentra en <strong style="color:#1d4ed8">Premium estable</strong> (azul) y considera <strong style="color:#6d28d9">Value con crecimiento</strong> como oportunidad diferenciada.</span></div>
     </div>
 
     <!-- Region stats + top cities -->
@@ -612,8 +612,8 @@
     </div>
     <div class="rec-card" style="border-left-color:#f97316">
       <div class="rec-tag" style="color:#c2410d">Segmentación · Exclusión de zonas</div>
-      <div class="rec-title">Evita concentrar exposición en zips del segmento "Precio bajo / plano / volátil"</div>
-      <div class="rec-body">Ese segmento (254 zips, dominado por Jutland) combina menor CAGR real (1.1%), 2.3× más volatilidad y un drawdown máximo de −62.0%, frente a −41.9% del segmento "Precio alto / dinámico / estable" (mart_segment_profiles). Es el peor binomio riesgo-retorno del mapa.</div>
+      <div class="rec-title">Evita el arquetipo "Volátil / alto riesgo" — no toda la provincia</div>
+      <div class="rec-body">La segmentación en 4 arquetipos (k operativo por informatividad; k científico=2) revela que el riesgo no es "toda la provincia": el arquetipo <strong>Volátil / alto riesgo</strong> (47 zips) tiene volatilidad 0.88 y drawdown −79%, mientras <strong>Value con crecimiento</strong> (165 zips, CAGR +1.9%) es una oportunidad diferenciada dentro de la misma región. Prioriza <strong>Premium estable/líquido</strong> (drawdown −39%) y evita el volátil (mart_segment_profiles).</div>
     </div>
   </div>
 </div><!-- /conclusiones -->
@@ -668,12 +668,23 @@ const PERIOD_COLORS = {
   'Boom 2015–2022':   '#60a5fa',
   'Corrección 2022+': '#0f766e',
 };
-// Paleta categórica 2 clases para segmentación (accesible para daltonismo: azul/naranja, no rojo/verde).
-const SEGMENT_COLORS = { '0': '#2563eb', '1': '#f97316' };
+// Paleta categórica 4 arquetipos (validada colorblind-safe: CVD ΔE 53.4, banda de luminosidad
+// y contraste OK en claro y oscuro). Keyed por cluster_label (la ENTIDAD), no por índice de
+// cluster (KMeans lo asigna arbitrariamente → el color debe seguir al arquetipo, no al rank).
+const SEGMENT_COLORS = {
+  'Premium estable/liquido': '#2563eb', // azul — premium, calmo
+  'Volatil / alto riesgo':   '#ea580c', // naranja-rojo — riesgo
+  'Value estable/liquido':   '#0d9488', // teal — value estable
+  'Value con crecimiento':   '#7c3aed', // violeta — crecimiento
+};
 const SEGMENT_NODATA_COLOR = '#9ca3af';
-// Variantes oscurecidas de SEGMENT_COLORS/NODATA, sólo para texto (el naranja y el gris
-// vivos no alcanzan 4.5:1 en tamaño de texto normal; el azul ya cumplía y se mantiene).
-const SEGMENT_TEXT_COLORS = { '0': '#2563eb', '1': '#c2410d' };
+// Variantes oscurecidas sólo para TEXTO (todas ≥4.5:1 sobre fondo claro: 6.7/5.2/5.5/7.1:1).
+const SEGMENT_TEXT_COLORS = {
+  'Premium estable/liquido': '#1d4ed8',
+  'Volatil / alto riesgo':   '#c2410d',
+  'Value estable/liquido':   '#0f766e',
+  'Value con crecimiento':   '#6d28d9',
+};
 const SEGMENT_NODATA_TEXT_COLOR = '#6b7280';
 
 // ── GeoJSON simplificado de Dinamarca (4 regiones) ────────────────────────────
@@ -1559,8 +1570,8 @@ function renderChoroplethSegment() {
 
   const fillSeg = zip => {
     const s = segs[zip];
-    if (!s || s.cluster === undefined || s.cluster === '') return SEGMENT_NODATA_COLOR;
-    return SEGMENT_COLORS[s.cluster] ?? SEGMENT_NODATA_COLOR;
+    if (!s || !s.cluster_label) return SEGMENT_NODATA_COLOR;
+    return SEGMENT_COLORS[s.cluster_label] ?? SEGMENT_NODATA_COLOR;
   };
 
   if (_geoLayer) _leafletMap.removeLayer(_geoLayer);
@@ -1574,7 +1585,7 @@ function renderChoroplethSegment() {
       const nr = feature.properties.nr, s = segs[nr];
       const name = feature.properties.navn || (s && s.city) || '';
       const body = s
-        ? `<span style="color:${SEGMENT_TEXT_COLORS[s.cluster] || SEGMENT_NODATA_TEXT_COLOR};font-weight:600">${s.cluster_label}</span><br/>` +
+        ? `<span style="color:${SEGMENT_TEXT_COLORS[s.cluster_label] || SEGMENT_NODATA_TEXT_COLOR};font-weight:600">${s.cluster_label}</span><br/>` +
           `Precio real: DKK ${Math.round(s.price_level).toLocaleString()}/m² · Volatilidad σ=${s.volatility.toFixed(2)} · Drawdown máx ${s.max_drawdown.toFixed(1)}%`
         : 'Sin datos suficientes para segmentar';
       layer.bindTooltip(`<strong style="color:#1c2233">${nr} ${name}</strong><br/>${body}`, { sticky: true });
@@ -1595,7 +1606,7 @@ function renderSegmentLegend() {
   const profiles = DATA.segment_profiles || [];
   let html = '';
   profiles.forEach(p => {
-    const color = SEGMENT_COLORS[p.cluster] || SEGMENT_NODATA_COLOR;
+    const color = SEGMENT_COLORS[p.cluster_label] || SEGMENT_NODATA_COLOR;
     html += `<span style="display:inline-flex;align-items:center;gap:4px;margin-right:12px">
       <span style="width:11px;height:11px;border-radius:2px;background:${color};display:inline-block"></span>${p.cluster_label}</span>`;
   });
@@ -1617,8 +1628,8 @@ function renderSegmentProfiles() {
   const sorted = [...profiles].sort((a, b) => b.price_level - a.price_level);
   let html = '';
   sorted.forEach(p => {
-    const color = SEGMENT_COLORS[p.cluster] || SEGMENT_NODATA_COLOR;
-    const textColor = SEGMENT_TEXT_COLORS[p.cluster] || SEGMENT_NODATA_TEXT_COLOR;
+    const color = SEGMENT_COLORS[p.cluster_label] || SEGMENT_NODATA_COLOR;
+    const textColor = SEGMENT_TEXT_COLORS[p.cluster_label] || SEGMENT_NODATA_TEXT_COLOR;
     html += `<div class="reg-stat-row" style="align-items:flex-start">
       <div>
         <div style="font-size:.82rem;font-weight:600;color:${textColor}">
@@ -1634,16 +1645,17 @@ function renderSegmentProfiles() {
   });
   tableEl.innerHTML = html;
 
-  // Takeaway accionable: comparar el segmento de menor precio contra el de mayor precio.
-  const lowPrice  = sorted[sorted.length - 1];
-  const highPrice = sorted[0];
-  const ddGap = Math.abs(lowPrice.max_drawdown) - Math.abs(highPrice.max_drawdown);
-  const volRatio = highPrice.volatility > 0 ? (lowPrice.volatility / highPrice.volatility) : null;
+  // Takeaway accionable: el PEOR binomio riesgo-retorno es el de mayor drawdown (no el más
+  // barato — con k=4 el segmento barato "Value con crecimiento" es en realidad atractivo).
+  const worst = [...profiles].reduce((a, b) => (a.max_drawdown <= b.max_drawdown ? a : b));
+  const best  = [...profiles].reduce((a, b) => (a.max_drawdown >= b.max_drawdown ? a : b));
+  const ddGap = Math.abs(worst.max_drawdown) - Math.abs(best.max_drawdown);
+  const volRatio = best.volatility > 0 ? (worst.volatility / best.volatility) : null;
   if (tiEl) {
-    tiEl.innerHTML = `Las zonas de <strong>${lowPrice.cluster_label}</strong> combinan menor retorno real ` +
-      `(CAGR ${(lowPrice.cagr_real * 100).toFixed(1)}%${volRatio ? ` · volatilidad ${volRatio.toFixed(1)}×` : ''}) con drawdowns ` +
-      `${ddGap.toFixed(0)} pp más profundos que <strong>${highPrice.cluster_label}</strong> — el peor binomio riesgo-retorno. ` +
-      `Activa el modo "Segmento" en el mapa de Geografía para ubicarlas.`;
+    tiEl.innerHTML = `El peor binomio riesgo-retorno es <strong>${worst.cluster_label}</strong> ` +
+      `(CAGR ${(worst.cagr_real * 100).toFixed(1)}%${volRatio ? ` · volatilidad ${volRatio.toFixed(1)}×` : ''}, drawdown ` +
+      `${ddGap.toFixed(0)} pp más profundo que <strong>${best.cluster_label}</strong>) — evítalo o exige mayor prima. ` +
+      `Los ${profiles.length} arquetipos se colorean en el mapa (modo "Segmento").`;
   }
 }
 
