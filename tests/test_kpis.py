@@ -32,8 +32,9 @@ def test_cpi_base_year_is_100():
 def test_cpi_equivalence_with_legacy_inline():
     # Escenario REAL del dataset: inflación cubre 1992..2022 (contigua desde start_year).
     # En este caso el pre-loop legacy queda vacío y la función canónica reproduce EXACTAMENTE
-    # los valores que generaron los marts entregados. (La función además corrige un quirk
-    # latente del legacy en el relleno pre-min cuando la serie NO arranca en start_year.)
+    # los valores que generaron los marts entregados. (Incluso con series NO contiguas ambas
+    # coinciden: la re-evaluación de min(cpi) del legacy es inofensiva porque el fallback es
+    # constante 2%, así que el resultado no depende del camino.)
     rng = np.random.default_rng(0)
     years = range(1992, 2023)
     infl = pd.Series({y: float(rng.uniform(-0.5, 9.0)) for y in years}).sort_index()
