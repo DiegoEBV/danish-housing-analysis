@@ -123,7 +123,7 @@
   #loading{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999}
   .spinner{width:40px;height:40px;border:3px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
-  /* Leaflet dark theme override */
+  /* Leaflet light basemap */
   .leaflet-container{background:#e8edf5!important;border-radius:10px}
   .leaflet-control-zoom a{background:var(--surface2)!important;color:var(--text)!important;border-color:var(--border)!important}
   .leaflet-tooltip{background:var(--surface)!important;border:1px solid var(--border)!important;color:var(--text)!important;font-family:-apple-system,sans-serif!important;font-size:.8rem!important;padding:8px 12px!important;border-radius:6px!important;box-shadow:none!important}
@@ -1415,7 +1415,7 @@ async function initChoropleth() {
     attributionControl: false,
     minZoom: 5, zoomSnap: 0, zoomDelta: 0.5,
   });
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png', {
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
     subdomains: 'abcd', maxZoom: 19,
   }).addTo(_leafletMap);
 
