@@ -98,17 +98,23 @@ significado**, y foco en el usuario (inversor) por sobre la metadata técnica.
   (texto oscuro) para legibilidad sobre fondo claro.
 - **Eliminación de ruido técnico:** se retiró el banner de procedencia (`gs://danish-housing-gold/…`);
   el inversor no necesita la ruta del bucket, esa trazabilidad va en el informe y en `docs/`.
-- **Gobernanza de color en tres capas mutuamente excluyentes** (ningún hue con doble significado):
+- **Gobernanza de color por rol** (cada dimensión tiene su paleta, y cada entidad conserva su color
+  en todo el dashboard; ningún hue codifica dos significados dentro de una misma vista):
 
-| Capa | Tipo | Paleta | Uso |
-|---|---|---|---|
-| Categórica (nominal) | cualitativa | azul, verde, ámbar, coral, morado, índigo | tipologías, regiones, períodos |
-| Magnitud de riesgo | secuencial | rampa **rosa** `#fb7185 → #f43f5e → #be123c` (oscuro = peor) | barras de drawdown, columna DRAWDOWN de casos críticos, métricas de riesgo del panel |
-| Editorial / anotación | neutra | **slate** `#475569`/`#64748b` | Panel de Insights (títulos, numeración, flechas) |
+| Rol de color | Paleta | Uso |
+|---|---|---|
+| **Tipologías** (5) | teal `#0d9488`, naranja `#ea580c`, violeta `#7c3aed`, magenta `#db2777`, gold `#ca8a04` | barras/series por tipo de vivienda (Resumen, Crisis) |
+| **Regiones** (4) | índigo `#6366f1`, verde `#34d399`, ámbar `#f59e0b`, morado `#a78bfa` | índice regional (Precios) y barras de drawdown por región (Resumen) |
+| **KPIs headline** | verde, índigo, coral, azul | tarjetas de KPI (fila superior) |
+| **Riesgo (acento)** | crimson `#be123c` / rosa `#e11d48` | columna DRAWDOWN de casos críticos y métricas de riesgo del panel |
+| **Editorial / anotación** | slate `#475569`/`#64748b` | Panel de Insights (títulos, numeración, flechas) |
 
-  *Antes*, el ámbar era a la vez *Townhouse*, *Jutland* y "severidad media", y el coral era
-  *Summerhouse*, *GFC* y "severidad alta" — reutilización que induce a leer relaciones inexistentes.
-  La rampa rosa y el slate **no aparecen en ninguna paleta categórica**, resolviendo la colisión.
+  Dos correcciones concretas tras revisión de diseño: (a) la **paleta de tipologías se rediseñó** para
+  no coincidir con los colores de los KPIs de la fila superior (antes Apartment/Villa/Summerhouse
+  reutilizaban el azul/verde/coral de los KPIs); (b) las **barras de "Drawdown por región" pasaron de
+  una rampa de un solo tono —donde no se distinguían las regiones— a color por región** (la magnitud se
+  lee por el largo de la barra y la etiqueta, no por el color). El slate editorial y el crimson de
+  riesgo **no pertenecen a ninguna paleta categórica**.
 - **Títulos analíticos:** cada vista afirma un hallazgo (p. ej. "la vivienda urbana absorbe los
   peores shocks, no la segunda residencia"), no solo describe el gráfico. Los tooltips de mapa
   incluyen `n_transactions` para no malinterpretar zonas de baja muestra.
