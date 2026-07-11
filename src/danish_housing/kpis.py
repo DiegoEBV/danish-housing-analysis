@@ -52,6 +52,57 @@ def compute_real_price_per_sqm(
     return df.drop(columns=["cpi_year", "deflactor"])
 
 
+def build_cpi_from_inflation(
+    infl_by_year: pd.Series,
+    start_year: int = 1992,
+    fallback_rate: float = 2.0,
+) -> dict[int, float]:
+    """
+    IPC danés DERIVADO (no observado) a partir de la inflación anual del dataset.
+
+    El dataset no trae un índice IPC; se reconstruye cumulando `dk_ann_infl_rate_pct`
+    hacia atrás desde el año más reciente con dato (que queda como base = 100). Para
+    años sin inflación (gaps hacia adelante o pre-`start_year`) se asume `fallback_rate`.
+
+    Esta es la definición CANÓNICA de IPC del proyecto: la usan tanto
+    `scripts/run_pipeline.py` como `scripts/export_marts.py` para derivar `sqm_price_real`.
+
+    Args:
+        infl_by_year: Serie de inflación anual (%) indexada por año, ya agregada y ordenada.
+        start_year: Año mínimo hasta el que se extiende el IPC hacia atrás.
+        fallback_rate: Tasa (%) asumida cuando falta inflación de un año.
+
+    Returns:
+        dict {año: valor_IPC} con el año más reciente = 100.0 (año base).
+    """
+    cpi: dict[int, float] = {}
+    top = int(infl_by_year.index.max())
+    cpi[top] = 100.0
+    for yr in sorted(infl_by_year.index, reverse=True)[1:]:
+        yr = int(yr)
+        rate = float(infl_by_year.get(yr + 1, fallback_rate))
+        cpi[yr] = cpi[yr + 1] / (1 + rate / 100)
+    lo = min(cpi.keys())
+    for yr in range(start_year, lo):
+        cpi[yr] = cpi[lo] / ((1 + fallback_rate / 100) ** (lo - yr))
+    return cpi
+
+
+def deflate_sqm_price(
+    df: pd.DataFrame,
+    cpi: dict[int, float],
+    sqm_price_col: str = "sqm_price",
+    year_col: str = "year",
+) -> pd.Series:
+    """
+    Deflacta `sqm_price` a precios reales usando el IPC canónico (base = año más reciente).
+
+    `sqm_price_real = sqm_price * 100 / IPC(año)`. Definición única compartida por los
+    scripts del pipeline para evitar divergencias (antes había un deflactor plano 2%).
+    """
+    return (df[sqm_price_col] * 100.0 / df[year_col].map(cpi)).round(2)
+
+
 # ── KPI 2: Índice Regional ────────────────────────────────────────────────────
 
 def compute_regional_index(

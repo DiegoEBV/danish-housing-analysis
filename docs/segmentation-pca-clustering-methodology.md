@@ -18,8 +18,12 @@ Aplicamos esa técnica sobre una pregunta concreta y alineada con la pregunta de
 > **¿Se agrupan los códigos postales daneses en perfiles de riesgo-retorno homogéneos, y esos
 > grupos coinciden con la división Capital vs. Provincias que plantea H2?**
 
-La técnica no recibe la región como input. Si el clustering reconstruye una división geográfica,
-es una confirmación *emergente* (no circular) de H2.
+La técnica no recibe la región como input directo. Dicho esto, las 6 features se derivan de
+precios y volúmenes que ya están fuertemente correlacionados con la región (Copenhague concentra
+los precios más altos y la menor volatilidad del dataset), así que redescubrir la división
+capital/provincias es un resultado **esperable**, no una prueba independiente de H2. Su valor real
+no es "confirmar" la hipótesis desde cero, sino **aportar granularidad a nivel de código postal**
+(en vez de 5 regiones) y **cuantificar el gap riesgo-retorno** entre los dos perfiles de mercado.
 
 ## 2. Construcción del espacio de features (por `zip_code`)
 
@@ -59,44 +63,74 @@ Se aplica **PCA** sobre la matriz estandarizada:
 - PCA cumple doble rol: (a) espacio 2D para visualizar y (b) diagnóstico de que la estructura del
   mercado es esencialmente unidimensional (un solo eje explica ~44 %).
 
-## 5. Selección de `k` y KMeans
+## 5. Selección de `k` — consenso amplio + dos k reportados
 
-El número de clusters se elige **por datos**, no a dedo: se corre KMeans para `k ∈ {2..8}` y se
-mide el **coeficiente de silueta** de cada solución.
+El número de clusters **no** se elige por una sola métrica (la silueta pura siempre premia `k=2`).
+Se evalúa `k ∈ {2..8}` con un **consenso de 7 criterios** más un experimento de informatividad de
+negocio (η²), persistidos en `data/marts/mart_segmentation_validation.csv`:
 
-| k | 2 | 3 | 4 | 5 | 6 | 7 | 8 |
-|---|---|---|---|---|---|---|---|
-| silueta | **0.265** | 0.231 | 0.234 | 0.217 | 0.208 | 0.206 | 0.199 |
+| k | silueta↑ | Calinski↑ | Davies↓ | estab. ARI↑ | gap↑ | GMM-BIC↓ | η² riesgo↑ | η² retorno↑ |
+|---|---|---|---|---|---|---|---|---|
+| **2** | **0.265** | **197** | 1.415 | **0.964** | 0.898 | 7056 | 0.291 | 0.174 |
+| 3 | 0.231 | 154 | 1.560 | 0.814 | 0.928 | 6710 | 0.300 | 0.291 |
+| **4** | 0.234 | 149 | 1.362 | 0.827 | 0.996 | 6741 | **0.466** | **0.290** |
+| 5 | 0.217 | 140 | 1.267 | 0.624 | 1.037 | 6631 | 0.514 | 0.313 |
 
-La silueta es máxima en **k = 2** → se adopta esa solución. El clustering se hace sobre las 6
-features estandarizadas (no sobre los 2 PCs), para no descartar el 36 % de varianza residual.
-El parámetro `kmeans_k_override` permite fijar `k` manualmente si se quisiera una segmentación
-operativa más fina (documentado, pero no usado: la elección automática es la defendible).
+Se reportan **dos** `k`, de forma transparente:
 
-## 6. t-SNE — validación visual no lineal
+- **`k` científico = 2** — elegido por **consenso de los criterios de calidad de cluster**
+  (silueta + Calinski-Harabasz + **estabilidad bootstrap ARI = 0.96**). Es la partición
+  estadísticamente robusta: dos regímenes de riesgo-retorno. Los criterios que premian `k` más alto
+  (Davies-Bouldin, BIC, gap) solo reflejan que un continuo se puede rebanar más fino, **sin
+  robustez** (la estabilidad ARI cae a ~0.6–0.8 para `k>2`), por eso no entran al voto científico.
 
-Se calcula un embedding **t-SNE** 2D (`perplexity = 30`, init con PCA) como comprobación
-independiente: si dos clusters lineales de KMeans también se separan en un embedding no lineal, la
-estructura es robusta y no un artefacto de la métrica euclídea. En la figura, los dos grupos
-quedan claramente separados también en t-SNE (ver `docs/refs/segmentation_pca_tsne.png`).
+- **`k` operativo = 4** — elegido por **utilidad de negocio**, no por métrica geométrica. Aunque su
+  silueta es ligeramente menor (0.234 vs 0.265, mismo orden), **explica mucha más varianza de las
+  variables que le importan al inversor**: pasar de `k=2` a `k=4` sube la varianza de **riesgo**
+  explicada de **0.29 → 0.47 (+60 %)** y la de **retorno** de **0.17 → 0.29 (+66 %)**. El `k=2`
+  mete en una sola bolsa "provincia barata" tres mercados que un inversor trataría distinto; `k=4`
+  los separa (ver §7). Configurable en `kmeans_k_operativo`.
 
-## 7. Resultado — dos perfiles de mercado
+El clustering final se hace sobre las 6 features estandarizadas (no sobre los 2 PCs), para no
+descartar el 36 % de varianza residual.
 
-| Cluster | Etiqueta | n zips | Región dominante | Precio real/m² | CAGR | Volatilidad | Drawdown medio |
+## 6. t-SNE — exploración visual (NO validación)
+
+Se calcula un embedding **t-SNE** 2D con **hiperparámetros fijos y documentados** en config
+(`tsne_perplexity = 30`, `tsne_learning_rate = auto`, `tsne_max_iter = 1000`, init con PCA,
+`random_state = 42`) como **exploración visual complementaria**, explícitamente **no como prueba de
+robustez**: t-SNE puede exagerar o inventar separaciones y depende de la perplejidad. La validación
+de la estructura recae en los criterios cuantitativos de §5 (silueta, CH, Davies-Bouldin, estabilidad
+ARI, gap, BIC), **no** en t-SNE. La figura (`docs/refs/segmentation_pca_tsne.png`) es ilustrativa.
+
+## 7. Resultado — 4 perfiles de inversión (k operativo)
+
+Los 4 arquetipos se etiquetan de forma **determinista por la posición del centroide** (los índices
+de KMeans son arbitrarios). El científico `k=2` parte en capital-premium vs provincia; el `k=4`
+**abre esa "provincia" en 3 mercados que el `k=2` esconde**:
+
+| Cluster | Arquetipo | n zips | Región dom. | Precio real/m² | CAGR | Volatilidad | Drawdown medio |
 |---|---|---:|---|---:|---:|---:|---:|
-| 0 | **Precio alto / dinámico / estable** | 229 | Zealand (51 %) | 24 848 | +2.5 %/año | 0.19 | −41.9 % |
-| 1 | **Precio bajo / plano / volátil** | 254 | Jutland (Provincias) | 12 979 | +1.1 %/año | 0.42 | −62.0 % |
+| 0 | **Premium estable/líquido** | 157 | Zealand | 28 276 | +2.8 %/año | 0.17 | −39.2 % |
+| 1 | **Volátil / alto riesgo** | 47 | Jutland | 14 292 | +0.9 %/año | **0.88** | **−79.2 %** |
+| 2 | **Value estable/líquido** | 114 | Jutland | 14 293 | +0.7 %/año | 0.28 | −54.0 % |
+| 3 | **Value con crecimiento** | 165 | Jutland | 13 615 | **+1.9 %/año** | 0.30 | −56.4 % |
 
-- El cluster de **precio alto** concentra el metro de Copenhague: sus zips de mayor precio son
-  Nordhavn, København V, Klampenborg, Hellerup, København N.
-- El cluster de **precio bajo** duplica la volatilidad (0.42 vs. 0.19) y sufre drawdowns **20 pp
-  más profundos** (−62 % vs. −42 %).
+- El **argumento clave**: en `k=2` los clusters 1, 2 y 3 colapsan en un único "Jutland barato". Pero
+  el 1 es una **trampa de alto riesgo** (volatilidad 0.88, drawdown −79 %), el 2 es **value estable**
+  y el 3 es **value con crecimiento** (CAGR 1.9 %). Para el negocio, separarlos es la diferencia
+  entre "invertir en provincia" e "invertir en *este tipo* de provincia".
 
 ## 8. Integración al análisis (conexión con hipótesis y dashboard)
 
-- **Confirma H2 de forma emergente:** sin usar la región como input, el clustering reconstruye la
-  división resiliencia-capital vs. fragilidad-provincia. El cluster caro/estable está
-  sobre-representado en Zealand (51 % de sus zips vs. 23 % en el cluster barato/volátil).
+- **Consistente con H2 (no confirmación independiente):** el clustering, sin recibir la región como
+  input directo, reconstruye la división resiliencia-capital vs. fragilidad-provincia — esperable
+  porque las features de riesgo-retorno correlacionan con la región. **Pero no es pura geografía
+  disfrazada:** PC1 explica solo el **43 %** de la varianza; el 57 % restante es estructura
+  multidimensional real (volatilidad, drawdown, dinámica) que el `k=4` aprovecha para separar
+  arquetipos *dentro* de una misma región (los 3 perfiles de Jutland). El aporte es la
+  **granularidad a nivel zip** y la **cuantificación** del gap riesgo-retorno, no una validación
+  extra de H2.
 - **Refina el mensaje de riesgo (H3):** el riesgo no es solo por tipología (Apartment/Townhouse) sino
   **geográfico** — las provincias de bajo ticket combinan menor retorno con mayor drawdown, el peor
   binomio riesgo-retorno para el inversor.
@@ -115,6 +149,7 @@ uv run python scripts/run_segmentation.py --config configs/analysis.yaml
 - Todos los parámetros (filtros, features, `k`, perplejidad) viven en `configs/analysis.yaml →
   segmentation`; no hay números mágicos en el código.
 - Salidas: `data/marts/mart_zip_segments.csv`, `data/marts/mart_segment_profiles.csv`,
+  `data/marts/mart_segmentation_validation.csv` (métricas por k + experimento η²),
   `docs/refs/segmentation_pca_tsne.png`.
 
 ## 10. Limitaciones
@@ -124,4 +159,8 @@ uv run python scripts/run_segmentation.py --config configs/analysis.yaml
 - Se restringe a zips con ≥10 años de historia y ≥15 transacciones/año; **449 zips** de baja
   cobertura quedan fuera (mercados rurales muy pequeños) para no introducir ruido.
 - La silueta (0.27) indica estructura **moderada**, no clusters netamente disjuntos: el mercado es
-  un continuo riesgo-retorno con dos modos, no dos poblaciones separadas. Se reporta como tal.
+  un continuo riesgo-retorno con dos modos, no dos poblaciones separadas. **Se reporta con total
+  transparencia**: el `k` científico (2) es la partición robusta (estabilidad ARI 0.96); el `k`
+  operativo (4) es una **discretización del continuo en perfiles accionables**, elegida por
+  informatividad de negocio (η²), no se afirma que sean 4 clusters naturales. Ambos, con todas sus
+  métricas, quedan en `mart_segmentation_validation.csv`.

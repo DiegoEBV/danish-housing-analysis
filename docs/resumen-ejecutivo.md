@@ -28,13 +28,17 @@ concentran la mayor volatilidad y los peores drawdowns** durante las crisis fina
    2018Q3 (**−92.1 %**), amplificado por baja liquidez (n=5).
 
 3. **La geografía duplica el riesgo (segmentación no supervisada).** Un clustering **PCA + KMeans**
-   (sin usar la región como input) separa los códigos postales en **dos perfiles**: uno de
+   (sin la región como input directo) separa los códigos postales en **dos perfiles**: uno de
    **precio alto / crecimiento dinámico / bajo drawdown** (−42 %, concentrado en el metro de
    Copenhague) y otro de **precio bajo / plano / volátil** (−62 %, dominado por Jutland/provincias).
-   El método **reconstruye de forma emergente la división Capital vs. Provincias de H2**.
+   El método **redescubre la división Capital vs. Provincias de H2** — esperable, dado que las
+   features de riesgo-retorno usadas ya están correlacionadas con la región —; su aporte real es la
+   **granularidad a nivel de código postal** y la **cuantificación** del gap riesgo-retorno.
 
 4. **Transmisión hipotecaria asimétrica.** La correlación entre volumen de transacciones y
-   rendimiento de bonos hipotecarios (rezago 2 trimestres) es negativa en promedio pero se **agudiza
+   rendimiento de bonos hipotecarios (rezago 2 trimestres, elegido a priori por el ciclo típico de
+   aprobación hipotecaria; una cross-correlation empírica lags 0–4Q confirma que 2Q está en la zona de
+   respuesta más fuerte, ver `docs/data-dictionary-gold.md`) es negativa en promedio pero se **agudiza
    en crisis** (hasta −0.96 en la GFC) y se aproxima a cero en expansión: el canal de crédito opera
    sobre todo bajo estrés financiero.
 

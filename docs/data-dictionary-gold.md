@@ -37,7 +37,7 @@
 | `purchase_price` | float | Precio de compra en DKK | `2,500,000` | P5: flag outliers IQR×3 |
 | `sqm_price` | float | Precio nominal por m² (DKK) | `20,833` | Derivado: price/sqm |
 | `sqm_price_real` | float | Precio real por m² (DKK, base 2024) | `18,200` | Deflactado con IPC danés |
-| `sales_type` | str | Tipo de venta | `"Normal salg"`, `"-"`, `"Familiehandel"` | P3: flag ventas no mercado |
+| `sales_type` | str | Tipo de venta | `"regular_sale"`, `"family_sale"`, `"other_sale"`, `"auction"`, `"-"` | P3: solo `regular_sale` es mercado; el resto se flagea `sales_type_valido=False` |
 
 ### Variables Macroeconómicas (Dinamarca)
 
@@ -111,6 +111,17 @@ Fuente para la Vista 5 (correlación volumen-bonos, hipótesis H1).
 | `avg_bond_yield` | float | Yield promedio bonos 30Y (%) | 1%–15% |
 | `bond_yield_lag2q` | float | Yield con rezago de 2 trimestres | — |
 | `volume_bond_corr` | float | Correlación rolling (8Q) volumen vs. yield rezagado | -1 – 1 |
+
+**Sobre el rezago de 2 trimestres:** el lag se fijó a priori (`configs/analysis.yaml`, ciclo típico
+de decisión/aprobación hipotecaria). Una cross-correlation empírica de `n_transactions` vs.
+`avg_bond_yield` para lags 0–4Q sobre este mart da correlaciones estáticas muy planas y monótonamente
+crecientes en magnitud (lag0 = −0.79, lag1 = −0.80, **lag2 = −0.81**, lag3 = −0.81, lag4 = −0.82), y
+bajo el mismo esquema rolling-8Q del KPI el efecto medio es algo más fuerte en lag1 (|corr| media
+0.58) que en lag2 (0.45), pero el mínimo de la ventana (el pico de crisis, −0.96 en la GFC citado en
+el informe) es prácticamente idéntico entre lag1 y lag2. Conclusión: **lag=2 es una elección
+razonable y defendible**, dentro del rango de respuesta más fuerte, pero no es un único óptimo
+empírico marcado — lag=1 responde de forma comparable o levemente mayor en promedio. No se cambia el
+pipeline por esto; se deja documentado como nota de sensibilidad.
 
 ### mart_transactions_map.csv
 

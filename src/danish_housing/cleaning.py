@@ -78,7 +78,10 @@ def flag_invalid_sales(
 ) -> pd.DataFrame:
     """P3: Marca sales_type no clasificables como sales_type_valido=False."""
     if invalid_types is None:
-        invalid_types = ["-", "Familiehandel"]
+        # Vocabulario real del dataset Kaggle (verificado en value_counts de TB2):
+        # regular_sale (mercado) vs family_sale / other_sale / auction / "-" (no-mercado).
+        # "Familiehandel" (danes) NO existe en la data — antes sub-flageaba ~11.6%.
+        invalid_types = ["-", "family_sale", "other_sale", "auction"]
     if "sales_type" not in df.columns:
         return df
     mask = df["sales_type"].isin(invalid_types)

@@ -33,6 +33,8 @@ SCHEMA = {
     "mart_model_comparison": ["model", "test_r2", "test_mae", "test_mape_pct"],
     "mart_zip_segments": ["zip_code", "region", "cluster", "cluster_label", "pca1", "tsne1"],
     "mart_segment_profiles": ["cluster", "cluster_label", "n_zips", "price_level"],
+    "mart_segmentation_validation": ["k", "silhouette", "stability_ari", "eta2_risk", "k_cientifico", "k_operativo"],
+    "mart_rfm_segments": ["zip_code", "region", "R", "F", "M", "RFM_score", "rfm_segmento"],
 }
 
 _results: list[tuple[str, bool, str]] = []
@@ -135,13 +137,52 @@ def main() -> int:
 
     if "mart_segment_profiles" in marts:
         prof = marts["mart_segment_profiles"]
-        check("C · segmentación: 2 clusters (k elegido por silueta)",
-              len(prof) == 2, f"{len(prof)} clusters")
+        # k operativo = 4 perfiles de negocio (el 'cientifico' por consenso es 2, ver
+        # mart_segmentation_validation.csv). Se elige 4 por informatividad riesgo-retorno.
+        check("C · segmentación: 4 perfiles de negocio (k operativo)",
+              len(prof) == 4, f"{len(prof)} clusters")
+        arquetipos_esperados = {
+            "Premium estable/liquido", "Volatil / alto riesgo",
+            "Value estable/liquido", "Value con crecimiento",
+        }
+        check("C · arquetipos de inversión correctos",
+              set(prof["cluster_label"]) == arquetipos_esperados,
+              f"{sorted(prof['cluster_label'])}")
         alto = prof.loc[prof["price_level"].idxmax()]
         bajo = prof.loc[prof["price_level"].idxmin()]
-        check("C · cluster de precio alto tiene menor drawdown que el bajo",
+        check("C · cluster de precio alto (Premium) tiene menor drawdown que el más bajo",
               alto["max_drawdown"] > bajo["max_drawdown"],
               f"alto={alto['max_drawdown']:.1f}% vs bajo={bajo['max_drawdown']:.1f}%")
+
+    if "mart_segmentation_validation" in marts:
+        val = marts["mart_segmentation_validation"]
+        check("C · validación consenso: k científico=2, operativo=4",
+              int(val["k_cientifico"].iloc[0]) == 2 and int(val["k_operativo"].iloc[0]) == 4,
+              f"científico={val['k_cientifico'].iloc[0]} operativo={val['k_operativo'].iloc[0]}")
+        # el experimento: k=4 explica más varianza de riesgo que k=2
+        er = val.set_index("k")["eta2_risk"]
+        check("C · experimento η²: k=4 más informativo en riesgo que k=2",
+              er.get(4, 0) > er.get(2, 0),
+              f"η²_riesgo k=2→{er.get(2, float('nan')):.3f} vs k=4→{er.get(4, float('nan')):.3f}")
+
+    if "mart_rfm_segments" in marts:
+        rfm = marts["mart_rfm_segments"]
+        in_range = rfm[["R", "F", "M"]].apply(lambda c: c.between(1, 5)).all().all()
+        check("C · RFM: scores R/F/M en [1,5]", bool(in_range))
+        champ = rfm[rfm["rfm_segmento"].str.startswith("Champions")]
+        dorm = rfm[rfm["rfm_segmento"].str.startswith("Periferico")]
+        champ_ok = (
+            len(champ) > 0 and len(dorm) > 0
+            and champ["price_level"].mean() > dorm["price_level"].mean()
+            and champ["max_drawdown"].mean() > dorm["max_drawdown"].mean()
+        )
+        check("C · RFM: Champions = premium con mejor drawdown que Periférico dormido", champ_ok,
+              f"Champions precio={champ['price_level'].mean():.0f} dd={champ['max_drawdown'].mean():.1f} vs "
+              f"Dormido precio={dorm['price_level'].mean():.0f} dd={dorm['max_drawdown'].mean():.1f}")
+        if "mart_zip_segments" in marts:
+            orphan = set(rfm["zip_code"].astype(str)) - set(marts["mart_zip_segments"]["zip_code"].astype(str))
+            check("C · RFM: zips ⊆ zips segmentados (mismo universo)", not orphan,
+                  f"{len(orphan)} huérfanos")
 
     # ── Reporte ───────────────────────────────────────────────────────────────
     print("\n" + "=" * 78)
