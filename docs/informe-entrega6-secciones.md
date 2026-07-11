@@ -95,3 +95,65 @@ uv run python scripts/run_segmentation.py --config configs/analysis.yaml   # PCA
 uv run python scripts/run_qa.py                                            # QA 23/23
 uv run pytest tests/ -q                                                    # tests
 ```
+
+---
+
+## 32. Diseño visual, accesibilidad y gobernanza de color
+
+El ajuste final de diseño del dashboard se guió por tres principios de visualización: (a) máximo
+contraste, (b) **una codificación de color = un solo significado**, y (c) foco en el usuario
+(inversor), no en metadatos técnicos.
+
+### 32.1. Modo claro y contraste
+
+El dashboard se migró de tema oscuro a **tema claro** (fondo `#f4f6fb`, superficies blancas, texto
+`#1c2233`) tras la observación del docente. Se ajustaron en consecuencia las grillas de los gráficos
+(líneas claras `#e3e7ef`) y las etiquetas de ejes (texto oscuro), garantizando legibilidad de series,
+ejes y tooltips sobre fondo claro.
+
+### 32.2. Eliminación de ruido técnico en la vista
+
+Se retiró el banner de procedencia técnica (`Gold layer GCP · gs://danish-housing-gold/marts/ …`).
+El usuario objetivo del dashboard (inversor residencial) no necesita la ruta del bucket ni el
+detalle de infraestructura; esa trazabilidad pertenece al informe y a la documentación técnica
+(`docs/cloud-architecture.md`, `docs/data-dictionary-gold.md`), no a la cara del producto. Retirarlo
+reduce carga cognitiva y evita competir por atención con los KPIs.
+
+### 32.3. Gobernanza de color — tres capas de codificación separadas
+
+Se detectó que un mismo hue estaba codificando significados distintos en distintas partes del
+dashboard (p. ej. el ámbar `#f59e0b` servía a la vez de tipología *Townhouse*, región *Jutland* y
+nivel de severidad "medio" en el panel de insights; el coral `#f87171` era *Summerhouse*, el período
+*GFC* y "severidad alta"). Esa reutilización induce a leer relaciones inexistentes entre elementos.
+Se reorganizó la paleta en **tres capas mutuamente excluyentes**:
+
+| Capa de codificación | Tipo | Paleta | Uso |
+|---|---|---|---|
+| **Categórica** (nominal) | cualitativa | azul `#60a5fa`, verde `#34d399`, ámbar `#f59e0b`, coral `#f87171`, morado `#a78bfa`, índigo `#6366f1` | tipologías, regiones, períodos macro |
+| **Magnitud de riesgo** (drawdown) | secuencial | rampa **rosa/crimson** `#fb7185` → `#f43f5e` → `#be123c` (más oscuro = peor) | barras de drawdown por región, columna DRAWDOWN de casos críticos, métricas de riesgo del panel |
+| **Editorial / anotación** | neutra | **slate** `#475569` / `#64748b` | Panel de Insights (títulos, numeración, flechas de acción) |
+
+**Regla aplicada:** la rampa rosa y el slate **no aparecen en ninguna paleta categórica**, por lo que
+ningún hue tiene dos significados en el dashboard. Así, en la tabla "Casos críticos" la columna
+*Tipología* usa el color categórico (Apartment azul, Townhouse ámbar) y la columna *Drawdown* usa la
+rampa rosa de magnitud: dos codificaciones que ya no colisionan.
+
+**Justificación perceptual:** para *magnitud* (drawdown) una escala **secuencial de un solo tono**
+(rosa, oscureciéndose con la severidad) es más honesta que un semáforo rojo-ámbar-verde, porque no
+reintroduce hues categóricos ni sugiere un umbral cualitativo artificial. Para *anotación editorial*
+(panel de recomendaciones), un neutro (slate) comunica "esto es guía interpretativa, no una categoría
+del dato".
+
+### 32.4. Títulos analíticos y etiquetas
+
+Cada vista lleva un **título analítico** (afirma un hallazgo, no describe el gráfico): p. ej.
+"la vivienda urbana absorbe los peores shocks, no la segunda residencia". Los tooltips de mapa
+incluyen `n_transactions` para no malinterpretar zonas de baja muestra, y las series temporales
+marcan los shocks macro (GFC 2008, COVID 2020, alza 2022) con líneas anotadas.
+
+### 32.5. Nota sobre indicadores de estado
+
+Los badges de estado de hipótesis (H1/H2 ✓ en verde, H3 ~ en ámbar) usan una convención
+**tipo semáforo de estado** (validada / refinada), no una codificación de dato; se mantienen por ser
+un patrón de lectura universal e independiente de las paletas de series. Queda documentado como
+decisión consciente.
