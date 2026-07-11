@@ -112,6 +112,17 @@ Fuente para la Vista 5 (correlación volumen-bonos, hipótesis H1).
 | `bond_yield_lag2q` | float | Yield con rezago de 2 trimestres | — |
 | `volume_bond_corr` | float | Correlación rolling (8Q) volumen vs. yield rezagado | -1 – 1 |
 
+**Sobre el rezago de 2 trimestres:** el lag se fijó a priori (`configs/analysis.yaml`, ciclo típico
+de decisión/aprobación hipotecaria). Una cross-correlation empírica de `n_transactions` vs.
+`avg_bond_yield` para lags 0–4Q sobre este mart da correlaciones estáticas muy planas y monótonamente
+crecientes en magnitud (lag0 = −0.79, lag1 = −0.80, **lag2 = −0.81**, lag3 = −0.81, lag4 = −0.82), y
+bajo el mismo esquema rolling-8Q del KPI el efecto medio es algo más fuerte en lag1 (|corr| media
+0.58) que en lag2 (0.45), pero el mínimo de la ventana (el pico de crisis, −0.96 en la GFC citado en
+el informe) es prácticamente idéntico entre lag1 y lag2. Conclusión: **lag=2 es una elección
+razonable y defendible**, dentro del rango de respuesta más fuerte, pero no es un único óptimo
+empírico marcado — lag=1 responde de forma comparable o levemente mayor en promedio. No se cambia el
+pipeline por esto; se deja documentado como nota de sensibilidad.
+
 ### mart_transactions_map.csv
 
 Fuente para la Vista 2 (mapa choropleth por código postal).

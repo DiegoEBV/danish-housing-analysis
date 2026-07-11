@@ -18,8 +18,12 @@ Aplicamos esa técnica sobre una pregunta concreta y alineada con la pregunta de
 > **¿Se agrupan los códigos postales daneses en perfiles de riesgo-retorno homogéneos, y esos
 > grupos coinciden con la división Capital vs. Provincias que plantea H2?**
 
-La técnica no recibe la región como input. Si el clustering reconstruye una división geográfica,
-es una confirmación *emergente* (no circular) de H2.
+La técnica no recibe la región como input directo. Dicho esto, las 6 features se derivan de
+precios y volúmenes que ya están fuertemente correlacionados con la región (Copenhague concentra
+los precios más altos y la menor volatilidad del dataset), así que redescubrir la división
+capital/provincias es un resultado **esperable**, no una prueba independiente de H2. Su valor real
+no es "confirmar" la hipótesis desde cero, sino **aportar granularidad a nivel de código postal**
+(en vez de 5 regiones) y **cuantificar el gap riesgo-retorno** entre los dos perfiles de mercado.
 
 ## 2. Construcción del espacio de features (por `zip_code`)
 
@@ -73,12 +77,15 @@ features estandarizadas (no sobre los 2 PCs), para no descartar el 36 % de varia
 El parámetro `kmeans_k_override` permite fijar `k` manualmente si se quisiera una segmentación
 operativa más fina (documentado, pero no usado: la elección automática es la defendible).
 
-## 6. t-SNE — validación visual no lineal
+## 6. t-SNE — exploración visual complementaria
 
-Se calcula un embedding **t-SNE** 2D (`perplexity = 30`, init con PCA) como comprobación
-independiente: si dos clusters lineales de KMeans también se separan en un embedding no lineal, la
-estructura es robusta y no un artefacto de la métrica euclídea. En la figura, los dos grupos
-quedan claramente separados también en t-SNE (ver `docs/refs/segmentation_pca_tsne.png`).
+Se calcula un embedding **t-SNE** 2D (`perplexity = 30`, init con PCA) como **exploración visual
+complementaria**, no como prueba de robustez: t-SNE es conocido por poder exagerar o inventar
+separaciones entre grupos, y el resultado depende de la perplejidad elegida (no se corrió barrido de
+sensibilidad sobre este hiperparámetro). En la figura, los dos grupos aparecen **coherentes con** la
+estructura encontrada por KMeans sobre las features estandarizadas (ver
+`docs/refs/segmentation_pca_tsne.png`); esa coherencia es consistente con la segmentación, pero no la
+demuestra de forma independiente.
 
 ## 7. Resultado — dos perfiles de mercado
 
@@ -94,9 +101,12 @@ quedan claramente separados también en t-SNE (ver `docs/refs/segmentation_pca_t
 
 ## 8. Integración al análisis (conexión con hipótesis y dashboard)
 
-- **Confirma H2 de forma emergente:** sin usar la región como input, el clustering reconstruye la
-  división resiliencia-capital vs. fragilidad-provincia. El cluster caro/estable está
-  sobre-representado en Zealand (51 % de sus zips vs. 23 % en el cluster barato/volátil).
+- **Consistente con H2 (no confirmación independiente):** el clustering, sin recibir la región como
+  input directo, reconstruye la división resiliencia-capital vs. fragilidad-provincia — un resultado
+  esperable dado que las features de riesgo-retorno ya están correlacionadas con la región. El
+  cluster caro/estable está sobre-representado en Zealand (51 % de sus zips vs. 23 % en el cluster
+  barato/volátil); el aporte real es la **granularidad a nivel zip** y la **cuantificación** del gap
+  riesgo-retorno entre los dos perfiles, más que una validación adicional de H2.
 - **Refina el mensaje de riesgo (H3):** el riesgo no es solo por tipología (Apartment/Townhouse) sino
   **geográfico** — las provincias de bajo ticket combinan menor retorno con mayor drawdown, el peor
   binomio riesgo-retorno para el inversor.
