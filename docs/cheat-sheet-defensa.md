@@ -111,6 +111,28 @@ distinto — el k=4 los separa:
 > k=4 explica 47% de la varianza de riesgo vs 29% de k=2. Declaramos que es una discretización de un
 > continuo, no clusters naturales."
 
+---
+
+## Precio real / IPC derivado (no observado)
+
+**Qué preguntarán:** "El dataset no trae IPC; ¿de dónde sale el `sqm_price_real`?"
+
+**Respuesta:** El IPC se **deriva** de la inflación anual del propio dataset
+(`dk_ann_infl_rate_pct`), cumulándola hacia atrás desde el año más reciente con dato
+(base = 100). Años sin inflación (pre-1992 o gaps puntuales) usan un fallback de 2 % anual.
+La fórmula: `sqm_price_real = sqm_price × 100 / IPC(año)`.
+
+- **Definición ÚNICA y canónica**: vive en `kpis.build_cpi_from_inflation` / `deflate_sqm_price`;
+  la usan **tanto `run_pipeline.py` como `export_marts.py`** (misma función, verificado en
+  `tests/test_kpis.py`). Antes había un deflactor plano 2 % divergente en `export_marts` — se
+  eliminó (quedaba dormido, pero era un flanco).
+- **Honestidad**: es una aproximación (IPC derivado, no un índice oficial de Danmarks Statistik);
+  se declara como limitación. Todo el "precio real" y el índice regional dependen de ella, pero el
+  **índice regional es un ratio** → el año base del IPC se cancela y no afecta las comparaciones
+  relativas (solo los niveles absolutos).
+- **Utilidad para el inversor**: deflactar permite comparar poder adquisitivo real entre 1992 y 2024
+  — clave para un inversor extranjero que evalúa rendimiento real, no nominal.
+
 ### t-SNE y circularidad (respuestas rápidas)
 
 - **t-SNE:** exploración visual con hiperparámetros fijos (perplexity=30, lr=auto, max_iter=1000);
@@ -119,3 +141,38 @@ distinto — el k=4 los separa:
   explica 43%** de la varianza; el 57% restante es estructura multidimensional (volatilidad,
   drawdown) que permite separar 3 arquetipos *dentro* de Jutland. Es *consistente* con H2, no
   confirmación independiente — así lo declaramos.
+
+---
+
+## Otros flancos (defensa rápida)
+
+### Lag de 2 trimestres en la correlación volumen-bonos (R7)
+
+**Qué preguntarán:** "¿Por qué un lag de 2Q? ¿Lo optimizaron empíricamente?"
+
+**Respuesta:** El lag es **a priori, fundamentado en la naturaleza del mercado hipotecario danés**
+(bonos hipotecarios de tasa fija a largo plazo, callable): un cambio en el *yield* de los bonos se
+transmite al **volumen de compra con rezago de ~1-2 trimestres (3-6 meses)** — el tiempo de
+decisión/financiación del comprador; luego el efecto tiende a estabilizarse.
+
+- **Evidencia consistente:** la correlación media volumen vs `bond_yield_lag2q` es **−0.36**
+  (mediana −0.42) → **negativa**, como predice la hipótesis (más yield ⇒ menor volumen, rezagado).
+- **Honestidad:** NO se hizo un barrido de cross-correlation para "elegir el mejor lag" — es una
+  elección **teórica**, no un parámetro data-mined. Se defiende como hipótesis del dominio, no como
+  ajuste óptimo. (Mejora futura: cross-correlation formal para validar el pico de rezago.)
+
+### 48 % de zips excluidos de la segmentación (R4)
+
+**Qué preguntarán:** "Excluyen casi la mitad de los códigos postales — ¿no sesga el resultado?"
+
+**Respuesta:** Es **especialización deliberada, no sesgo oculto**. Los filtros (≥10 años de historia,
+≥15 transacciones/año) dejan fuera **449 de 932 zips** que son mercados rurales muy pequeños o
+erráticos, sin liquidez para operar. La segmentación es una **herramienta para el inversor**, no un
+censo: describe los mercados **líquidos** donde efectivamente se puede comprar/vender. Incluir zips
+de 2-3 transacciones al año metería ruido y clusters de tamaño 1. Está **documentado explícitamente**
+como criterio de cobertura, no escondido.
+
+### IPC derivado, no observado
+
+Ver sección "Precio real / IPC derivado" arriba — definición canónica única, honesta como
+aproximación, y el índice regional (ratio) es inmune al año base.

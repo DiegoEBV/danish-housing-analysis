@@ -150,7 +150,7 @@ Entry point: `run_cleaning_pipeline(df, config)` → `(cleaned_df, audit_log_df)
 
 **[kpis.py](src/danish_housing/kpis.py)** — 5 KPIs sobre Silver:
 
-1. **Precio Real/m²** (`compute_real_price_per_sqm`) — deflactado con IPC danés (base 2024). El IPC no viene en el dataset; se **deriva** de `dk_ann_infl_rate_pct` haciendo cumulada desde el año más reciente hacia atrás (ver `run_pipeline.py` líneas 70–84). Para años pre-1992 se asume 2% anual de fallback.
+1. **Precio Real/m²** (`compute_real_price_per_sqm`) — deflactado con IPC danés (base = año más reciente con dato macro). El IPC no viene en el dataset; se **deriva** de `dk_ann_infl_rate_pct` cumulada desde el año más reciente hacia atrás. La lógica canónica es `kpis.build_cpi_from_inflation` + `deflate_sqm_price`, **compartida por `run_pipeline.py` y `export_marts.py`** (una sola definición; test en `tests/test_kpis.py`). Para años sin inflación (pre-1992 o gaps) se asume 2% anual de fallback.
 2. **Índice Regional** (`compute_regional_index`) — base 1992 = 100, por región. Si una región no tiene observaciones en 1992 el fallback es el primer trimestre disponible.
 3. **Drawdown** (`compute_drawdown`) — máximo acumulado por `(region, house_type)` con `cummax`; `drawdown_pct = (precio − cummax) / cummax × 100`.
 4. **Volatilidad** (`compute_volatility`) — std del `pct_change` trimestral en ventana móvil de 4 trimestres por `house_type`.
