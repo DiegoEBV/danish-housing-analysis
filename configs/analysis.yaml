@@ -130,6 +130,15 @@ segmentation:
     - liquidity_log        # log del volumen medio de transacciones
     - growth_recent        # crecimiento en la ventana reciente
 
+# RFM de atractivo de mercado por zip (complementa la segmentacion riesgo-retorno).
+# NO es RFM de clientes (la data no tiene compradores repetidos): es un reencuadre por mercado.
+rfm:
+  n_quantiles: 5                 # quintiles 1-5 por dimension
+  recency_feature: growth_recent # R = momentum reciente (crecimiento ultimos anios)
+  frequency_feature: liquidity_log # F = liquidez (volumen de transacciones)
+  monetary_feature: price_level  # M = nivel de precio real/m2
+  # Reusa los mismos filtros de cobertura de `segmentation` (build_features) -> mismos 483 zips.
+
 # Tipos de vivienda de interes (vocabulario real del dataset = ingles)
 house_types:
   villa: "Villa"

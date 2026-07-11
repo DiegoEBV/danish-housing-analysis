@@ -77,6 +77,9 @@ uv run python scripts/export_marts.py --config configs/analysis.yaml
 # Segmentacion no supervisada TF (PCA + KMeans + t-SNE sobre mart_transactions_map)
 uv run python scripts/run_segmentation.py --config configs/analysis.yaml
 
+# RFM de atractivo de mercado por zip (complementa la segmentacion; mismo universo de zips)
+uv run python scripts/run_rfm.py --config configs/analysis.yaml
+
 # QA tecnico automatizado (integridad + reconciliacion informe/dashboard vs marts)
 uv run python scripts/run_qa.py
 
@@ -167,6 +170,8 @@ Entry point: `run_cleaning_pipeline(df, config)` → `(cleaned_df, audit_log_df)
 | `mart_transactions_map.csv` | Agregado por `zip_code` para vista de mapa |
 | `mart_zip_segments.csv` | Segmentación no supervisada por `zip_code` (PCA/KMeans/t-SNE) — Entrega 6 |
 | `mart_segment_profiles.csv` | Perfil (centroide) por cluster de segmentación — Entrega 6 |
+| `mart_segmentation_validation.csv` | Métricas de validación por k (7 criterios) + experimento η² — Entrega 6 |
+| `mart_rfm_segments.csv` | RFM de atractivo de mercado por `zip_code` (R=momentum, F=liquidez, M=precio) — complemento TF |
 
 Versiones sintéticas (sin data real) se generan con `scripts/generate_tableau.py`.
 

@@ -34,6 +34,7 @@ SCHEMA = {
     "mart_zip_segments": ["zip_code", "region", "cluster", "cluster_label", "pca1", "tsne1"],
     "mart_segment_profiles": ["cluster", "cluster_label", "n_zips", "price_level"],
     "mart_segmentation_validation": ["k", "silhouette", "stability_ari", "eta2_risk", "k_cientifico", "k_operativo"],
+    "mart_rfm_segments": ["zip_code", "region", "R", "F", "M", "RFM_score", "rfm_segmento"],
 }
 
 _results: list[tuple[str, bool, str]] = []
@@ -163,6 +164,25 @@ def main() -> int:
         check("C · experimento η²: k=4 más informativo en riesgo que k=2",
               er.get(4, 0) > er.get(2, 0),
               f"η²_riesgo k=2→{er.get(2, float('nan')):.3f} vs k=4→{er.get(4, float('nan')):.3f}")
+
+    if "mart_rfm_segments" in marts:
+        rfm = marts["mart_rfm_segments"]
+        in_range = rfm[["R", "F", "M"]].apply(lambda c: c.between(1, 5)).all().all()
+        check("C · RFM: scores R/F/M en [1,5]", bool(in_range))
+        champ = rfm[rfm["rfm_segmento"].str.startswith("Champions")]
+        dorm = rfm[rfm["rfm_segmento"].str.startswith("Periferico")]
+        champ_ok = (
+            len(champ) > 0 and len(dorm) > 0
+            and champ["price_level"].mean() > dorm["price_level"].mean()
+            and champ["max_drawdown"].mean() > dorm["max_drawdown"].mean()
+        )
+        check("C · RFM: Champions = premium con mejor drawdown que Periférico dormido", champ_ok,
+              f"Champions precio={champ['price_level'].mean():.0f} dd={champ['max_drawdown'].mean():.1f} vs "
+              f"Dormido precio={dorm['price_level'].mean():.0f} dd={dorm['max_drawdown'].mean():.1f}")
+        if "mart_zip_segments" in marts:
+            orphan = set(rfm["zip_code"].astype(str)) - set(marts["mart_zip_segments"]["zip_code"].astype(str))
+            check("C · RFM: zips ⊆ zips segmentados (mismo universo)", not orphan,
+                  f"{len(orphan)} huérfanos")
 
     # ── Reporte ───────────────────────────────────────────────────────────────
     print("\n" + "=" * 78)
