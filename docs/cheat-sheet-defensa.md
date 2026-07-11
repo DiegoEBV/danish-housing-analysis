@@ -61,3 +61,61 @@ d.groupby('decil').apply(lambda x: pd.Series({
     'bias': x.residual.mean(),
 }), include_groups=False).round(0)
 ```
+
+---
+
+## Segmentación — ¿por qué k=4 si la silueta prefiere k=2?
+
+### El número y qué mide
+
+Segmentamos **códigos postales** (mercados locales), no viviendas, por su **perfil riesgo-retorno**
+(6 features derivadas de precio/volumen). Elegimos `k` con un **consenso de 7 criterios**
+(`mart_segmentation_validation.csv`), no con una sola métrica:
+
+| criterio | prefiere | mide |
+|---|---|---|
+| silueta, Calinski-Harabasz | **k=2** | separación geométrica |
+| **estabilidad bootstrap (ARI)** | **k=2 (0.96)** | robustez del particionado |
+| Davies-Bouldin, GMM-BIC | k=5 | compacidad (sin robustez) |
+| gap statistic | k↑ | firma de continuo |
+
+### Los dos k que reportamos (transparencia)
+
+- **k científico = 2** → la partición **estadísticamente robusta** (estabilidad ARI 0.96): dos
+  regímenes, capital-premium vs provincia. Es el resultado que "gana las métricas".
+- **k operativo = 4** → el **elegido para el dashboard**, por *utilidad de negocio*, no por métrica.
+
+### El experimento que justifica k=4 (respuesta al "pero la silueta es peor")
+
+Medimos cuánta varianza de **retorno** y **riesgo** explica el clustering (η²). k=4 tiene silueta
+apenas menor (0.234 vs 0.265, mismo orden) pero es **mucho más informativo**:
+
+| | η² riesgo | η² retorno |
+|---|---|---|
+| k=2 | 0.29 | 0.17 |
+| **k=4** | **0.47 (+60%)** | **0.29 (+66%)** |
+
+**Por qué:** el k=2 mete en una sola bolsa "Jutland barato" tres mercados que un inversor trata
+distinto — el k=4 los separa:
+
+| Arquetipo | precio/m² | CAGR | volat. | drawdown |
+|---|---:|---:|---:|---:|
+| Premium estable/líquido | 28.3k | 2.8% | 0.17 | −39% |
+| **Volátil / alto riesgo** | 14.3k | 0.9% | **0.88** | **−79%** |
+| Value estable/líquido | 14.3k | 0.7% | 0.28 | −54% |
+| Value con crecimiento | 13.6k | **1.9%** | 0.30 | −56% |
+
+> **Respuesta enlatada:** "La silueta óptima es k=2 y lo reportamos como resultado científico. Pero
+> para el dashboard usamos k=4 porque separa arquetipos de inversión que k=2 esconde: una *trampa de
+> alto riesgo* (vol 0.88, drawdown −79%) queda mezclada con *value estable* en k=2. Cuantificamos que
+> k=4 explica 47% de la varianza de riesgo vs 29% de k=2. Declaramos que es una discretización de un
+> continuo, no clusters naturales."
+
+### t-SNE y circularidad (respuestas rápidas)
+
+- **t-SNE:** exploración visual con hiperparámetros fijos (perplexity=30, lr=auto, max_iter=1000);
+  **no** valida clusters — la validación son los 7 criterios cuantitativos.
+- **Circularidad H2:** las features derivan de precio → correlacionan con región, pero **PC1 solo
+  explica 43%** de la varianza; el 57% restante es estructura multidimensional (volatilidad,
+  drawdown) que permite separar 3 arquetipos *dentro* de Jutland. Es *consistente* con H2, no
+  confirmación independiente — así lo declaramos.

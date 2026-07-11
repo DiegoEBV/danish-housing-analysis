@@ -1,3 +1,5 @@
 cluster,n_zips,price_level,cagr_real,volatility,max_drawdown,liquidity_log,growth_recent,cluster_label,region_dominante
-0,229,24847.7817,0.0252,0.1875,-41.9108,4.3898,0.0498,Precio alto / dinamico / estable,Zealand
-1,254,12979.0843,0.0114,0.4234,-61.9961,3.7458,-0.0426,Precio bajo / plano / volatil,Jutland
+0,157,28275.6268,0.0281,0.1728,-39.2004,4.4941,0.0387,Premium estable/liquido,Zealand
+1,47,14291.883,0.0095,0.8787,-79.1684,3.5489,0.0681,Volatil / alto riesgo,Jutland
+2,114,14293.2728,0.0067,0.2855,-54.0172,4.4181,-0.1976,Value estable/liquido,Jutland
+3,165,13614.5721,0.0185,0.3,-56.4318,3.5193,0.0839,Value con crecimiento,Jutland

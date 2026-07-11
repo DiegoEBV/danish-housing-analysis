@@ -31,7 +31,13 @@ import yaml
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
-from sklearn.metrics import silhouette_score
+from sklearn.metrics import (
+    adjusted_rand_score,
+    calinski_harabasz_score,
+    davies_bouldin_score,
+    silhouette_score,
+)
+from sklearn.mixture import GaussianMixture
 from sklearn.preprocessing import StandardScaler
 
 logging.basicConfig(
@@ -121,28 +127,122 @@ def build_features(df_map: pd.DataFrame, cfg: dict) -> pd.DataFrame:
 
 # ── PCA + seleccion de k + KMeans + t-SNE ─────────────────────────────────────
 
-def choose_k(X: np.ndarray, k_range: list[int], k_override, random_state: int):
-    """Elige k por coeficiente de silueta (o respeta k_override)."""
-    if k_override:
-        logger.info("k fijado manualmente = %d", k_override)
-        return int(k_override), {}
-    scores = {}
+def _cluster_stability(X: np.ndarray, k: int, rs: int, n_boot: int = 12, frac: float = 0.8) -> float:
+    """Estabilidad del particionado: ARI medio entre el fit base y n_boot subsamples."""
+    rng = np.random.default_rng(rs)
+    base = KMeans(n_clusters=k, random_state=rs, n_init=10).fit(X)
+    aris = []
+    for _ in range(n_boot):
+        idx = rng.choice(len(X), int(frac * len(X)), replace=False)
+        lb = KMeans(n_clusters=k, random_state=int(rng.integers(1_000_000)), n_init=10).fit_predict(X[idx])
+        aris.append(adjusted_rand_score(base.labels_[idx], lb))
+    return float(np.mean(aris))
+
+
+def _gap_statistic(X: np.ndarray, k: int, rs: int, n_ref: int = 15) -> float:
+    """Gap statistic (Tibshirani): log(WCSS_ref) - log(WCSS_datos) sobre refs uniformes."""
+    rng = np.random.default_rng(rs + k)
+    wk = KMeans(n_clusters=k, random_state=rs, n_init=10).fit(X).inertia_
+    mins, maxs = X.min(0), X.max(0)
+    logs = [
+        np.log(KMeans(n_clusters=k, random_state=rs, n_init=10).fit(rng.uniform(mins, maxs, size=X.shape)).inertia_)
+        for _ in range(n_ref)
+    ]
+    return float(np.mean(logs) - np.log(wk))
+
+
+def _eta2(v: np.ndarray, labels: np.ndarray) -> float:
+    """Varianza de la variable `v` explicada por el clustering (eta^2 = SS_between / SS_total)."""
+    grand = v.mean()
+    sst = ((v - grand) ** 2).sum()
+    if sst == 0:
+        return 0.0
+    ssb = sum((labels == c).sum() * (v[labels == c].mean() - grand) ** 2 for c in np.unique(labels))
+    return float(ssb / sst)
+
+
+def evaluate_k(X: np.ndarray, feats: pd.DataFrame, k_range: list[int], rs: int) -> pd.DataFrame:
+    """
+    Consenso AMPLIO de validez de cluster (7 criterios) + informatividad de negocio.
+
+    Criterios de calidad: silueta / Calinski-Harabasz (alto mejor), Davies-Bouldin /
+    GMM-BIC (bajo mejor), estabilidad ARI y gap statistic. Ademas, para justificar el
+    k operativo, se mide cuanta varianza de RETORNO (cagr, growth) y RIESGO (volatilidad,
+    drawdown) explica el clustering (eta^2): un k con peor silueta puede ser mas util
+    para negocio si separa mejor los ejes riesgo-retorno.
+    """
+    ret_cols = ["cagr_real", "growth_recent"]
+    rsk_cols = ["volatility", "max_drawdown"]
+    rows = []
     for k in k_range:
-        km = KMeans(n_clusters=k, random_state=random_state, n_init=10)
-        labels = km.fit_predict(X)
-        scores[k] = silhouette_score(X, labels)
-        logger.info("  k=%d -> silueta=%.4f", k, scores[k])
-    best = max(scores, key=scores.get)
-    logger.info("k elegido por silueta = %d (silueta=%.4f)", best, scores[best])
-    return best, scores
+        lab = KMeans(n_clusters=k, random_state=rs, n_init=10).fit(X).labels_
+        rows.append({
+            "k": k,
+            "silhouette": silhouette_score(X, lab),
+            "calinski_harabasz": calinski_harabasz_score(X, lab),
+            "davies_bouldin": davies_bouldin_score(X, lab),
+            "stability_ari": _cluster_stability(X, k, rs),
+            "gap": _gap_statistic(X, k, rs),
+            "inertia": KMeans(n_clusters=k, random_state=rs, n_init=10).fit(X).inertia_,
+            "gmm_bic": GaussianMixture(n_components=k, random_state=rs, n_init=2).fit(X).bic(X),
+            "eta2_return": float(np.mean([_eta2(feats[c].to_numpy(), lab) for c in ret_cols])),
+            "eta2_risk": float(np.mean([_eta2(feats[c].to_numpy(), lab) for c in rsk_cols])),
+        })
+        logger.info("  k=%d -> sil=%.3f CH=%.0f DB=%.3f estab=%.3f gap=%.3f eta2_risk=%.3f",
+                    k, rows[-1]["silhouette"], rows[-1]["calinski_harabasz"],
+                    rows[-1]["davies_bouldin"], rows[-1]["stability_ari"], rows[-1]["gap"],
+                    rows[-1]["eta2_risk"])
+    return pd.DataFrame(rows)
+
+
+def choose_k_scientific(val_df: pd.DataFrame) -> int:
+    """
+    k 'cientifico' por consenso de los criterios de CALIDAD de cluster (separacion +
+    estabilidad): silueta, Calinski-Harabasz y estabilidad ARI. Es la particion robusta.
+    Los criterios que premian k mas alto (DB/BIC/gap) solo reflejan que un continuo se
+    puede rebanar mas fino, sin robustez, por eso NO entran al voto cientifico.
+    """
+    votes = [
+        int(val_df.loc[val_df["silhouette"].idxmax(), "k"]),
+        int(val_df.loc[val_df["calinski_harabasz"].idxmax(), "k"]),
+        int(val_df.loc[val_df["stability_ari"].idxmax(), "k"]),
+    ]
+    return int(pd.Series(votes).mode().iloc[0])
+
+
+def _label_arquetipos_4(p: pd.DataFrame) -> dict:
+    """
+    Mapea los 4 clusters a los arquetipos de inversion (perfiles de negocio del dashboard).
+    Asignacion DETERMINISTA por posicion del centroide (los labels de KMeans son arbitrarios):
+      1. Premium estable/liquido  = mayor nivel de precio
+      2. Volatil / alto riesgo    = mayor volatilidad entre el resto
+      3. Value con crecimiento    = mayor CAGR entre el resto
+      4. Value estable/liquido    = el cluster restante
+    """
+    labels: dict[int, str] = {}
+    restantes = set(p["cluster"].astype(int))
+
+    def _asignar(col: str, nombre: str) -> None:
+        sub = p[p["cluster"].astype(int).isin(restantes)]
+        c = int(sub.loc[sub[col].idxmax(), "cluster"])
+        labels[c] = nombre
+        restantes.discard(c)
+
+    _asignar("price_level", "Premium estable/liquido")
+    _asignar("volatility", "Volatil / alto riesgo")
+    _asignar("cagr_real", "Value con crecimiento")
+    labels[int(next(iter(restantes)))] = "Value estable/liquido"
+    return labels
 
 
 def label_clusters(profiles: pd.DataFrame) -> dict:
     """
-    Etiqueta cada cluster con un nombre interpretable a partir de la posicion de su
-    centroide en nivel de precio, crecimiento y volatilidad (terciles relativos).
+    Etiqueta cada cluster con un nombre interpretable a partir de su centroide.
+    Con k=4 usa los arquetipos de negocio; con otros k, cae a terciles relativos.
     """
     p = profiles.copy()
+    if len(p) == 4:
+        return _label_arquetipos_4(p)
     nivel = pd.qcut(p["price_level"].rank(method="first"), 3, labels=["bajo", "medio", "alto"])
     vol = pd.qcut(p["volatility"].rank(method="first"), 3, labels=["estable", "medio", "volatil"])
     crec = pd.qcut(p["cagr_real"].rank(method="first"), 3, labels=["plano", "medio", "dinamico"])
@@ -191,15 +291,40 @@ def run(config_path: str, make_plot: bool = True, marts_dir: str | Path | None =
         len(var), var.sum() * 100, var[0] * 100, var[1] * 100,
     )
 
-    # 5. Seleccion de k + KMeans (clustering sobre features estandarizadas)
-    k, sil_scores = choose_k(X, scfg["kmeans_k_range"], scfg["kmeans_k_override"], rs)
+    # 5. Validacion amplia (7 criterios + eta^2 de negocio) y seleccion de k.
+    #    Se reportan DOS k: el 'cientifico' (consenso de calidad de cluster) y el
+    #    'operativo' (perfiles de negocio del dashboard). Ver mart_segmentation_validation.
+    logger.info("Consenso amplio de validez de cluster:")
+    val_df = evaluate_k(X, feats, scfg["kmeans_k_range"], rs)
+    k_sci = choose_k_scientific(val_df)
+    if scfg.get("kmeans_k_override"):
+        k = int(scfg["kmeans_k_override"])
+    else:
+        k = int(scfg.get("kmeans_k_operativo") or k_sci)
+    er = val_df.set_index("k")["eta2_risk"]
+    ret = val_df.set_index("k")["eta2_return"]
+    logger.info("k CIENTIFICO (consenso silueta+CH+estabilidad) = %d", k_sci)
+    logger.info("k OPERATIVO (perfiles de negocio) = %d", k)
+    logger.info("Justificacion eta^2: riesgo k=%d->%.3f vs k=%d->%.3f | retorno k=%d->%.3f vs k=%d->%.3f",
+                k_sci, er.get(k_sci, float("nan")), k, er.get(k, float("nan")),
+                k_sci, ret.get(k_sci, float("nan")), k, ret.get(k, float("nan")))
+    sil_scores = dict(zip(val_df["k"], val_df["silhouette"], strict=True))
+
     km = KMeans(n_clusters=k, random_state=rs, n_init=10)
     feats["cluster"] = km.fit_predict(X)
     feats["pca1"], feats["pca2"] = pcs[:, 0], pcs[:, 1]
 
-    # 6. t-SNE (embedding no lineal para visualizacion)
+    # 6. t-SNE (embedding no lineal SOLO para exploracion visual, NO valida clusters).
+    #    Hiperparametros fijados y documentados en config para reproducibilidad.
     perp = min(scfg["tsne_perplexity"], (len(feats) - 1) // 3)
-    tsne = TSNE(n_components=2, perplexity=perp, random_state=rs, init="pca")
+    tsne = TSNE(
+        n_components=2,
+        perplexity=perp,
+        learning_rate=scfg.get("tsne_learning_rate", "auto"),
+        max_iter=int(scfg.get("tsne_max_iter", 1000)),
+        init="pca",
+        random_state=rs,
+    )
     emb = tsne.fit_transform(X)
     feats["tsne1"], feats["tsne2"] = emb[:, 0], emb[:, 1]
 
@@ -226,10 +351,13 @@ def run(config_path: str, make_plot: bool = True, marts_dir: str | Path | None =
         "zip_code", "city", "region", "n_years",
         *feature_cols, "pca1", "pca2", "tsne1", "tsne2", "cluster", "cluster_label",
     ]
+    out_val = marts_dir / "mart_segmentation_validation.csv"
     feats[cols_seg].round(4).to_csv(out_seg, index=False)
     profiles.round(4).to_csv(out_prof, index=False)
+    val_df.assign(k_cientifico=k_sci, k_operativo=k).round(4).to_csv(out_val, index=False)
     logger.info("Exportado %s (%d zips)", out_seg.name, len(feats))
     logger.info("Exportado %s (%d clusters)", out_prof.name, len(profiles))
+    logger.info("Exportado %s (validacion k=%s)", out_val.name, list(val_df["k"]))
 
     # 9. Figura diagnostica para el informe (docs/refs, trackeable en git)
     if make_plot:
