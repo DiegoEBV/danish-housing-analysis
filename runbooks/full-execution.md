@@ -52,11 +52,29 @@ python scripts/run_cleaning.py --config configs/analysis.yaml --sample 50000
 jupyter notebook notebook/TB3_analisis_exploratorio.ipynb
 ```
 
-## Paso 5 — Tests
+## Paso 4b — Marts Gold + Segmentación no supervisada (TF)
+
+```bash
+# Genera los marts de KPIs desde Silver
+uv run python scripts/export_marts.py --config configs/analysis.yaml
+
+# Segmentación no supervisada PCA + KMeans + t-SNE (Entrega 6)
+#   -> data/marts/mart_zip_segments.csv, mart_segment_profiles.csv
+#   -> docs/refs/segmentation_pca_tsne.png
+uv run python scripts/run_segmentation.py --config configs/analysis.yaml
+```
+
+> El pipeline completo `scripts/run_pipeline.py` ejecuta la segmentación como FASE C
+> automáticamente al final (raw → Silver → Gold → segmentación).
+
+## Paso 5 — Tests y QA
 
 ```bash
 pytest tests/ -v
 pytest tests/ --cov=src/danish_housing --cov-report=term-missing
+
+# QA técnico: integridad + reconciliación informe/dashboard vs marts (23/23 esperado)
+uv run python scripts/run_qa.py
 ```
 
 ## Paso 6 — Linting

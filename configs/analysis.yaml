@@ -101,6 +101,28 @@ marts:
   min_price_real: 500            # piso para sqm_price_real (evita ruido de muestras minimas)
   bond_corr_window: 8            # ventana rolling para correlacion volumen-bonos
 
+# Segmentacion no supervisada (Entrega 6: PCA + KMeans + t-SNE)
+# Segmenta codigos postales por su perfil riesgo-retorno historico.
+segmentation:
+  input_mart: mart_transactions_map        # fuente Gold real (year, zip_code, region, avg_sqm_price_real, n_transactions)
+  min_years_coverage: 10                    # zips con menos anios de historia se excluyen (ruido)
+  min_avg_transactions: 15                  # liquidez minima promedio por anio (filtra mercados erraticos)
+  winsorize_pct: 0.01                       # recorta features a [p1, p99] antes de escalar (robustez a outliers)
+  smoothing_years: 2                        # promedia extremos de la serie para CAGR robusto
+  recent_years: 5                           # ventana "reciente" para nivel de precio y crecimiento
+  random_state: 42
+  pca_components: 2                         # componentes retenidas para visualizacion 2D
+  kmeans_k_range: [2, 3, 4, 5, 6, 7, 8]     # se elige k por silueta
+  kmeans_k_override: null                   # fijar k manualmente (null = automatico por silueta)
+  tsne_perplexity: 30                       # perplejidad t-SNE para el embedding 2D
+  features:                                 # features de entrada (interpretables) por zip_code
+    - price_level          # nivel de precio real/m2 (mediana ventana reciente)
+    - cagr_real            # crecimiento anual compuesto del precio real
+    - volatility           # desvio std del cambio interanual
+    - max_drawdown         # peor caida pico-valle historica
+    - liquidity_log        # log del volumen medio de transacciones
+    - growth_recent        # crecimiento en la ventana reciente
+
 # Tipos de vivienda de interes
 house_types:
   villa: "Villa"
