@@ -13,7 +13,10 @@ A diferencia de la segmentación por reglas de TB4 (flags `es_capital`, `es_summ
 técnica **descubre estructura en los datos sin imponer etiquetas a priori**, respondiendo a:
 *¿se agrupan los códigos postales en perfiles de riesgo-retorno homogéneos, y esos grupos coinciden
 con la división Capital vs. Provincias de H2?* El método **no recibe la región como variable de
-entrada**; si reconstruye una división geográfica, es una confirmación emergente (no circular) de H2.
+entrada directa**, aunque las 6 features derivan de precios y volúmenes ya correlacionados con la
+región, por lo que redescubrir esa división geográfica es un resultado **esperable, no una prueba
+independiente** de H2: el aporte real es la granularidad a nivel de código postal y la cuantificación
+del gap riesgo-retorno.
 
 A partir del mart Gold real `mart_transactions_map` (24 124 filas `year × zip_code`) se construyó una
 matriz de **483 códigos postales × 6 features** de perfil riesgo-retorno:
@@ -32,8 +35,9 @@ Resultados de la técnica:
   el eje dominante riesgo-retorno.
 - **KMeans:** el número de clusters se eligió por **coeficiente de silueta** sobre `k ∈ {2..8}`;
   el máximo está en **k = 2** (silueta 0.265).
-- **t-SNE:** el embedding no lineal (perplejidad 30) separa los mismos dos grupos, confirmando que la
-  estructura es robusta y no un artefacto de la métrica euclídea.
+- **t-SNE:** el embedding no lineal (perplejidad 30) muestra los mismos dos grupos separados, como
+  **exploración visual complementaria** — coherente con la estructura de KMeans, pero no una prueba
+  de robustez (t-SNE puede exagerar separaciones y su resultado depende de la perplejidad elegida).
 
 `[FIGURA: docs/refs/segmentation_pca_tsne.png — varianza PCA, proyección PCA 2D por cluster y embedding t-SNE]`
 
@@ -49,10 +53,12 @@ con el dashboard:
 | 0 | Precio alto / dinámico / estable | 229 | Zealand (51 %) | 24 848 | +2.5 %/año | 0.19 | −41.9 % |
 | 1 | Precio bajo / plano / volátil | 254 | Jutland (Provincias) | 12 979 | +1.1 %/año | 0.42 | −62.0 % |
 
-- **Confirma H2 de forma emergente:** sin usar la región como input, el clustering reconstruye la
-  división resiliencia-capital vs. fragilidad-provincia. El cluster caro/estable concentra el metro de
-  Copenhague (sus zips de mayor precio son Nordhavn, København V, Klampenborg, Hellerup) y está
-  sobre-representado en Zealand (51 % vs. 23 % en el cluster barato).
+- **Consistente con H2 (no confirmación independiente):** el clustering, sin la región como input
+  directo, reconstruye la división resiliencia-capital vs. fragilidad-provincia — esperable, ya que
+  las features de riesgo-retorno ya están correlacionadas con la región. El cluster caro/estable
+  concentra el metro de Copenhague (sus zips de mayor precio son Nordhavn, København V, Klampenborg,
+  Hellerup) y está sobre-representado en Zealand (51 % vs. 23 % en el cluster barato). El aporte real
+  es la granularidad a nivel zip y la cuantificación del gap riesgo-retorno.
 - **Refina H3:** el riesgo no es solo por tipología, también es **geográfico** — las provincias de
   bajo ticket combinan menor retorno con drawdowns 20 pp más profundos (−62 % vs. −42 %), el peor
   binomio riesgo-retorno para el inversor.
@@ -76,7 +82,7 @@ con el dashboard:
 4. **Estandarización** (`StandardScaler`, media 0, desvío 1) para que ninguna feature domine por escala.
 5. **PCA** (2 componentes) para reducción de dimensionalidad y visualización.
 6. **Selección de k** por silueta y **KMeans** sobre las 6 features estandarizadas.
-7. **t-SNE** 2D como validación no lineal.
+7. **t-SNE** 2D como exploración visual complementaria (no validación de robustez).
 8. **Exportación** de `mart_zip_segments.csv` y `mart_segment_profiles.csv` + figura diagnóstica.
 
 **Reproducibilidad:** determinista (`random_state = 42` en PCA, KMeans y t-SNE); sin números mágicos
@@ -189,7 +195,7 @@ Guion de defensa (storyboard) alineado con el flujo del dashboard:
 | 4 | **Geografía** | Mapa + segmentación PCA | el riesgo es geográfico: capital resiliente vs. provincia volátil |
 | 5 | **Crisis y riesgo** | Heatmap + drawdowns | la vivienda urbana absorbe los peores shocks, no la segunda residencia |
 | 6 | **Modelo** | Comparativa M1–M4 | XGBoost R²=0.44 out-of-time; el ciclo de tasas mueve el volumen (lag 2Q) |
-| 7 | **Segmentación** | figura PCA/t-SNE | validación no supervisada de H2 (sin usar la región) |
+| 7 | **Segmentación** | figura PCA/t-SNE | segmentación no supervisada consistente con H2, con granularidad zip |
 | 8 | **Conclusión** | Conclusiones + hipótesis | H1✓ H2✓ H3 refinada; recomendaciones de asignación |
 | 9 | **Cierre técnico** | pipeline + QA | reproducibilidad y control de supuestos |
 
