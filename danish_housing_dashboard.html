@@ -257,7 +257,7 @@
         <div class="flex items-start justify-between mb-2">
           <div>
             <div class="section-title">Volatilidad y Drawdown por Tipología</div>
-            <div class="section-sub">Barras agrupadas · volatilidad media trimestral (σ%) y peor drawdown pico-valle · ordenado por riesgo</div>
+            <div class="section-sub">Barras agrupadas · volatilidad media trimestral (σ%) y peor drawdown pico-valle · ordenado por estabilidad (más estable arriba)</div>
           </div>
         </div>
         <div style="position:relative;height:280px"><canvas id="chartBubble" role="img" aria-label="Barras de volatilidad trimestral y peor drawdown por tipología de vivienda, ordenadas de mayor a menor riesgo"></canvas></div>
@@ -1144,8 +1144,8 @@ function renderSummary() {
   })).filter(d => d.vol > 0);
 
   // ── Barras agrupadas horizontales: volatilidad + drawdown por tipología ────────
-  // Ordenar de mayor a menor riesgo (drawdown más negativo primero)
-  const sorted = [...bubbleData].sort((a,b) => a.dd - b.dd);
+  // Ordenar de MÁS ESTABLE a más riesgoso (drawdown menos negativo arriba).
+  const sorted = [...bubbleData].sort((a,b) => b.dd - a.dd);
 
   const labels  = sorted.map(d => d.t);
   const volVals = sorted.map(d => +d.vol.toFixed(2));
@@ -1208,9 +1208,9 @@ function renderSummary() {
     },
   });
 
-  // Takeaway
-  const riskiest = sorted[0];
-  const safest   = sorted[sorted.length - 1];
+  // Takeaway (el array ahora va de más estable a más riesgoso)
+  const safest   = sorted[0];
+  const riskiest = sorted[sorted.length - 1];
   const el = document.getElementById('ti-bubble');
   if (el && riskiest) el.innerHTML = `<strong>${riskiest.t}</strong> registra el mayor riesgo: drawdown ${riskiest.dd.toFixed(1)}% y volatilidad σ=${riskiest.vol.toFixed(2)}%. <strong>${safest.t}</strong> es la tipología más estable (drawdown ${safest.dd.toFixed(1)}%). Las barras sólidas muestran volatilidad; las transparentes, profundidad de caída.`;
 
