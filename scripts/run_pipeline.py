@@ -261,6 +261,20 @@ def main() -> None:
     )
     mp["avg_sqm_price_real"] = mp["avg_sqm_price_real"].round(1)
     save(mp, "mart_transactions_map.csv")
+    del sv_map, sv_map_c, mp
+    gc.collect()
+
+    # FASE C — Segmentacion no supervisada (PCA + KMeans + t-SNE) sobre el mart de mapa.
+    # Se aisla en try/except para no invalidar el Gold ya escrito si sklearn fallara.
+    print("\nFASE C: Segmentacion no supervisada (PCA + KMeans + t-SNE)")
+    try:
+        from run_segmentation import run as run_segmentation
+
+        run_segmentation(args.config, make_plot=True, marts_dir=marts_dir)
+    except Exception as exc:  # noqa: BLE001
+        logging.getLogger(__name__).warning(
+            "FASE C omitida (%s). Ejecuta luego: uv run python scripts/run_segmentation.py", exc
+        )
 
     print("\n" + "=" * 60)
     print(f"Pipeline completado. Silver en {silver_path}; Gold en {gold_dir}.")
