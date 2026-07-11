@@ -443,11 +443,11 @@
 
   <div class="h3-filter">
     <span class="filter-label">Tipologías:</span>
-    <label><input type="checkbox" value="Apartment"   checked onchange="renderVolatility();renderDrawdownTimeline()"> <span style="color:#60a5fa;font-weight:600">Apartment</span></label>
-    <label><input type="checkbox" value="Villa"       checked onchange="renderVolatility();renderDrawdownTimeline()"> <span style="color:#34d399;font-weight:600">Villa</span></label>
-    <label><input type="checkbox" value="Townhouse"   checked onchange="renderVolatility();renderDrawdownTimeline()"> <span style="color:#f59e0b;font-weight:600">Townhouse</span></label>
-    <label><input type="checkbox" value="Summerhouse" checked onchange="renderVolatility();renderDrawdownTimeline()"> <span style="color:#f87171;font-weight:600">Summerhouse</span></label>
-    <label><input type="checkbox" value="Farm"        checked onchange="renderVolatility();renderDrawdownTimeline()"> <span style="color:#a78bfa;font-weight:600">Farm</span></label>
+    <label><input type="checkbox" value="Apartment"   checked onchange="renderVolatility();renderDrawdownTimeline()"> <span style="color:#0d9488;font-weight:600">Apartment</span></label>
+    <label><input type="checkbox" value="Villa"       checked onchange="renderVolatility();renderDrawdownTimeline()"> <span style="color:#ca8a04;font-weight:600">Villa</span></label>
+    <label><input type="checkbox" value="Townhouse"   checked onchange="renderVolatility();renderDrawdownTimeline()"> <span style="color:#ea580c;font-weight:600">Townhouse</span></label>
+    <label><input type="checkbox" value="Summerhouse" checked onchange="renderVolatility();renderDrawdownTimeline()"> <span style="color:#db2777;font-weight:600">Summerhouse</span></label>
+    <label><input type="checkbox" value="Farm"        checked onchange="renderVolatility();renderDrawdownTimeline()"> <span style="color:#7c3aed;font-weight:600">Farm</span></label>
   </div>
 
   <div class="grid-2 mb-6">
@@ -579,11 +579,11 @@ const REGION_COLORS = {
   'Bornholm':      '#a78bfa',
 };
 const TYPE_COLORS = {
-  'Apartment':   '#60a5fa',
-  'Villa':       '#34d399',
-  'Townhouse':   '#f59e0b',
-  'Summerhouse': '#f87171',
-  'Farm':        '#a78bfa',
+  'Apartment':   '#0d9488',
+  'Villa':       '#ca8a04',
+  'Townhouse':   '#ea580c',
+  'Summerhouse': '#db2777',
+  'Farm':        '#7c3aed',
 };
 const PERIOD_COLORS = {
   'Expansión 90s':    '#34d399',
@@ -1094,10 +1094,9 @@ function renderSummary() {
   let barsHtml = '';
   regEntries.forEach(([reg, val]) => {
     const pct = minReg !== 0 ? (val / minReg * 100).toFixed(1) : 0;
-    const severity = val / minReg;
-    // Escala secuencial de magnitud de riesgo (rosa reservado): mas oscuro = peor drawdown.
-    // No usa hues categoricos (tipologia/region) para evitar confusion de codificacion.
-    const barColor = severity > 0.8 ? '#be123c' : severity > 0.5 ? '#f43f5e' : '#fb7185';
+    // Cada region con su color categorico (consistente con la pestana Precios).
+    // La magnitud ya se lee por el largo de la barra y la etiqueta %, no por el color.
+    const barColor = REGION_COLORS[reg] || '#64748b';
     barsHtml += `<div class="rs-bar-row">
       <div class="rs-bar-label">${reg}</div>
       <div class="rs-bar-wrap"><div class="rs-bar-fill" style="width:${pct}%;background:${barColor}">${val.toFixed(1)}%</div></div>
@@ -1115,7 +1114,8 @@ function renderSummary() {
   let tableHtml = '';
   critical.forEach(d => {
     const v = avgVolByType[d.house_type] || 0;
-    const ddColor = d.worst_dd < -50 ? '#be123c' : d.worst_dd < -25 ? '#f43f5e' : '#fb7185';
+    // Acento unico de riesgo (crimson), reservado: no es color de tipologia ni de region.
+    const ddColor = '#be123c';
     tableHtml += `<tr>
       <td><span style="color:${TYPE_COLORS[d.house_type]||'#1c2233'};font-weight:600">${d.house_type}</span></td>
       <td style="color:var(--muted)">${d.region}</td>
