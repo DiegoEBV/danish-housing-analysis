@@ -49,10 +49,13 @@ cleaning:
   # P6: Periodo con menor completitud
   preliminary_period_before: 1995
 
-  # P3: sales_type no clasificable
+  # P3: sales_type no-mercado (vocabulario real del dataset, verificado en TB2 value_counts)
+  # regular_sale = mercado; el resto se excluye del analisis de precios.
   invalid_sales_types:
     - "-"
-    - "Familiehandel"
+    - "family_sale"
+    - "other_sale"
+    - "auction"
 
   # P7: zip_code string con 4 digitos
   zip_code_pad: 4
@@ -123,18 +126,18 @@ segmentation:
     - liquidity_log        # log del volumen medio de transacciones
     - growth_recent        # crecimiento en la ventana reciente
 
-# Tipos de vivienda de interes
+# Tipos de vivienda de interes (vocabulario real del dataset = ingles)
 house_types:
   villa: "Villa"
-  apartment: "Ejerlejlighed"
-  summerhouse: "Fritidshus"
-  terraced: "Raekke hus"
+  apartment: "Apartment"
+  summerhouse: "Summerhouse"
+  terraced: "Townhouse"
 
-# Regiones
+# Regiones (la data real tiene 4 regiones en ingles; NO existe una region "Copenhagen").
+# La region capital = Zealand, que contiene la ciudad de Copenhague.
 regions:
-  capital: "Kobenhavn"
+  capital: "Zealand"
   provinces:
-    - "Midtjylland"
-    - "Nordjylland"
-    - "Sjaelland"
-    - "Syddanmark"
+    - "Jutland"
+    - "Fyn & islands"
+    - "Bornholm"

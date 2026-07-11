@@ -62,7 +62,13 @@ def build_dim_geografia(df: pd.DataFrame) -> pd.DataFrame:
         dim["area"] = dim.get("region", "Unknown")
 
     dim["region_enc"] = dim["region"].astype("category").cat.codes
-    dim["es_capital"] = dim["region"].str.contains("benhavn|Copenhagen|Capital", case=False, na=False).astype(int)
+    # Region capital = Zealand (contiene Copenhague; la data no tiene una region "Copenhagen").
+    # Robusto tambien a nivel city por si se agrega esa granularidad. Vocabulario real = ingles.
+    _city = dim["city"].astype(str) if "city" in dim.columns else pd.Series("", index=dim.index)
+    dim["es_capital"] = (
+        dim["region"].str.contains("Zealand|Sjaelland|Sjælland", case=False, na=False)
+        | _city.str.contains("Copenhagen|Kobenhavn|København", case=False, na=False)
+    ).astype(int)
     dim = dim.reset_index(drop=True)
     dim.insert(0, "geografia_id", dim.index + 1)
     logger.info(f"dim_geografia: {len(dim):,} filas")
@@ -78,7 +84,8 @@ def build_dim_vivienda(df: pd.DataFrame) -> pd.DataFrame:
         dim["house_type"] = "Unknown"
 
     dim["type_enc"] = dim["house_type"].astype("category").cat.codes
-    dim["es_summerhouse"] = (dim["house_type"] == "Fritidshus").astype(int)
+    # Vocabulario real del dataset = ingles ("Summerhouse"); se tolera el danes legacy "Fritidshus".
+    dim["es_summerhouse"] = dim["house_type"].str.contains("Summerhouse|Fritidshus", case=False, na=False).astype(int)
 
     if "year_build" in dim.columns:
         current_year = 2024

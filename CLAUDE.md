@@ -55,7 +55,7 @@ Academic project for **Data Visualization — UPC 2026-01**: análisis del merca
 
 **Research question**: ¿qué tipologías de vivienda muestran la mayor volatilidad y drawdowns durante crisis financieras, y cómo difieren los precios entre Copenhague y las provincias bajo distintos regímenes de tasas/inflación?
 
-La documentación interna y los nombres de variables/columnas están **en español y danés** (regiones, `house_type` con valores como `Ejerlejlighed`, `Fritidshus`, etc.) — preservar ese estilo en código nuevo y commits.
+La documentación interna y los comentarios están **en español**; los **valores de datos** (`region`, `house_type`) vienen **en inglés** en el dataset real de Kaggle (`Zealand`, `Jutland`; `Villa`, `Apartment`, `Summerhouse`, `Townhouse`, `Farm`). Preservar el español en comentarios/docs y usar los valores tal cual vienen en la data (no traducir a danés — los nombres daneses como `Ejerlejlighed`/`Fritidshus`/`København` NO existen en el dataset).
 
 ## Commands
 
@@ -180,8 +180,8 @@ Versiones sintéticas (sin data real) se generan con `scripts/generate_tableau.p
 
 ## Datos
 
-- **Regiones (5)**: `København` (capital), `Sjælland`, `Syddanmark`, `Midtjylland`, `Nordjylland`.
-- **Tipologías de interés (4)**: `Villa`, `Ejerlejlighed` (apartamento), `Fritidshus` (casa de verano), `Rækkehus` (adosada).
+- **Regiones (4, valores reales en inglés)**: `Zealand` (región capital — contiene Copenhague; no existe una región `Copenhagen` en la data), `Jutland`, `Fyn & islands`, `Bornholm`.
+- **Tipologías de interés (valores reales en inglés)**: `Villa`, `Apartment` (apartamento), `Summerhouse` (casa de verano), `Townhouse` (adosada), `Farm`.
 - **Períodos de crisis** definidos en config: 2007–2012 (GFC) y 2006–2009 (burbuja inmobiliaria).
 - Silver usa Parquet con compresión Snappy; los scripts usan `gc.collect()` explícito para manejar peak memory en runs de 1.5M filas.
 - Las columnas `*_pct` originales vienen con `%25` (URL-encoded `%`) en el nombre y son renombradas por la regla P8.

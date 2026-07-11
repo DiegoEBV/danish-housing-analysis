@@ -31,7 +31,7 @@ def sample_df() -> pd.DataFrame:
             "house_id": [1, 2, 3, 4, 5],
             "date": ["2020-01-15", "1993-06-01", "2010-03-20", "2008-07-10", "2023-11-05"],
             "city": ["Copenhagen", None, "Aarhus", "Odense", None],
-            "sales_type": ["Normal salg", "-", "Normal salg", "Familiehandel", "Normal salg"],
+            "sales_type": ["regular_sale", "-", "auction", "family_sale", "other_sale"],
             "house_type": ["Villa", "Ejerlejlighed", "Fritidshus", "Villa", "Rækkehus"],
             "purchase_price": [2_000_000, 1_500_000, 800_000, 50_000_000, 1_200_000],
             "sqm": [120.0, 80.0, 60.0, 200.0, 100.0],
@@ -69,9 +69,11 @@ def test_flag_macro_nulls(sample_df):
 def test_flag_invalid_sales(sample_df):
     bitacora = []
     df = flag_invalid_sales(sample_df.copy(), bitacora)
+    assert bool(df.loc[0, "sales_type_valido"]) is True   # regular_sale (mercado)
     assert bool(df.loc[1, "sales_type_valido"]) is False  # "-"
-    assert bool(df.loc[3, "sales_type_valido"]) is False  # "Familiehandel"
-    assert bool(df.loc[0, "sales_type_valido"]) is True
+    assert bool(df.loc[2, "sales_type_valido"]) is False  # auction
+    assert bool(df.loc[3, "sales_type_valido"]) is False  # family_sale
+    assert bool(df.loc[4, "sales_type_valido"]) is False  # other_sale
 
 
 def test_flag_old_year_build(sample_df):
