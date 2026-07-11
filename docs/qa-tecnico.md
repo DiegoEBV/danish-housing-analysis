@@ -72,7 +72,11 @@ Cada cifra citada en el resumen ejecutivo y en el dashboard se recalcula desde l
 | Títulos **analíticos** (no meramente descriptivos) en cada vista | ✅ |
 | Tooltips con `n_transactions` para evitar malinterpretar zonas de baja muestra | ✅ |
 | Paleta categórica consistente por región/tipología entre vistas | ✅ |
+| **Gobernanza de color**: 3 capas separadas (categórica / magnitud rosa / editorial slate), sin hues con doble significado | ✅ |
+| Eliminado el banner de metadatos técnicos (`gs://…`) de la vista del usuario | ✅ |
 | Pendiente sugerido: verificación formal de ratios WCAG AA y simulación de daltonismo | ⬜ |
+
+Detalle de la gobernanza de color en `docs/informe-entrega6-secciones.md → sección 32`.
 
 ## Issues conocidos / pendientes
 
