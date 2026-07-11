@@ -1,0 +1,484 @@
+zip_code,city,region,n_years,growth_recent,liquidity_log,price_level,max_drawdown,R,F,M,RFM_score,RFM_code,rfm_segmento
+1799,København V,Zealand,13,-0.017,4.6235,63940.2,-21.4406,3,4,5,12,345,Intermedio
+2000,Frederiksberg,Zealand,33,0.031,5.4852,53766.0,-38.5845,4,5,5,14,455,Champions (premium caliente-liquido)
+2100,København A,Zealand,33,7.7354,5.3891,54205.7,-94.2855,5,5,5,15,555,Champions (premium caliente-liquido)
+2150,Nordhavn,Zealand,12,-0.018,4.2639,65984.5,-7.3408,3,4,5,12,345,Intermedio
+2200,København N,Zealand,33,0.057,4.9834,54698.3,-61.2588,4,5,5,14,455,Champions (premium caliente-liquido)
+2300,København S,Zealand,33,0.0113,6.2882,47249.8,-60.9844,3,5,5,13,355,Intermedio
+2400,København NV,Zealand,33,0.0137,4.7412,43231.6,-34.7997,3,5,5,13,355,Intermedio
+2450,København SV,Zealand,33,0.0229,4.5908,52117.8,-50.8115,4,4,5,13,445,Champions (premium caliente-liquido)
+2500,Valby,Zealand,33,0.022,5.3054,45205.2,-47.9918,3,5,5,13,355,Intermedio
+2600,Glostrup,Zealand,33,-0.1058,4.809,31032.7,-41.3818,2,5,5,12,255,"Premium frio (caro, sin momentum)"
+2605,Brøndby,Zealand,33,0.0385,4.1961,31164.2,-41.9396,4,3,5,12,435,Intermedio
+2610,Rødovre,Zealand,33,-0.0151,5.3071,36858.9,-39.8243,3,5,5,13,355,Intermedio
+2620,Albertslund,Zealand,33,-0.0393,4.3311,27770.5,-31.9712,3,4,5,12,345,Intermedio
+2625,Vallensbæk,Zealand,33,-0.0242,3.6836,28728.2,-31.8298,3,2,5,10,325,Intermedio
+2630,Taastrup,Zealand,33,-0.034,5.3831,27496.1,-51.9387,3,5,5,13,355,Intermedio
+2635,Ishøj,Zealand,33,-0.0051,4.5647,25683.9,-42.1282,3,4,5,12,345,Intermedio
+2640,Hedehusene,Zealand,33,0.0428,4.6235,26548.4,-52.0436,4,4,5,13,445,Champions (premium caliente-liquido)
+2650,Hvidovre,Zealand,33,0.0188,5.4272,37025.1,-36.3244,3,5,5,13,355,Intermedio
+2660,Brøndby Strand,Zealand,33,-0.0135,3.7187,30294.7,-42.2511,3,2,5,10,325,Intermedio
+2665,Vallensbæk Strand,Zealand,33,-0.0071,4.2498,30175.5,-42.6606,3,3,5,11,335,Intermedio
+2670,Greve,Zealand,33,-0.0176,5.305,29332.0,-43.2643,3,5,5,13,355,Intermedio
+2680,Solrød Strand,Zealand,33,-0.0063,4.8556,31346.6,-43.0281,3,5,5,13,355,Intermedio
+2690,Karlslunde,Zealand,33,0.0465,4.2235,30591.5,-39.59,4,3,5,12,435,Intermedio
+2700,Brønshøj,Zealand,33,-0.0643,5.0549,40461.1,-36.9592,2,5,5,12,255,"Premium frio (caro, sin momentum)"
+2720,Vanløse,Zealand,33,-0.033,5.0155,43523.8,-33.0766,3,5,5,13,355,Intermedio
+2730,Herlev,Zealand,33,0.0401,4.5957,34591.0,-35.8041,4,4,5,13,445,Champions (premium caliente-liquido)
+2740,Skovlunde,Zealand,33,-0.0415,4.166,30398.1,-30.8486,3,3,5,11,335,Intermedio
+2750,Ballerup,Zealand,33,-0.0678,4.6745,28294.4,-32.2516,2,4,5,11,245,"Premium frio (caro, sin momentum)"
+2760,Måløv,Zealand,33,0.0575,3.5501,34759.6,-33.3055,4,2,5,11,425,Intermedio
+2765,Smørum,Zealand,33,0.0243,4.4937,29694.7,-36.6673,4,4,5,13,445,Champions (premium caliente-liquido)
+2770,Kastrup,Zealand,33,0.0335,5.3096,36996.3,-30.8775,4,5,5,14,455,Champions (premium caliente-liquido)
+2791,Dragør,Zealand,33,-0.0043,4.8329,36023.1,-31.3833,3,5,5,13,355,Intermedio
+2800,Kongens Lyngby,Zealand,33,-0.0071,5.342,44237.7,-43.6459,3,5,5,13,355,Intermedio
+2820,Gentofte,Zealand,33,-0.1011,4.8072,41158.0,-28.968,2,5,5,12,255,"Premium frio (caro, sin momentum)"
+2830,Virum,Zealand,33,0.0158,4.9184,45190.4,-31.8109,3,5,5,13,355,Intermedio
+2840,Holte,Zealand,33,0.0291,4.6418,40452.3,-35.358,4,4,5,13,445,Champions (premium caliente-liquido)
+2850,Nærum,Zealand,33,-0.0276,3.6296,35676.7,-40.3267,3,2,5,10,325,Intermedio
+2860,Søborg,Zealand,33,-0.0471,5.1945,38794.0,-31.3069,2,5,5,12,255,"Premium frio (caro, sin momentum)"
+2870,Dyssegård,Zealand,33,-0.1203,3.8476,39900.6,-37.4819,2,3,5,10,235,"Premium frio (caro, sin momentum)"
+2880,Bagsværd,Zealand,33,-0.0181,4.565,37972.1,-37.9743,3,4,5,12,345,Intermedio
+2900,Hellerup,Zealand,33,0.0319,4.808,54446.1,-29.4065,4,5,5,14,455,Champions (premium caliente-liquido)
+2920,Charlottenlund,Zealand,33,-0.056,4.7778,49393.4,-40.1257,2,5,5,12,255,"Premium frio (caro, sin momentum)"
+2930,Klampenborg,Zealand,33,0.0378,2.9316,59200.1,-44.6301,4,1,5,10,415,Intermedio
+2950,Vedbæk,Zealand,33,0.1207,3.8687,46817.7,-40.6851,5,3,5,13,535,Intermedio
+2960,Rungsted Kyst,Zealand,33,0.0675,3.5326,44872.0,-30.3772,4,2,5,11,425,Intermedio
+2970,Hørsholm,Zealand,33,0.0293,4.8917,36732.0,-68.4838,4,5,5,14,455,Champions (premium caliente-liquido)
+2980,Kokkedal,Zealand,33,0.0356,4.2177,25457.5,-46.0327,4,3,5,12,435,Intermedio
+2990,Nivå,Zealand,33,0.0605,3.9372,30041.8,-39.9098,4,3,5,12,435,Intermedio
+3000,Helsingør,Zealand,33,-0.1031,5.1236,30623.0,-44.4026,2,5,5,12,255,"Premium frio (caro, sin momentum)"
+3050,Humlebæk,Zealand,33,-0.044,4.1938,28790.0,-34.4738,3,3,5,11,335,Intermedio
+3060,Espergærde,Zealand,33,0.0108,4.4104,31566.2,-40.389,3,4,5,12,345,Intermedio
+3070,Snekkersten,Zealand,33,-0.0419,3.5801,34643.2,-42.9632,3,2,5,10,325,Intermedio
+3080,Tikøb,Zealand,33,0.036,2.87,25270.9,-61.5603,4,1,4,9,414,Intermedio
+3100,Hornbæk,Zealand,33,0.1186,4.3748,38506.6,-42.4079,5,4,5,14,545,Champions (premium caliente-liquido)
+3120,Dronningmølle,Zealand,33,0.1197,3.7612,31181.4,-48.2289,5,3,5,13,535,Intermedio
+3140,Ãlsgårde,Zealand,33,0.0202,3.6064,27938.8,-87.5378,3,2,5,10,325,Intermedio
+3200,Helsinge,Zealand,33,0.0192,4.7609,21377.1,-39.8998,3,5,4,12,354,Intermedio
+3210,Vejby,Zealand,33,0.0935,4.6145,32930.5,-38.9905,4,4,5,13,445,Champions (premium caliente-liquido)
+3220,Tisvildeleje,Zealand,33,-0.0063,3.6994,41691.4,-28.8004,3,2,5,10,325,Intermedio
+3230,Græsted,Zealand,33,-0.1398,4.6365,25737.5,-63.0478,2,4,5,11,245,"Premium frio (caro, sin momentum)"
+3250,Gilleleje,Zealand,33,0.0949,5.0205,30341.4,-34.1084,4,5,5,14,455,Champions (premium caliente-liquido)
+3300,Frederiksværk,Zealand,33,-0.0301,5.0641,23356.3,-53.1001,3,5,4,12,354,Intermedio
+3310,Alsted,Zealand,33,0.0777,3.7687,21694.7,-89.1342,4,3,4,11,434,Intermedio
+3320,Skævinge,Zealand,33,-0.0258,3.7938,22007.8,-48.4895,3,3,4,10,334,Intermedio
+3360,Liseleje,Zealand,33,-0.0205,3.521,29077.4,-36.0621,3,2,5,10,325,Intermedio
+3370,Melby,Zealand,33,0.3005,3.7434,25757.7,-39.4129,5,2,5,12,525,Intermedio
+3390,Hundested,Zealand,33,0.0209,4.6479,22888.7,-45.7045,3,4,4,11,344,Intermedio
+3400,Hillerød,Zealand,33,0.0451,5.5335,29472.6,-44.3272,4,5,5,14,455,Champions (premium caliente-liquido)
+3450,Allerød,Zealand,33,0.0867,4.9138,33238.8,-37.1555,4,5,5,14,455,Champions (premium caliente-liquido)
+3460,Birkerød,Zealand,33,0.007,4.9244,35692.9,-33.0032,3,5,5,13,355,Intermedio
+3480,Fredensborg,Zealand,33,0.0807,4.4886,29909.8,-34.9922,4,4,5,13,445,Champions (premium caliente-liquido)
+3500,Værløse,Zealand,33,-0.0007,4.9571,36275.8,-27.0573,3,5,5,13,355,Intermedio
+3520,Farum,Zealand,33,0.0461,4.7166,33100.9,-39.338,4,4,5,13,445,Champions (premium caliente-liquido)
+3540,Lynge,Zealand,33,-0.0354,3.5335,26210.6,-61.6504,3,2,5,10,325,Intermedio
+3550,Slangerup,Zealand,33,0.0038,4.3579,22716.5,-51.4955,3,4,4,11,344,Intermedio
+3600,Frederikssund,Zealand,33,0.0016,4.9301,25213.5,-49.6776,3,5,4,12,354,Intermedio
+3630,Jægerspris,Zealand,33,0.1443,4.9805,19842.3,-44.1087,5,5,4,14,554,Champions (premium caliente-liquido)
+3650,Alstykke,Zealand,33,0.2308,4.6288,25516.0,-55.6112,5,4,5,14,545,Champions (premium caliente-liquido)
+3660,Stenløse,Zealand,33,0.0133,4.4348,26106.9,-37.4247,3,4,5,12,345,Intermedio
+3670,Veksø Sjælland,Zealand,33,-0.0841,3.0093,26375.4,-48.7713,2,1,5,8,215,"Premium frio (caro, sin momentum)"
+3700,Rønne,Bornholm,29,-0.2705,5.1163,14657.8,-47.1554,1,5,3,9,153,Intermedio
+3720,Aakirkeby,Bornholm,29,0.2056,4.1182,11974.7,-49.7227,5,3,2,10,532,"Emergente (momentum, ticket medio-bajo)"
+3730,Nexø,Bornholm,29,0.0556,4.4296,15550.4,-61.2844,4,4,3,11,443,"Emergente (momentum, ticket medio-bajo)"
+3740,Svaneke,Bornholm,29,0.2529,3.3625,21776.8,-65.7553,5,2,4,11,524,Intermedio
+3760,Gudhjem,Bornholm,29,0.1906,3.3565,16094.2,-57.1023,5,2,3,10,523,"Emergente (momentum, ticket medio-bajo)"
+3770,Allinge,Bornholm,29,0.397,3.9826,21995.8,-43.4382,5,3,4,12,534,Intermedio
+3790,Hasle,Bornholm,29,0.08,3.5622,15130.7,-52.1675,4,2,3,9,423,"Emergente (momentum, ticket medio-bajo)"
+4000,Roskilde,Zealand,33,-0.0149,6.0814,31492.7,-41.5306,3,5,5,13,355,Intermedio
+4030,Tune,Zealand,33,0.0773,3.6942,26227.4,-41.6783,4,2,5,11,425,Intermedio
+4040,Jyllinge,Zealand,33,0.1303,4.4614,25148.3,-42.5913,5,4,4,13,544,Champions (premium caliente-liquido)
+4050,Skibby,Zealand,33,0.03,4.3813,17700.0,-49.9844,4,4,4,12,444,Champions (premium caliente-liquido)
+4060,Kirke Såby,Zealand,33,-0.0891,3.4543,17233.0,-60.6885,2,2,3,7,223,"Periferico dormido (iliquido, frio)"
+4070,Kirke Hyllinge,Zealand,33,0.05,4.4459,19595.7,-47.4013,4,4,4,12,444,Champions (premium caliente-liquido)
+4100,Ringsted,Zealand,33,-0.1313,5.4034,20052.7,-42.9653,2,5,4,11,254,"Premium frio (caro, sin momentum)"
+4130,Viby Sjælland,Zealand,33,-0.0552,3.7355,21732.6,-47.9199,2,2,4,8,224,"Premium frio (caro, sin momentum)"
+4140,Borup,Zealand,33,0.2645,3.7491,22420.6,-54.6501,5,3,4,12,534,Intermedio
+4160,Herlufmagle,Zealand,33,-0.1183,3.5396,12164.9,-48.2279,2,2,2,6,222,"Periferico dormido (iliquido, frio)"
+4171,Glumsø,Zealand,33,0.0624,3.3547,13245.4,-45.5955,4,2,2,8,422,"Emergente (momentum, ticket medio-bajo)"
+4173,Fjenneslev,Zealand,33,0.1859,2.8665,13356.5,-61.4172,5,1,2,8,512,"Emergente (momentum, ticket medio-bajo)"
+4180,Sorø,Zealand,33,0.1214,4.6858,21654.6,-67.469,5,4,4,13,544,Champions (premium caliente-liquido)
+4200,Slagelse,Zealand,33,-0.0429,5.8078,18102.5,-70.0648,3,5,4,12,354,Intermedio
+4220,Korsør,Zealand,33,-0.169,4.8416,13921.1,-48.4699,1,5,3,9,153,Intermedio
+4230,Skælskør,Zealand,33,-0.0478,4.1645,14239.2,-49.8098,2,3,3,8,233,Intermedio
+4241,Vemmelev,Zealand,33,-0.1523,3.318,11789.3,-52.3072,1,1,2,4,112,"Periferico dormido (iliquido, frio)"
+4243,Rude,Zealand,33,0.1581,2.8279,16685.6,-50.4722,5,1,3,9,513,"Emergente (momentum, ticket medio-bajo)"
+4250,Fuglebjerg,Zealand,33,0.0207,3.3472,11757.1,-59.7269,3,2,2,7,322,Intermedio
+4261,Dalmose,Zealand,33,0.0633,2.8456,9100.3,-73.3008,4,1,1,6,411,"Emergente (momentum, ticket medio-bajo)"
+4262,Sandved,Zealand,33,-0.3894,2.7745,10533.8,-60.2881,1,1,1,3,111,"Periferico dormido (iliquido, frio)"
+4270,Høng,Zealand,33,-0.1244,3.8013,14913.4,-43.755,2,3,3,8,233,Intermedio
+4281,Gørlev,Zealand,33,-0.0362,4.1009,14531.9,-55.4086,3,3,3,9,333,Intermedio
+4291,Ruds Vedby,Zealand,33,-0.3323,3.0827,13101.1,-55.0072,1,1,2,4,112,"Periferico dormido (iliquido, frio)"
+4293,Dianalund,Zealand,33,-0.0602,3.7406,11725.1,-55.238,2,2,2,6,222,"Periferico dormido (iliquido, frio)"
+4295,Stenlille,Zealand,33,-0.1948,3.3961,13906.4,-60.9254,1,2,3,6,123,"Periferico dormido (iliquido, frio)"
+4300,Holbæk,Zealand,33,0.0766,5.4556,23228.4,-51.22,4,5,4,13,454,Champions (premium caliente-liquido)
+4305,Orø,Zealand,33,0.0362,3.2499,16165.7,-51.1856,4,1,3,8,413,"Emergente (momentum, ticket medio-bajo)"
+4320,Lejre,Zealand,33,0.1193,3.8862,24308.2,-44.7374,5,3,4,12,534,Intermedio
+4330,Hvalsø,Zealand,33,-0.0336,3.8174,24161.4,-52.7242,3,3,4,10,334,Intermedio
+4340,Tølløse,Zealand,33,0.0601,3.89,16331.9,-59.5774,4,3,3,10,433,"Emergente (momentum, ticket medio-bajo)"
+4370,Store Merløse,Zealand,33,-0.3666,2.8734,14633.1,-69.3611,1,1,3,5,113,"Periferico dormido (iliquido, frio)"
+4390,Vipperød,Zealand,33,0.0006,3.3631,17151.0,-42.4688,3,2,3,8,323,Intermedio
+4400,Kalundborg,Zealand,33,0.1372,5.2821,17014.7,-42.0957,5,5,3,13,553,"Emergente (momentum, ticket medio-bajo)"
+4420,Regstrup,Zealand,33,0.2149,3.3037,14982.7,-57.6924,5,1,3,9,513,"Emergente (momentum, ticket medio-bajo)"
+4440,Mørkøv,Zealand,33,-0.1458,3.6117,16563.2,-69.029,2,2,3,7,223,"Periferico dormido (iliquido, frio)"
+4450,Jyderup,Zealand,33,-0.2011,3.8417,13656.8,-58.4557,1,3,3,7,133,Intermedio
+4470,Svebølle,Zealand,33,-0.0071,3.28,9860.2,-60.6529,3,1,1,5,311,Intermedio
+4480,Store Fuglede,Zealand,33,0.1887,3.4072,18013.1,-60.3134,5,2,4,11,524,Intermedio
+4490,Jerslev Sjælland,Zealand,33,0.0274,3.0387,10566.8,-60.5166,4,1,1,6,411,"Emergente (momentum, ticket medio-bajo)"
+4500,Nykøbing Sj,Zealand,33,0.0415,5.3074,22008.8,-50.4475,4,5,4,13,454,Champions (premium caliente-liquido)
+4520,Svinninge,Zealand,33,0.0375,3.5571,12878.4,-61.2184,4,2,2,8,422,"Emergente (momentum, ticket medio-bajo)"
+4532,Gislinge,Zealand,33,-0.1224,2.8954,15381.0,-69.7711,2,1,3,6,213,"Periferico dormido (iliquido, frio)"
+4534,Hørve,Zealand,33,-0.0132,3.4359,15538.5,-68.59,3,2,3,8,323,Intermedio
+4540,Fårevejle,Zealand,33,-0.0775,4.3008,23288.1,-32.1858,2,4,4,10,244,"Premium frio (caro, sin momentum)"
+4550,Asnæs,Zealand,33,0.0505,3.9547,17690.0,-67.0086,4,3,4,11,434,Intermedio
+4560,Vig,Zealand,33,0.2064,4.2971,20424.4,-42.8494,5,4,4,13,544,Champions (premium caliente-liquido)
+4571,Grevinge,Zealand,33,-0.0717,3.6174,13920.0,-47.78,2,2,3,7,223,"Periferico dormido (iliquido, frio)"
+4573,Højby,Zealand,33,0.3905,4.3828,23935.9,-41.3213,5,4,4,13,544,Champions (premium caliente-liquido)
+4581,Rørvig,Zealand,33,0.2314,3.863,31291.1,-41.4246,5,3,5,13,535,Intermedio
+4583,Sjællands Odde,Zealand,33,0.1405,4.0729,23586.3,-38.6244,5,3,4,12,534,Intermedio
+4591,Føllenslev,Zealand,33,0.4444,3.2891,16716.8,-49.5444,5,1,3,9,513,"Emergente (momentum, ticket medio-bajo)"
+4593,Eskebjerg,Zealand,33,0.2522,3.4882,11995.5,-62.2549,5,2,2,9,522,"Emergente (momentum, ticket medio-bajo)"
+4600,Køge,Zealand,33,0.0379,5.4567,28635.9,-38.9191,4,5,5,14,455,Champions (premium caliente-liquido)
+4621,Gadstrup,Zealand,33,-0.0862,3.2731,23116.0,-45.7232,2,1,4,7,214,"Premium frio (caro, sin momentum)"
+4622,Havdrup,Zealand,33,0.0653,3.64,23495.0,-66.8238,4,2,4,10,424,Intermedio
+4623,Lille Skensved,Zealand,33,-0.0356,3.6858,23006.5,-51.4231,3,2,4,9,324,Intermedio
+4632,Bjæverskov,Zealand,33,0.1881,3.679,20474.8,-56.5485,5,2,4,11,524,Intermedio
+4640,Faxe,Zealand,33,0.0753,3.8411,12860.8,-57.0522,4,3,2,9,432,"Emergente (momentum, ticket medio-bajo)"
+4652,Hårlev,Zealand,33,-0.1839,3.7548,16236.3,-55.441,1,3,3,7,133,Intermedio
+4653,Karise,Zealand,33,0.0708,3.3798,18808.0,-50.4372,4,2,4,10,424,Intermedio
+4654,Faxe Ladeplads,Zealand,33,0.0248,3.6191,16449.5,-59.498,4,2,3,9,423,"Emergente (momentum, ticket medio-bajo)"
+4660,Store Heddinge,Zealand,33,-0.0115,3.9634,16659.5,-54.6272,3,3,3,9,333,Intermedio
+4671,Strøby,Zealand,33,-0.0582,3.4572,24218.0,-47.1026,2,2,4,8,224,"Premium frio (caro, sin momentum)"
+4673,Rødvig Stevns,Zealand,33,0.2578,3.4901,16913.9,-56.2234,5,2,3,10,523,"Emergente (momentum, ticket medio-bajo)"
+4681,Herfølge,Zealand,33,0.0837,3.551,23216.8,-42.9051,4,2,4,10,424,Intermedio
+4682,Tureby,Zealand,33,-0.2228,2.7745,17043.9,-64.8852,1,1,3,5,113,"Periferico dormido (iliquido, frio)"
+4683,Rønnede,Zealand,33,-0.1588,3.3536,14683.0,-55.1001,1,2,3,6,123,"Periferico dormido (iliquido, frio)"
+4684,Holmegaard,Zealand,33,-0.2135,4.0237,16057.9,-32.6315,1,3,3,7,133,Intermedio
+4690,Haslev,Zealand,33,0.105,4.9543,17669.0,-45.6285,5,5,4,14,554,Champions (premium caliente-liquido)
+4700,Næstved,Zealand,33,0.0228,5.8703,17592.3,-68.9711,4,5,4,13,454,Champions (premium caliente-liquido)
+4720,Præstø,Zealand,33,-0.1812,4.2809,16383.8,-57.7372,1,4,3,8,143,Intermedio
+4733,Tappernøje,Zealand,33,-0.0939,3.2891,11700.8,-50.8008,2,1,2,5,212,"Periferico dormido (iliquido, frio)"
+4735,Mern,Zealand,33,-0.1873,2.8819,10685.1,-57.3945,1,1,1,3,111,"Periferico dormido (iliquido, frio)"
+4736,Karrebæksminde,Zealand,33,0.2468,4.1039,25878.4,-52.4523,5,3,5,13,535,Intermedio
+4750,Lundby,Zealand,33,-0.0896,3.5138,11994.1,-59.3402,2,2,2,6,222,"Periferico dormido (iliquido, frio)"
+4760,Vordingborg,Zealand,33,-0.108,4.9483,15092.4,-44.3803,2,5,3,10,253,Intermedio
+4771,Kalvehave,Zealand,33,-0.0928,2.8526,11154.5,-70.1143,2,1,2,5,212,"Periferico dormido (iliquido, frio)"
+4780,Stege,Zealand,33,-0.0287,4.5022,16562.7,-54.0329,3,4,3,10,343,Intermedio
+4792,Askeby,Zealand,33,0.5642,2.9364,16424.6,-49.7569,5,1,3,9,513,"Emergente (momentum, ticket medio-bajo)"
+4793,Bogø By,Zealand,33,0.1441,3.0018,14026.3,-53.6393,5,1,3,9,513,"Emergente (momentum, ticket medio-bajo)"
+4800,Nykøbing F,Zealand,33,-0.0156,5.2711,16491.3,-69.4903,3,5,3,11,353,Intermedio
+4840,Nørre Alslev,Zealand,33,-0.0493,3.8489,7338.7,-78.1537,2,3,1,6,231,Intermedio
+4850,Stubbekøbing,Zealand,33,-0.0075,3.6628,10911.2,-67.3196,3,2,1,6,321,Intermedio
+4863,Eskilstrup,Zealand,33,-0.1475,2.9428,7759.2,-58.2919,2,1,1,4,211,"Periferico dormido (iliquido, frio)"
+4872,Idestrup,Zealand,33,0.0101,3.4092,15535.2,-60.7151,3,2,3,8,323,Intermedio
+4873,Væggerløse,Zealand,33,0.3056,4.7908,18975.9,-59.6543,5,5,4,14,554,Champions (premium caliente-liquido)
+4874,Gedser,Zealand,32,0.1205,3.4899,10626.3,-51.6772,5,2,1,8,521,"Emergente (momentum, ticket medio-bajo)"
+4880,Nysted,Zealand,33,-0.2688,3.272,11885.3,-64.9015,1,1,2,4,112,"Periferico dormido (iliquido, frio)"
+4900,Nakskov,Zealand,33,-0.2546,4.7428,8700.9,-77.2069,1,5,1,7,151,"Value liquido (barato, accesible)"
+4920,Søllested,Zealand,33,-0.1484,2.9634,5057.6,-85.7312,2,1,1,4,211,"Periferico dormido (iliquido, frio)"
+4930,Maribo,Zealand,33,-0.2202,4.1919,11369.7,-80.9258,1,3,2,6,132,Intermedio
+4960,Holeby,Zealand,33,0.8504,2.7914,5546.1,-92.4502,5,1,1,7,511,"Emergente (momentum, ticket medio-bajo)"
+4970,Rødby,Zealand,33,0.1114,4.3606,10504.3,-55.1682,5,4,1,10,541,"Value liquido (barato, accesible)"
+4983,Dannemare,Zealand,32,-0.0365,3.1341,11767.0,-57.3638,3,1,2,6,312,Intermedio
+4990,Sakskøbing,Zealand,33,-0.28,4.0388,8550.8,-65.665,1,3,1,5,131,Intermedio
+5000,Odense C,Fyn & islands,33,-0.0735,5.8088,29052.6,-42.5025,2,5,5,12,255,"Premium frio (caro, sin momentum)"
+5200,Odense V,Fyn & islands,33,-0.1583,3.6904,21607.2,-80.8686,1,2,4,7,124,"Premium frio (caro, sin momentum)"
+5210,Odense NV,Fyn & islands,33,-0.0125,4.8203,18134.0,-35.162,3,5,4,12,354,Intermedio
+5220,Odense SA,Fyn & islands,33,-0.092,4.2661,19507.1,-88.4799,2,4,4,10,244,"Premium frio (caro, sin momentum)"
+5230,Odense M,Fyn & islands,33,-0.0211,4.5985,28911.4,-37.2064,3,4,5,12,345,Intermedio
+5240,Odense NØ,Fyn & islands,33,-0.1691,3.7471,16251.0,-82.4193,1,3,3,7,133,Intermedio
+5250,Odense SV,Fyn & islands,33,0.0645,5.1538,20820.0,-55.472,4,5,4,13,454,Champions (premium caliente-liquido)
+5260,Odense S,Fyn & islands,33,-0.0319,4.7263,19093.2,-79.5187,3,4,4,11,344,Intermedio
+5270,Odense N,Fyn & islands,33,0.0355,4.9138,16769.0,-34.1493,4,5,3,12,453,"Emergente (momentum, ticket medio-bajo)"
+5300,Kerteminde,Fyn & islands,33,0.0512,4.1627,22831.4,-72.2969,4,3,4,11,434,Intermedio
+5320,Agedrup,Fyn & islands,33,0.0764,3.2042,14868.9,-56.7846,4,1,3,8,413,"Emergente (momentum, ticket medio-bajo)"
+5330,Munkebo,Fyn & islands,33,0.3642,3.5264,14004.9,-29.7395,5,2,3,10,523,"Emergente (momentum, ticket medio-bajo)"
+5400,Bogense,Fyn & islands,33,-0.3723,4.2631,16955.5,-52.1365,1,4,3,8,143,Intermedio
+5450,Otterup,Fyn & islands,33,0.2054,4.8575,18171.2,-40.4372,5,5,4,14,554,Champions (premium caliente-liquido)
+5462,Morud,Fyn & islands,33,0.5607,3.1329,15135.9,-66.956,5,1,3,9,513,"Emergente (momentum, ticket medio-bajo)"
+5464,Brenderup Fyn,Fyn & islands,33,0.0939,3.2546,15056.1,-45.9274,4,1,3,8,413,"Emergente (momentum, ticket medio-bajo)"
+5466,Asperup,Fyn & islands,33,0.154,3.0138,16154.6,-42.6602,5,1,3,9,513,"Emergente (momentum, ticket medio-bajo)"
+5471,Søndersø,Fyn & islands,33,-0.1692,3.999,10081.0,-74.677,1,3,1,5,131,Intermedio
+5492,Vissenbjerg,Fyn & islands,33,-0.0884,3.8087,10593.9,-58.0374,2,3,1,6,231,Intermedio
+5500,Middelfart,Fyn & islands,33,0.0583,5.23,19953.6,-44.0803,4,5,4,13,454,Champions (premium caliente-liquido)
+5540,Ullerslev,Fyn & islands,33,-0.3448,3.6874,10209.4,-57.7034,1,2,1,4,121,"Periferico dormido (iliquido, frio)"
+5550,Langeskov,Fyn & islands,33,-0.1088,3.7731,12885.7,-71.1543,2,3,2,7,232,Intermedio
+5560,Aarup,Fyn & islands,33,0.2005,3.7534,12449.0,-60.9911,5,3,2,10,532,"Emergente (momentum, ticket medio-bajo)"
+5580,Nørre Aaby,Fyn & islands,33,-0.2049,3.4543,13865.2,-55.6763,1,2,3,6,123,"Periferico dormido (iliquido, frio)"
+5591,Gelsted,Fyn & islands,33,-0.033,3.0241,10710.6,-54.5742,3,1,1,5,311,Intermedio
+5592,Ejby,Fyn & islands,33,-0.5049,3.2534,10939.2,-53.1078,1,1,1,3,111,"Periferico dormido (iliquido, frio)"
+5600,Faaborg,Fyn & islands,33,-0.2057,4.9664,14562.3,-59.646,1,5,3,9,153,Intermedio
+5610,Assens,Fyn & islands,33,-0.2911,4.3918,13122.2,-59.8328,1,4,2,7,142,"Value liquido (barato, accesible)"
+5620,Glamsbjerg,Fyn & islands,33,-0.1343,3.8693,10559.3,-72.7354,2,3,1,6,231,Intermedio
+5631,Ebberup,Fyn & islands,33,0.0532,2.938,12937.0,-61.0696,4,1,2,7,412,"Emergente (momentum, ticket medio-bajo)"
+5672,Broby,Fyn & islands,33,-0.1226,3.8087,9334.6,-55.2852,2,3,1,6,231,Intermedio
+5683,Haarby,Fyn & islands,33,-0.5391,3.7591,10941.9,-62.168,1,3,1,5,131,Intermedio
+5690,Tommerup,Fyn & islands,33,0.028,4.1158,11895.8,-65.2083,4,3,2,9,432,"Emergente (momentum, ticket medio-bajo)"
+5700,Svendborg,Fyn & islands,33,-0.0312,5.7024,19883.2,-49.9926,3,5,4,12,354,Intermedio
+5750,Ringe,Fyn & islands,33,-0.0796,4.5008,13010.3,-61.1442,2,4,2,8,242,"Value liquido (barato, accesible)"
+5762,Vester Skerninge,Fyn & islands,33,-0.2546,3.6085,14215.5,-52.6246,1,2,3,6,123,"Periferico dormido (iliquido, frio)"
+5771,Stenstrup,Fyn & islands,33,-0.4509,3.4686,13724.0,-78.8598,1,2,3,6,123,"Periferico dormido (iliquido, frio)"
+5772,Kværndrup,Fyn & islands,33,0.0685,3.03,10381.9,-54.0854,4,1,1,6,411,"Emergente (momentum, ticket medio-bajo)"
+5792,Ãrslev,Fyn & islands,33,0.1983,4.1276,13161.8,-60.9814,5,3,2,10,532,"Emergente (momentum, ticket medio-bajo)"
+5800,Nyborg,Fyn & islands,33,-0.0779,4.9871,17873.0,-82.3142,2,5,4,11,254,"Premium frio (caro, sin momentum)"
+5853,Arbæk,Fyn & islands,33,0.1468,3.4974,10786.3,-93.339,5,2,1,8,521,"Emergente (momentum, ticket medio-bajo)"
+5856,Ryslinge,Fyn & islands,33,-0.117,2.9071,9139.6,-59.1367,2,1,1,4,211,"Periferico dormido (iliquido, frio)"
+5871,Frørup,Fyn & islands,33,0.1354,2.9835,14598.8,-64.2431,5,1,3,9,513,"Emergente (momentum, ticket medio-bajo)"
+5874,Hesselager,Fyn & islands,33,-0.0086,3.1329,12882.8,-58.6972,3,1,2,6,312,Intermedio
+5881,Skårup Fyn,Fyn & islands,33,0.1912,3.0387,15508.9,-59.2906,5,1,3,9,513,"Emergente (momentum, ticket medio-bajo)"
+5900,Rudkøbing,Fyn & islands,33,0.0546,4.2601,12035.9,-64.7194,4,4,2,10,442,"Value liquido (barato, accesible)"
+5932,Humble,Fyn & islands,33,-0.0546,3.6942,13583.6,-43.6094,2,2,2,6,222,"Periferico dormido (iliquido, frio)"
+5953,Tranekær,Fyn & islands,33,-0.0453,3.9946,12456.8,-44.5518,3,3,2,8,332,Intermedio
+5960,Marstal,Fyn & islands,33,0.0793,3.6158,10052.0,-71.0406,4,2,1,7,421,"Emergente (momentum, ticket medio-bajo)"
+5970,Ãrøskøbing,Fyn & islands,33,-0.0748,3.3212,12024.7,-42.1709,2,1,2,5,212,"Periferico dormido (iliquido, frio)"
+6000,Kolding,Jutland,33,-0.1149,6.0289,20513.7,-58.5467,2,5,4,11,254,"Premium frio (caro, sin momentum)"
+6040,Egtved,Jutland,33,-0.0622,4.1124,13313.9,-53.5448,2,3,2,7,232,Intermedio
+6051,Almind,Jutland,33,-0.0777,2.8261,12992.6,-66.63,2,1,2,5,212,"Periferico dormido (iliquido, frio)"
+6070,Christiansfeld,Jutland,33,0.4523,3.7904,13565.8,-64.444,5,3,2,10,532,"Emergente (momentum, ticket medio-bajo)"
+6091,Bjert,Jutland,33,0.1865,3.2416,18778.3,-38.5875,5,1,4,10,514,Intermedio
+6093,Sjølund,Jutland,33,-0.0147,2.7858,20601.3,-34.703,3,1,4,8,314,Intermedio
+6094,Hejls,Jutland,33,0.0795,3.39,19371.2,-34.9876,4,2,4,10,424,Intermedio
+6100,Haderslev,Jutland,33,-0.0889,5.6106,16953.5,-71.192,2,5,3,10,253,Intermedio
+6200,Aabenraa,Jutland,33,-0.1882,5.3439,15973.3,-66.1937,1,5,3,9,153,Intermedio
+6230,Rødekro,Jutland,33,0.2008,4.3407,11249.3,-55.3644,5,4,2,11,542,"Value liquido (barato, accesible)"
+6240,Løgumkloster,Jutland,33,-0.139,3.7917,6882.9,-61.9826,2,3,1,6,231,Intermedio
+6261,Bredebro,Jutland,33,-0.1152,3.2249,7963.0,-76.1195,2,1,1,4,211,"Periferico dormido (iliquido, frio)"
+6270,Tønder,Jutland,33,-0.1766,4.438,12562.0,-72.636,1,4,2,7,142,"Value liquido (barato, accesible)"
+6280,Højer,Jutland,33,0.2944,2.965,7033.4,-61.9218,5,1,1,7,511,"Emergente (momentum, ticket medio-bajo)"
+6300,Gråsten,Jutland,33,0.4011,4.1383,12572.1,-68.1506,5,3,2,10,532,"Emergente (momentum, ticket medio-bajo)"
+6310,Broager,Jutland,33,0.0494,3.7362,12928.7,-55.7037,4,2,2,8,422,"Emergente (momentum, ticket medio-bajo)"
+6320,Egernsund,Jutland,33,0.0668,2.8314,13860.4,-50.6556,4,1,3,8,413,"Emergente (momentum, ticket medio-bajo)"
+6330,Padborg,Jutland,33,0.477,3.6117,9239.6,-54.6442,5,2,1,8,521,"Emergente (momentum, ticket medio-bajo)"
+6340,Kruså,Jutland,33,-0.0209,3.5977,11530.7,-50.1205,3,2,2,7,322,Intermedio
+6360,Tinglev,Jutland,33,-0.2468,3.4965,9357.1,-60.8658,1,2,1,4,121,"Periferico dormido (iliquido, frio)"
+6372,Bylderup-Bov,Jutland,33,-0.1271,3.1355,6399.7,-59.3939,2,1,1,4,211,"Periferico dormido (iliquido, frio)"
+6400,Sønderborg,Jutland,33,-0.1344,5.3441,18540.7,-50.3471,2,5,4,11,254,"Premium frio (caro, sin momentum)"
+6430,Nordborg,Jutland,33,-0.0232,4.3355,7929.5,-58.9225,3,4,1,8,341,"Value liquido (barato, accesible)"
+6440,Augustenborg,Jutland,33,-0.0986,3.8372,10527.3,-54.8241,2,3,1,6,231,Intermedio
+6470,Sydals,Jutland,33,-0.0667,4.3024,12885.6,-33.2083,2,4,2,8,242,"Value liquido (barato, accesible)"
+6500,Vojens,Jutland,33,0.0034,4.5038,9888.6,-58.1678,3,4,1,8,341,"Value liquido (barato, accesible)"
+6510,Gram,Jutland,33,-0.2021,3.5246,6857.5,-80.8262,1,2,1,4,121,"Periferico dormido (iliquido, frio)"
+6520,Toftlund,Jutland,33,-0.0007,3.8359,8826.2,-57.6877,3,3,1,7,331,Intermedio
+6560,Sommersted,Jutland,33,-0.1787,2.8043,6572.3,-77.3449,1,1,1,3,111,"Periferico dormido (iliquido, frio)"
+6580,Vamdrup,Jutland,33,-0.4166,4.021,13781.6,-47.2268,1,3,3,7,133,Intermedio
+6600,Vejen,Jutland,33,-0.4631,4.7073,13331.8,-46.3058,1,4,2,7,142,"Value liquido (barato, accesible)"
+6623,Vorbasse,Jutland,33,1.0737,2.7895,10501.2,-59.9373,5,1,1,7,511,"Emergente (momentum, ticket medio-bajo)"
+6630,Rødding,Jutland,33,-0.2241,4.3179,8719.4,-46.7789,1,4,1,6,141,"Value liquido (barato, accesible)"
+6640,Lunderskov,Jutland,33,0.0548,3.5475,12902.3,-64.4658,4,2,2,8,422,"Emergente (momentum, ticket medio-bajo)"
+6650,Brørup,Jutland,33,-0.2198,3.8912,11466.4,-65.548,1,3,2,6,132,Intermedio
+6670,Holsted,Jutland,33,-0.5086,3.3578,8194.4,-75.5569,1,2,1,4,121,"Periferico dormido (iliquido, frio)"
+6690,Gørding,Jutland,33,0.0329,2.9348,9919.6,-62.5993,4,1,1,6,411,"Emergente (momentum, ticket medio-bajo)"
+6700,Esbjerg,Jutland,33,0.093,5.2628,23610.9,-44.1145,4,5,4,13,454,Champions (premium caliente-liquido)
+6705,Esbjerg A,Jutland,33,-0.0536,4.0431,13647.2,-53.3285,2,3,2,7,232,Intermedio
+6710,Esbjerg V,Jutland,33,-0.0726,5.0137,18926.0,-24.7661,2,5,4,11,254,"Premium frio (caro, sin momentum)"
+6715,Esbjerg N,Jutland,33,-0.0648,4.1441,15378.8,-52.5588,2,3,3,8,233,Intermedio
+6720,Fanø,Jutland,33,0.0922,4.476,24450.1,-23.3688,4,4,4,12,444,Champions (premium caliente-liquido)
+6731,Tjæreborg,Jutland,33,-0.0077,3.1704,14009.5,-44.4446,3,1,3,7,313,Intermedio
+6740,Bramming,Jutland,33,0.1948,4.4586,12609.4,-48.9865,5,4,2,11,542,"Value liquido (barato, accesible)"
+6760,Ribe,Jutland,33,0.3943,4.7258,16643.3,-46.1419,5,4,3,12,543,"Emergente (momentum, ticket medio-bajo)"
+6771,Gredstedbro,Jutland,33,-0.0827,2.9805,9547.1,-41.6904,2,1,1,4,211,"Periferico dormido (iliquido, frio)"
+6780,Skærbæk,Jutland,33,-0.2162,3.814,8749.4,-49.8135,1,3,1,5,131,Intermedio
+6792,Rømø,Jutland,33,0.0691,4.0156,16675.8,-50.2545,4,3,3,10,433,"Emergente (momentum, ticket medio-bajo)"
+6800,Varde,Jutland,33,-0.1014,5.063,14279.6,-42.6099,2,5,3,10,253,Intermedio
+6818,Ãrre,Jutland,33,-0.2905,3.1083,10832.8,-78.4398,1,1,1,3,111,"Periferico dormido (iliquido, frio)"
+6823,Ansager,Jutland,33,-0.2225,3.2534,11107.5,-71.4933,1,1,2,4,112,"Periferico dormido (iliquido, frio)"
+6830,Nørre Nebel,Jutland,33,0.0225,4.1823,13622.3,-39.7439,3,3,2,8,332,Intermedio
+6840,Oksbøl,Jutland,33,0.2589,3.9072,14284.6,-25.0506,5,3,3,11,533,"Emergente (momentum, ticket medio-bajo)"
+6853,Vejers Strand,Jutland,33,0.1889,3.1006,25433.4,-38.0137,5,1,5,11,515,Intermedio
+6854,Henne,Jutland,33,0.2392,3.628,27726.4,-23.3665,5,2,5,12,525,Intermedio
+6857,Blåvand,Jutland,33,0.1873,4.2446,26215.7,-40.2027,5,3,5,13,535,Intermedio
+6862,Tistrup,Jutland,33,-0.2942,2.8421,8218.4,-86.8068,1,1,1,3,111,"Periferico dormido (iliquido, frio)"
+6870,Algod,Jutland,33,-0.5174,3.7579,9062.2,-70.4744,1,3,1,5,131,Intermedio
+6880,Tarm,Jutland,33,-0.3296,4.2002,10116.4,-47.9538,1,3,1,5,131,Intermedio
+6893,Hemmet,Jutland,33,0.1369,4.0636,13322.2,-40.1367,5,3,2,10,532,"Emergente (momentum, ticket medio-bajo)"
+6900,Skjern,Jutland,33,-0.0179,4.6779,10847.8,-37.4871,3,4,1,8,341,"Value liquido (barato, accesible)"
+6920,Videbæk,Jutland,33,-0.4156,4.1993,10330.9,-52.0474,1,3,1,5,131,Intermedio
+6933,Kibæk,Jutland,33,0.4858,3.6797,14106.3,-54.5528,5,2,3,10,523,"Emergente (momentum, ticket medio-bajo)"
+6940,Lem St,Jutland,33,-0.4211,2.8314,7006.9,-63.5818,1,1,1,3,111,"Periferico dormido (iliquido, frio)"
+6950,Ringkøbing,Jutland,33,-0.0296,5.279,20021.3,-37.1164,3,5,4,12,354,Intermedio
+6960,Hvide Sande,Jutland,33,0.1289,4.5905,19000.2,-32.4204,5,4,4,13,544,Champions (premium caliente-liquido)
+6971,Spjald,Jutland,33,-0.0291,3.1355,8681.6,-57.9321,3,1,1,5,311,Intermedio
+6990,Ulfborg,Jutland,33,0.0863,4.4505,12824.3,-39.5476,4,4,2,10,442,"Value liquido (barato, accesible)"
+7000,Fredericia,Jutland,33,-0.0727,5.8535,18956.9,-50.5196,2,5,4,11,254,"Premium frio (caro, sin momentum)"
+7080,Børkop,Jutland,33,-0.1323,4.698,18610.5,-27.0456,2,4,4,10,244,"Premium frio (caro, sin momentum)"
+7100,Vejle,Jutland,33,-0.0356,5.9268,21099.3,-53.5929,3,5,4,12,354,Intermedio
+7120,Vejle Ast,Jutland,33,0.2425,4.3999,22004.7,-37.4955,5,4,4,13,544,Champions (premium caliente-liquido)
+7130,Juelsminde,Jutland,33,0.0502,4.7298,17909.8,-41.6652,4,4,4,12,444,Champions (premium caliente-liquido)
+7140,Stouby,Jutland,33,-0.1739,2.7932,9698.7,-71.1455,1,1,1,3,111,"Periferico dormido (iliquido, frio)"
+7160,Tørring,Jutland,33,-0.0495,3.7794,11638.5,-58.0958,2,3,2,7,232,Intermedio
+7171,Uldum,Jutland,33,0.0203,2.8225,11391.7,-71.028,3,1,2,6,312,Intermedio
+7182,Bredsten,Jutland,33,-0.1575,3.2523,11400.2,-62.9505,1,1,2,4,112,"Periferico dormido (iliquido, frio)"
+7190,Billund,Jutland,33,0.3865,4.3114,18493.3,-66.121,5,4,4,13,544,Champions (premium caliente-liquido)
+7200,Grindsted,Jutland,33,0.1105,4.619,11887.1,-56.859,5,4,2,11,542,"Value liquido (barato, accesible)"
+7260,Sønder Omme,Jutland,33,-0.4211,2.9104,9237.0,-54.9494,1,1,1,3,111,"Periferico dormido (iliquido, frio)"
+7300,Jelling,Jutland,33,0.1136,3.8326,13699.2,-38.8375,5,3,3,11,533,"Emergente (momentum, ticket medio-bajo)"
+7323,Give,Jutland,33,-0.2225,4.4708,12299.7,-37.1633,1,4,2,7,142,"Value liquido (barato, accesible)"
+7330,Brande,Jutland,33,0.192,4.3379,15919.8,-67.8553,5,4,3,12,543,"Emergente (momentum, ticket medio-bajo)"
+7361,Ejstrupholm,Jutland,33,0.0257,3.2152,11511.1,-73.4537,4,1,2,7,412,"Emergente (momentum, ticket medio-bajo)"
+7400,Herning,Jutland,33,-0.1307,5.9938,17295.8,-53.5539,2,5,3,10,253,Intermedio
+7430,Ikast,Jutland,33,-0.1369,4.8497,16900.3,-52.2505,2,5,3,10,253,Intermedio
+7441,Bording,Jutland,33,-0.0704,3.502,11482.0,-52.8895,2,2,2,6,222,"Periferico dormido (iliquido, frio)"
+7442,Engesvang,Jutland,33,-0.222,3.1551,11576.2,-47.9604,1,1,2,4,112,"Periferico dormido (iliquido, frio)"
+7451,Sunds,Jutland,33,-0.0632,3.9235,13627.3,-83.9271,2,3,2,7,232,Intermedio
+7470,Karup J,Jutland,33,-0.477,3.8893,10920.9,-53.7993,1,3,1,5,131,Intermedio
+7480,Vildbjerg,Jutland,33,0.2129,3.9483,12731.5,-46.8086,5,3,2,10,532,"Emergente (momentum, ticket medio-bajo)"
+7490,Aulum,Jutland,33,0.366,3.6085,10788.2,-51.9641,5,2,1,8,521,"Emergente (momentum, ticket medio-bajo)"
+7500,Holstebro,Jutland,33,-0.0595,5.775,15421.7,-48.4513,2,5,3,10,253,Intermedio
+7570,Vemb,Jutland,33,0.3053,2.9727,8145.6,-59.1043,5,1,1,7,511,"Emergente (momentum, ticket medio-bajo)"
+7600,Struer,Jutland,33,-0.1652,4.83,14312.1,-56.9207,1,5,3,9,153,Intermedio
+7620,Lemvig,Jutland,33,0.114,4.8005,11582.2,-61.2047,5,5,2,12,552,"Value liquido (barato, accesible)"
+7673,Harboøre,Jutland,33,0.033,3.7275,12485.0,-59.9302,4,2,2,8,422,"Emergente (momentum, ticket medio-bajo)"
+7680,Thyborøn,Jutland,33,-0.2715,2.9587,7556.9,-84.1647,1,1,1,3,111,"Periferico dormido (iliquido, frio)"
+7700,Thisted,Jutland,33,-0.0921,5.4311,15158.8,-43.1953,2,5,3,10,253,Intermedio
+7730,Hanstholm,Jutland,33,-0.1662,3.1512,9274.2,-47.6299,1,1,1,3,111,"Periferico dormido (iliquido, frio)"
+7752,Snedsted,Jutland,33,0.3693,3.6896,8480.8,-41.8989,5,2,1,8,521,"Emergente (momentum, ticket medio-bajo)"
+7755,Bedsted Thy,Jutland,33,0.1511,2.9087,11632.1,-52.2344,5,1,2,8,512,"Emergente (momentum, ticket medio-bajo)"
+7760,Hurup Thy,Jutland,33,-0.0586,3.8521,9621.6,-54.5863,2,3,1,6,231,Intermedio
+7770,Vestervig,Jutland,33,0.1005,3.387,11170.2,-52.6989,4,2,2,8,422,"Emergente (momentum, ticket medio-bajo)"
+7790,Thyholm,Jutland,33,0.2907,3.5597,9322.5,-56.8363,5,2,1,8,521,"Emergente (momentum, ticket medio-bajo)"
+7800,Skive,Jutland,33,-0.2462,5.2135,13058.6,-66.7583,1,5,2,8,152,"Value liquido (barato, accesible)"
+7830,Vinderup,Jutland,33,-0.2417,4.1942,10207.5,-42.1062,1,3,1,5,131,Intermedio
+7840,Højslev,Jutland,33,-0.0887,3.9175,12325.9,-73.3558,2,3,2,7,232,Intermedio
+7850,Stoholm Jyll,Jutland,33,-0.2695,3.3354,11070.2,-51.3344,1,2,2,5,122,"Periferico dormido (iliquido, frio)"
+7860,Spøttrup,Jutland,33,0.0009,4.1158,9673.8,-27.2898,3,3,1,7,331,Intermedio
+7870,Roslev,Jutland,33,-0.0954,4.4818,9395.9,-28.482,2,4,1,7,241,"Value liquido (barato, accesible)"
+7900,Nykøbing M,Jutland,33,-0.4122,4.6708,9205.9,-56.9718,1,4,1,6,141,"Value liquido (barato, accesible)"
+7950,Erslev,Jutland,33,0.0346,3.2018,6674.6,-79.1153,4,1,1,6,411,"Emergente (momentum, ticket medio-bajo)"
+8000,Aarhus C,Jutland,33,-0.0739,5.9655,44955.3,-54.0267,2,5,5,12,255,"Premium frio (caro, sin momentum)"
+8200,Aarhus N,Jutland,33,-0.0934,4.798,37911.8,-57.9202,2,5,5,12,255,"Premium frio (caro, sin momentum)"
+8210,Aarhus V,Jutland,33,0.0209,4.2537,32205.0,-22.1555,3,4,5,12,345,Intermedio
+8220,Brabrand,Jutland,33,-0.0742,4.2804,28403.5,-80.0988,2,4,5,11,245,"Premium frio (caro, sin momentum)"
+8230,Ãbyhøj,Jutland,33,0.0216,4.1303,35739.5,-96.8138,3,3,5,11,335,Intermedio
+8240,Risskov,Jutland,33,-0.0358,4.9479,35703.1,-14.3113,3,5,5,13,355,Intermedio
+8250,Egå,Jutland,33,0.0798,4.4565,33420.4,-36.5274,4,4,5,13,445,Champions (premium caliente-liquido)
+8260,Viby J,Jutland,33,-0.0197,4.8097,29005.1,-56.9067,3,5,5,13,355,Intermedio
+8270,Højbjerg,Jutland,33,-0.0527,4.7983,35596.2,-32.6655,2,5,5,12,255,"Premium frio (caro, sin momentum)"
+8300,Odder,Jutland,33,-0.0084,5.27,20009.1,-35.2454,3,5,4,12,354,Intermedio
+8305,Samsø,Jutland,33,0.3704,4.1286,15487.3,-49.5208,5,3,3,11,533,"Emergente (momentum, ticket medio-bajo)"
+8310,Tranbjerg J,Jutland,33,-0.0101,4.0243,23669.4,-32.0529,3,3,4,10,334,Intermedio
+8320,Mårslet,Jutland,33,-0.024,3.7633,25996.2,-39.907,3,3,5,11,335,Intermedio
+8330,Beder,Jutland,33,0.0918,3.5432,28062.9,-35.346,4,2,5,11,425,Intermedio
+8340,Malling,Jutland,33,0.0918,3.812,25929.4,-45.5837,4,3,5,12,435,Intermedio
+8355,Solbjerg,Jutland,33,0.0028,3.5927,22594.2,-79.9251,3,2,4,9,324,Intermedio
+8361,Hasselager,Jutland,33,-0.0232,3.8046,23624.8,-33.6743,3,3,4,10,334,Intermedio
+8362,Hørning,Jutland,33,0.0023,4.1869,23469.3,-39.6271,3,3,4,10,334,Intermedio
+8370,Hadsten,Jutland,33,-0.021,4.5666,15810.4,-30.2343,3,4,3,10,343,Intermedio
+8380,Trige,Jutland,33,0.0031,3.4533,19493.2,-69.2522,3,2,4,9,324,Intermedio
+8381,Tilst,Jutland,33,-0.0882,4.0409,23400.0,-50.8677,2,3,4,9,234,"Premium frio (caro, sin momentum)"
+8382,Hinnerup,Jutland,33,0.0395,4.6371,21583.2,-42.3993,4,4,4,12,444,Champions (premium caliente-liquido)
+8400,Ebeltoft,Jutland,33,0.0832,5.3151,20768.8,-36.077,4,5,4,13,454,Champions (premium caliente-liquido)
+8410,Rønde,Jutland,33,0.0942,4.3854,18753.2,-39.0444,4,4,4,12,444,Champions (premium caliente-liquido)
+8420,Knebel,Jutland,33,0.0822,4.3434,21466.2,-49.1239,4,4,4,12,444,Champions (premium caliente-liquido)
+8450,Hammel,Jutland,33,-0.1338,4.3041,16516.4,-60.3614,2,4,3,9,243,Intermedio
+8462,Harlev J,Jutland,33,0.012,3.4379,20059.7,-22.9544,3,2,4,9,324,Intermedio
+8464,Galten,Jutland,33,-0.0818,4.6012,19433.4,-30.6203,2,4,4,10,244,"Premium frio (caro, sin momentum)"
+8471,Sabro,Jutland,33,0.1288,3.6126,18478.5,-35.5204,5,2,4,11,524,Intermedio
+8500,Grenaa,Jutland,33,-0.1442,5.0442,13525.1,-51.5649,2,5,2,9,252,"Value liquido (barato, accesible)"
+8520,Lystrup,Jutland,33,-0.022,4.264,25582.7,-40.7216,3,4,5,12,345,Intermedio
+8530,Hjortshøj,Jutland,33,0.0754,3.5273,21156.9,-58.4804,4,2,4,10,424,Intermedio
+8541,Skødstrup,Jutland,33,-0.0207,4.1188,23842.4,-43.2796,3,3,4,10,334,Intermedio
+8543,Hornslet,Jutland,33,-0.053,4.1513,19696.3,-48.1832,2,3,4,9,234,"Premium frio (caro, sin momentum)"
+8544,Mørke,Jutland,33,-0.1133,3.388,12004.5,-36.8143,2,2,2,6,222,"Periferico dormido (iliquido, frio)"
+8550,Ryomgård,Jutland,33,-0.1306,3.5093,12911.2,-59.331,2,2,2,6,222,"Periferico dormido (iliquido, frio)"
+8560,Kolind,Jutland,33,0.1426,3.4212,12345.6,-54.9469,5,2,2,9,522,"Emergente (momentum, ticket medio-bajo)"
+8585,Glesborg,Jutland,33,0.1363,4.3082,15530.1,-33.7441,5,4,3,12,543,"Emergente (momentum, ticket medio-bajo)"
+8600,Silkeborg,Jutland,33,0.1042,6.086,23458.8,-58.4178,5,5,4,14,554,Champions (premium caliente-liquido)
+8620,Kjellerup,Jutland,33,-0.1644,4.4947,15808.3,-49.0939,1,4,3,8,143,Intermedio
+8643,Ans By,Jutland,33,0.0549,3.214,12638.4,-53.0202,4,1,2,7,412,"Emergente (momentum, ticket medio-bajo)"
+8653,Them,Jutland,33,0.0559,3.4002,13626.7,-68.7459,4,2,2,8,422,"Emergente (momentum, ticket medio-bajo)"
+8654,Bryrup,Jutland,33,0.0791,3.1394,13801.0,-70.5756,4,1,3,8,413,"Emergente (momentum, ticket medio-bajo)"
+8660,Skanderborg,Jutland,33,0.0967,5.3027,22591.9,-33.8358,4,5,4,13,454,Champions (premium caliente-liquido)
+8670,Låsby,Jutland,33,-0.0682,3.0226,16370.1,-75.2617,2,1,3,6,213,"Periferico dormido (iliquido, frio)"
+8680,Ry,Jutland,33,0.1009,4.343,26358.5,-34.5221,5,4,5,14,545,Champions (premium caliente-liquido)
+8700,Horsens,Jutland,33,-0.1702,6.2392,18099.0,-56.1106,1,5,4,10,154,"Premium frio (caro, sin momentum)"
+8722,Hedensted,Jutland,33,0.1078,4.3422,15311.3,-72.7689,5,4,3,12,543,"Emergente (momentum, ticket medio-bajo)"
+8723,Løsning,Jutland,33,-0.0289,3.9834,11675.7,-50.2847,3,3,2,8,332,Intermedio
+8732,Hovedgård,Jutland,33,0.0587,3.2811,14309.9,-43.5849,4,1,3,8,413,"Emergente (momentum, ticket medio-bajo)"
+8740,Brædstrup,Jutland,33,-0.3602,4.1983,15654.6,-67.4474,1,3,3,7,133,Intermedio
+8751,Gedved,Jutland,33,0.312,3.0373,12115.2,-77.7296,5,1,2,8,512,"Emergente (momentum, ticket medio-bajo)"
+8752,Astbirk,Jutland,33,0.0701,3.5289,15209.3,-89.6293,4,2,3,9,423,"Emergente (momentum, ticket medio-bajo)"
+8766,Nørre Snede,Jutland,33,0.1795,3.1142,9672.0,-58.1783,5,1,1,7,511,"Emergente (momentum, ticket medio-bajo)"
+8783,Hornsyld,Jutland,33,-0.3194,3.1551,10648.5,-39.7969,1,1,1,3,111,"Periferico dormido (iliquido, frio)"
+8800,Viborg,Jutland,33,-0.0698,5.8413,17026.4,-55.2537,2,5,3,10,253,Intermedio
+8830,Tjele,Jutland,33,0.6595,4.191,10710.9,-47.8714,5,3,1,9,531,"Emergente (momentum, ticket medio-bajo)"
+8831,Løgstrup,Jutland,33,-0.2706,3.4162,14262.7,-48.704,1,2,3,6,123,"Periferico dormido (iliquido, frio)"
+8832,Skals,Jutland,33,-0.1334,3.46,11997.3,-68.8064,2,2,2,6,222,"Periferico dormido (iliquido, frio)"
+8840,Rødkærsbro,Jutland,33,-0.1141,3.0033,8936.4,-58.5379,2,1,1,4,211,"Periferico dormido (iliquido, frio)"
+8850,Bjerringbro,Jutland,33,0.0911,4.4859,11574.6,-68.7842,4,4,2,10,442,"Value liquido (barato, accesible)"
+8860,Ulstrup,Jutland,33,-0.4267,3.5562,9674.0,-43.8358,1,2,1,4,121,"Periferico dormido (iliquido, frio)"
+8870,Langå,Jutland,33,-0.2063,4.1532,13764.2,-47.0085,1,3,3,7,133,Intermedio
+8881,Thorsø,Jutland,33,-0.0809,3.1818,13116.2,-54.3904,2,1,2,5,212,"Periferico dormido (iliquido, frio)"
+8882,Fårvang,Jutland,33,-0.4642,3.203,12335.2,-51.3174,1,1,2,4,112,"Periferico dormido (iliquido, frio)"
+8883,Gjern,Jutland,33,0.1366,3.0531,13409.6,-54.286,5,1,2,8,512,"Emergente (momentum, ticket medio-bajo)"
+8900,Randers C,Jutland,33,-0.0964,4.7109,24049.5,-70.6977,2,4,4,10,244,"Premium frio (caro, sin momentum)"
+8920,Randers NV,Jutland,33,-0.1984,5.1279,13533.6,-39.568,1,5,2,8,152,"Value liquido (barato, accesible)"
+8930,Randers NA,Jutland,33,-0.188,4.5957,12622.3,-79.4957,1,4,2,7,142,"Value liquido (barato, accesible)"
+8940,Randers SV,Jutland,33,-0.2251,4.2222,13426.5,-40.0222,1,3,2,6,132,Intermedio
+8950,Arsted,Jutland,33,0.1982,3.5734,10512.8,-39.3691,5,2,1,8,521,"Emergente (momentum, ticket medio-bajo)"
+8960,Randers SA,Jutland,33,-0.0863,4.6852,13887.2,-53.6798,2,4,3,9,243,Intermedio
+8961,Allingåbro,Jutland,33,-0.2997,3.826,11670.4,-44.0589,1,3,2,6,132,Intermedio
+8963,Auning,Jutland,33,-0.047,3.5768,11021.2,-40.823,3,2,1,6,321,Intermedio
+8970,Havndal,Jutland,33,0.515,3.387,8882.3,-70.9089,5,2,1,8,521,"Emergente (momentum, ticket medio-bajo)"
+8981,Spentrup,Jutland,33,-0.2003,3.4808,10333.3,-68.6248,1,2,1,4,121,"Periferico dormido (iliquido, frio)"
+8983,Gjerlev J,Jutland,33,-0.5722,3.2511,9934.9,-67.2771,1,1,1,3,111,"Periferico dormido (iliquido, frio)"
+8990,Fårup,Jutland,33,-0.1743,3.0855,10168.0,-65.6775,1,1,1,3,111,"Periferico dormido (iliquido, frio)"
+9000,Aalborg,Jutland,33,-0.0813,6.0866,25782.6,-39.3872,2,5,5,12,255,"Premium frio (caro, sin momentum)"
+9200,Aalborg SV,Jutland,33,-0.2436,4.3497,19468.9,-69.5811,1,4,4,9,144,"Premium frio (caro, sin momentum)"
+9210,Aalborg SA,Jutland,33,-0.0253,4.3388,19979.0,-27.4521,3,4,4,11,344,Intermedio
+9220,Aalborg Ast,Jutland,33,-0.0637,3.7889,17465.0,-63.5149,2,3,3,8,233,Intermedio
+9230,Svenstrup J,Jutland,33,0.0998,4.3347,16738.0,-32.0617,4,4,3,11,443,"Emergente (momentum, ticket medio-bajo)"
+9240,Nibe,Jutland,33,-0.0863,4.6388,14207.7,-29.5845,2,4,3,9,243,Intermedio
+9260,Gistrup,Jutland,33,0.0261,3.9617,17821.8,-65.2874,4,3,4,11,434,Intermedio
+9270,Klarup,Jutland,33,-0.3342,3.6889,23221.1,-39.771,1,2,4,7,124,"Premium frio (caro, sin momentum)"
+9280,Storvorde,Jutland,33,-0.006,4.3602,11765.8,-31.4249,3,4,2,9,342,"Value liquido (barato, accesible)"
+9293,Kongerslev,Jutland,33,0.2397,2.9681,8601.3,-62.9003,5,1,1,7,511,"Emergente (momentum, ticket medio-bajo)"
+9300,Sæby,Jutland,33,-0.2646,4.7965,15698.2,-45.7146,1,5,3,9,153,Intermedio
+9310,Vodskov,Jutland,33,-0.0547,4.3763,14504.2,-68.0155,2,4,3,9,243,Intermedio
+9320,Hjallerup,Jutland,33,-0.1767,3.8912,11633.7,-59.6066,1,3,2,6,132,Intermedio
+9330,Dronninglund,Jutland,33,-0.4595,4.1484,12404.7,-48.4068,1,3,2,6,132,Intermedio
+9340,Asaa,Jutland,33,-0.1738,2.9618,8148.8,-68.6509,1,1,1,3,111,"Periferico dormido (iliquido, frio)"
+9362,Gandrup,Jutland,33,-0.0651,2.9835,9320.0,-63.8487,2,1,1,4,211,"Periferico dormido (iliquido, frio)"
+9370,Hals,Jutland,33,0.0098,4.8293,13003.3,-32.7428,3,5,2,10,352,"Value liquido (barato, accesible)"
+9380,Vestbjerg,Jutland,33,0.0647,3.1793,16936.8,-86.4947,4,1,3,8,413,"Emergente (momentum, ticket medio-bajo)"
+9381,Sulsted,Jutland,33,0.0493,2.7951,10882.7,-46.336,4,1,1,6,411,"Emergente (momentum, ticket medio-bajo)"
+9382,Tylstrup,Jutland,33,-0.2691,2.8279,9528.1,-80.6031,1,1,1,3,111,"Periferico dormido (iliquido, frio)"
+9400,Nørresundby,Jutland,33,-0.1829,4.9264,22815.8,-65.1529,1,5,4,10,154,"Premium frio (caro, sin momentum)"
+9430,Vadum,Jutland,33,0.1481,3.6312,12116.8,-69.4981,5,2,2,9,522,"Emergente (momentum, ticket medio-bajo)"
+9440,Aabybro,Jutland,33,0.0025,4.4797,14586.8,-51.9131,3,4,3,10,343,Intermedio
+9460,Brovst,Jutland,33,-0.3986,4.283,8521.4,-49.2858,1,4,1,6,141,"Value liquido (barato, accesible)"
+9480,Løkken,Jutland,33,0.0292,4.8293,17996.5,-38.3144,4,5,4,13,454,Champions (premium caliente-liquido)
+9490,Pandrup,Jutland,33,0.1924,4.2593,14362.8,-37.2604,5,4,3,12,543,"Emergente (momentum, ticket medio-bajo)"
+9492,Blokhus,Jutland,33,0.111,4.3469,25929.6,-71.5149,5,4,5,14,545,Champions (premium caliente-liquido)
+9493,Saltum,Jutland,33,0.4549,3.6643,21322.1,-30.5366,5,2,4,11,524,Intermedio
+9500,Hobro,Jutland,33,-0.4066,5.1342,12939.1,-54.9956,1,5,2,8,152,"Value liquido (barato, accesible)"
+9510,Arden,Jutland,33,-0.3197,3.6439,9602.5,-36.7748,1,2,1,4,121,"Periferico dormido (iliquido, frio)"
+9520,Skørping,Jutland,33,0.2713,3.9466,18199.7,-43.2579,5,3,4,12,534,Intermedio
+9530,Støvring,Jutland,33,0.0634,4.4995,17295.9,-43.4483,4,4,3,11,443,"Emergente (momentum, ticket medio-bajo)"
+9541,Suldrup,Jutland,33,0.0104,3.0827,10596.3,-44.7532,3,1,1,5,311,Intermedio
+9550,Mariager,Jutland,33,-0.1365,3.818,10402.3,-59.1706,2,3,1,6,231,Intermedio
+9560,Hadsund,Jutland,33,0.0739,5.0037,12972.3,-58.172,4,5,2,11,452,"Value liquido (barato, accesible)"
+9575,Terndrup,Jutland,33,0.1645,2.9444,10763.7,-63.8391,5,1,1,7,511,"Emergente (momentum, ticket medio-bajo)"
+9600,Aars,Jutland,33,-0.2224,4.619,13827.2,-55.7358,1,4,3,8,143,Intermedio
+9610,Nørager,Jutland,33,-0.3319,3.477,9340.8,-69.0776,1,2,1,4,121,"Periferico dormido (iliquido, frio)"
+9620,Aalestrup,Jutland,33,0.2013,3.7024,9595.9,-58.8499,5,2,1,8,521,"Emergente (momentum, ticket medio-bajo)"
+9632,Møldrup,Jutland,33,0.0722,3.046,9210.5,-72.39,4,1,1,6,411,"Emergente (momentum, ticket medio-bajo)"
+9640,Farsø,Jutland,33,-0.1828,4.5643,11890.5,-56.6721,1,4,2,7,142,"Value liquido (barato, accesible)"
+9670,Løgstør,Jutland,33,-0.3283,4.3862,10660.6,-59.0151,1,4,1,6,141,"Value liquido (barato, accesible)"
+9681,Ranum,Jutland,33,-0.2287,2.9444,12279.2,-60.7846,1,1,2,4,112,"Periferico dormido (iliquido, frio)"
+9690,Fjerritslev,Jutland,33,0.3341,4.3737,11381.6,-53.9669,5,4,2,11,542,"Value liquido (barato, accesible)"
+9700,Brønderslev,Jutland,33,-0.1532,4.9215,11174.4,-55.3826,1,5,2,8,152,"Value liquido (barato, accesible)"
+9740,Jerslev J,Jutland,33,0.0692,2.9412,7357.5,-43.8224,4,1,1,6,411,"Emergente (momentum, ticket medio-bajo)"
+9750,Astervrå,Jutland,33,-0.0743,3.0645,8221.6,-76.4512,2,1,1,4,211,"Periferico dormido (iliquido, frio)"
+9760,Vrå,Jutland,33,0.3587,3.7319,11859.0,-73.4262,5,2,2,9,522,"Emergente (momentum, ticket medio-bajo)"
+9800,Hjørring,Jutland,33,-0.1439,5.7138,17648.8,-41.4647,2,5,4,11,254,"Premium frio (caro, sin momentum)"
+9830,Tårs,Jutland,33,0.1224,3.3257,10538.2,-52.1477,5,2,1,8,521,"Emergente (momentum, ticket medio-bajo)"
+9850,Hirtshals,Jutland,33,-0.1699,4.4749,12665.0,-47.2855,1,4,2,7,142,"Value liquido (barato, accesible)"
+9870,Sindal,Jutland,33,0.0355,3.9294,10803.8,-53.0638,4,3,1,8,431,"Emergente (momentum, ticket medio-bajo)"
+9881,Bindslev,Jutland,33,-0.2827,3.7787,14635.0,-35.326,1,3,3,7,133,Intermedio
+9900,Frederikshavn,Jutland,33,-0.4009,5.3162,12807.8,-49.8269,1,5,2,8,152,"Value liquido (barato, accesible)"
+9940,Læsø,Jutland,33,-0.214,3.6296,13283.3,-33.8132,1,2,2,5,122,"Periferico dormido (iliquido, frio)"
+9970,Strandby,Jutland,33,-0.0227,3.1499,10642.8,-49.0838,3,1,1,5,311,Intermedio
+9981,Jerup,Jutland,33,-0.0279,3.0078,14337.7,-52.5716,3,1,3,7,313,Intermedio
+9982,Ãlbæk,Jutland,33,-0.0555,3.4957,15313.8,-95.1388,2,2,3,7,223,"Periferico dormido (iliquido, frio)"
+9990,Skagen,Jutland,33,-0.1501,4.6115,23717.9,-36.3692,2,4,4,10,244,"Premium frio (caro, sin momentum)"

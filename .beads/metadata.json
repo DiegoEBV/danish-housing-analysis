@@ -1,0 +1,7 @@
+{
+  "database": "dolt",
+  "backend": "dolt",
+  "dolt_mode": "embedded",
+  "dolt_database": "danish_housing_analysis",
+  "project_id": "302c0af2-2ba5-4c5c-8c51-feb3151f6085"
+}

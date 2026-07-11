@@ -19,7 +19,9 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from danish_housing.kpis import (
+    build_cpi_from_inflation,
     compute_regional_index,
+    deflate_sqm_price,
 )
 
 logging.basicConfig(
@@ -39,18 +41,29 @@ def add_derived_columns(df: pd.DataFrame) -> pd.DataFrame:
     """
     df = df.copy()
 
-    # Crear sqm_price_real si no existe
+    # Crear sqm_price_real si no existe, usando el IPC CANONICO (mismo que run_pipeline.py).
     if "sqm_price_real" not in df.columns:
-        # Deflactor simple basado en inflacion promedio historica danesa (~2% anual)
-        if "date" in df.columns:
+        if "date" in df.columns and "year" not in df.columns:
             df["date"] = pd.to_datetime(df["date"], errors="coerce")
             df["year"] = df["date"].dt.year
-        base_year = 2024
-        price_col = "sqm_price" if "sqm_price" in df.columns else "purchase_price"
-        df["deflactor"] = (1.02) ** (base_year - df["year"])
-        df["sqm_price_real"] = df[price_col] * df["deflactor"]
-        df = df.drop(columns=["deflactor"])
-        logger.info("Columna sqm_price_real creada (deflactor 2% anual)")
+        if "dk_ann_infl_rate_pct" in df.columns and "sqm_price" in df.columns:
+            infl_by_year = (
+                df[["year", "dk_ann_infl_rate_pct"]].dropna()
+                .groupby("year")["dk_ann_infl_rate_pct"].mean().sort_index()
+            )
+            cpi = build_cpi_from_inflation(infl_by_year)
+            df["sqm_price_real"] = deflate_sqm_price(df, cpi)
+            logger.info("Columna sqm_price_real creada (IPC derivado de inflacion real, canonico)")
+        else:
+            # Sin inflacion en el Silver no se puede aplicar el IPC canonico: fallback 2%
+            # EXPLICITO y avisado (no deberia ocurrir en el flujo normal desde run_pipeline).
+            base_year = 2024
+            price_col = "sqm_price" if "sqm_price" in df.columns else "purchase_price"
+            df["sqm_price_real"] = df[price_col] * (1.02) ** (base_year - df["year"])
+            logger.warning(
+                "sqm_price_real con fallback 2%% plano: falta dk_ann_infl_rate_pct en el Silver. "
+                "Preferir el Silver de run_pipeline.py (IPC real)."
+            )
 
     # Crear region si no existe
     if "region" not in df.columns and "area" in df.columns:

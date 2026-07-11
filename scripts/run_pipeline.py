@@ -23,6 +23,9 @@ from pathlib import Path
 import pandas as pd
 import yaml
 
+sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+from danish_housing.kpis import build_cpi_from_inflation, deflate_sqm_price  # noqa: E402
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
 logger = logging.getLogger(__name__)
 
@@ -119,24 +122,15 @@ def main() -> None:
     # quarter
     df["quarter"] = df["date"].dt.to_period("Q").astype(str)
 
-    # CPI derivado de inflacion anual real del dataset
+    # CPI derivado de inflacion anual real del dataset (definicion canonica en kpis.py,
+    # compartida con export_marts.py para evitar divergencias en sqm_price_real).
     infl_by_year = (
         df[["year", "dk_ann_infl_rate_pct"]].dropna()
         .groupby("year")["dk_ann_infl_rate_pct"].mean()
         .sort_index()
     )
-    cpi: dict[int, float] = {}
-    cpi[int(infl_by_year.index.max())] = 100.0
-    for yr in sorted(infl_by_year.index, reverse=True)[1:]:
-        yr, yp1 = int(yr), int(yr) + 1
-        rate = infl_by_year.get(yp1, 2.0)
-        cpi[yr] = cpi[yp1] / (1 + rate / 100)
-    for yr in range(1992, min(cpi.keys())):
-        cpi[yr] = cpi[min(cpi.keys())] / (1.02 ** (min(cpi.keys()) - yr))
-
-    df["cpi_year"] = df["year"].map(cpi)
-    df["sqm_price_real"] = (df["sqm_price"] * 100.0 / df["cpi_year"]).round(2)
-    df = df.drop(columns=["cpi_year"])
+    cpi = build_cpi_from_inflation(infl_by_year)
+    df["sqm_price_real"] = deflate_sqm_price(df, cpi)
 
     print(f"  sqm_price_real media: {df['sqm_price_real'].mean():.0f} DKK/m²")
     print(f"  Shape Silver: {df.shape}")

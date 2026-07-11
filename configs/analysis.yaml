@@ -49,10 +49,13 @@ cleaning:
   # P6: Periodo con menor completitud
   preliminary_period_before: 1995
 
-  # P3: sales_type no clasificable
+  # P3: sales_type no-mercado (vocabulario real del dataset, verificado en TB2 value_counts)
+  # regular_sale = mercado; el resto se excluye del analisis de precios.
   invalid_sales_types:
     - "-"
-    - "Familiehandel"
+    - "family_sale"
+    - "other_sale"
+    - "auction"
 
   # P7: zip_code string con 4 digitos
   zip_code_pad: 4
@@ -112,9 +115,13 @@ segmentation:
   recent_years: 5                           # ventana "reciente" para nivel de precio y crecimiento
   random_state: 42
   pca_components: 2                         # componentes retenidas para visualizacion 2D
-  kmeans_k_range: [2, 3, 4, 5, 6, 7, 8]     # se elige k por silueta
-  kmeans_k_override: null                   # fijar k manualmente (null = automatico por silueta)
-  tsne_perplexity: 30                       # perplejidad t-SNE para el embedding 2D
+  kmeans_k_range: [2, 3, 4, 5, 6, 7, 8]     # rango evaluado por el consenso amplio (7 criterios)
+  kmeans_k_operativo: 4                      # k para el dashboard (perfiles de negocio); el 'cientifico' se calcula por consenso (=2)
+  kmeans_k_override: null                    # fuerza k manual (null = usa k_operativo)
+  # t-SNE: SOLO exploracion visual, NO valida clusters. Hiperparametros fijos para reproducibilidad.
+  tsne_perplexity: 30                        # perplejidad del embedding 2D
+  tsne_learning_rate: auto                   # explicito (default sklearn) — documentado
+  tsne_max_iter: 1000                        # iteraciones de optimizacion (explicito)
   features:                                 # features de entrada (interpretables) por zip_code
     - price_level          # nivel de precio real/m2 (mediana ventana reciente)
     - cagr_real            # crecimiento anual compuesto del precio real
@@ -123,18 +130,27 @@ segmentation:
     - liquidity_log        # log del volumen medio de transacciones
     - growth_recent        # crecimiento en la ventana reciente
 
-# Tipos de vivienda de interes
+# RFM de atractivo de mercado por zip (complementa la segmentacion riesgo-retorno).
+# NO es RFM de clientes (la data no tiene compradores repetidos): es un reencuadre por mercado.
+rfm:
+  n_quantiles: 5                 # quintiles 1-5 por dimension
+  recency_feature: growth_recent # R = momentum reciente (crecimiento ultimos anios)
+  frequency_feature: liquidity_log # F = liquidez (volumen de transacciones)
+  monetary_feature: price_level  # M = nivel de precio real/m2
+  # Reusa los mismos filtros de cobertura de `segmentation` (build_features) -> mismos 483 zips.
+
+# Tipos de vivienda de interes (vocabulario real del dataset = ingles)
 house_types:
   villa: "Villa"
-  apartment: "Ejerlejlighed"
-  summerhouse: "Fritidshus"
-  terraced: "Raekke hus"
+  apartment: "Apartment"
+  summerhouse: "Summerhouse"
+  terraced: "Townhouse"
 
-# Regiones
+# Regiones (la data real tiene 4 regiones en ingles; NO existe una region "Copenhagen").
+# La region capital = Zealand, que contiene la ciudad de Copenhague.
 regions:
-  capital: "Kobenhavn"
+  capital: "Zealand"
   provinces:
-    - "Midtjylland"
-    - "Nordjylland"
-    - "Sjaelland"
-    - "Syddanmark"
+    - "Jutland"
+    - "Fyn & islands"
+    - "Bornholm"

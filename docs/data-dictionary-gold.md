@@ -37,7 +37,7 @@
 | `purchase_price` | float | Precio de compra en DKK | `2,500,000` | P5: flag outliers IQR×3 |
 | `sqm_price` | float | Precio nominal por m² (DKK) | `20,833` | Derivado: price/sqm |
 | `sqm_price_real` | float | Precio real por m² (DKK, base 2024) | `18,200` | Deflactado con IPC danés |
-| `sales_type` | str | Tipo de venta | `"Normal salg"`, `"-"`, `"Familiehandel"` | P3: flag ventas no mercado |
+| `sales_type` | str | Tipo de venta | `"regular_sale"`, `"family_sale"`, `"other_sale"`, `"auction"`, `"-"` | P3: solo `regular_sale` es mercado; el resto se flagea `sales_type_valido=False` |
 
 ### Variables Macroeconómicas (Dinamarca)
 

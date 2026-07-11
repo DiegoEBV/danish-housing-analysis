@@ -55,7 +55,7 @@ Academic project for **Data Visualization — UPC 2026-01**: análisis del merca
 
 **Research question**: ¿qué tipologías de vivienda muestran la mayor volatilidad y drawdowns durante crisis financieras, y cómo difieren los precios entre Copenhague y las provincias bajo distintos regímenes de tasas/inflación?
 
-La documentación interna y los nombres de variables/columnas están **en español y danés** (regiones, `house_type` con valores como `Ejerlejlighed`, `Fritidshus`, etc.) — preservar ese estilo en código nuevo y commits.
+La documentación interna y los comentarios están **en español**; los **valores de datos** (`region`, `house_type`) vienen **en inglés** en el dataset real de Kaggle (`Zealand`, `Jutland`; `Villa`, `Apartment`, `Summerhouse`, `Townhouse`, `Farm`). Preservar el español en comentarios/docs y usar los valores tal cual vienen en la data (no traducir a danés — los nombres daneses como `Ejerlejlighed`/`Fritidshus`/`København` NO existen en el dataset).
 
 ## Commands
 
@@ -76,6 +76,9 @@ uv run python scripts/export_marts.py --config configs/analysis.yaml
 
 # Segmentacion no supervisada TF (PCA + KMeans + t-SNE sobre mart_transactions_map)
 uv run python scripts/run_segmentation.py --config configs/analysis.yaml
+
+# RFM de atractivo de mercado por zip (complementa la segmentacion; mismo universo de zips)
+uv run python scripts/run_rfm.py --config configs/analysis.yaml
 
 # QA tecnico automatizado (integridad + reconciliacion informe/dashboard vs marts)
 uv run python scripts/run_qa.py
@@ -150,7 +153,7 @@ Entry point: `run_cleaning_pipeline(df, config)` → `(cleaned_df, audit_log_df)
 
 **[kpis.py](src/danish_housing/kpis.py)** — 5 KPIs sobre Silver:
 
-1. **Precio Real/m²** (`compute_real_price_per_sqm`) — deflactado con IPC danés (base 2024). El IPC no viene en el dataset; se **deriva** de `dk_ann_infl_rate_pct` haciendo cumulada desde el año más reciente hacia atrás (ver `run_pipeline.py` líneas 70–84). Para años pre-1992 se asume 2% anual de fallback.
+1. **Precio Real/m²** (`compute_real_price_per_sqm`) — deflactado con IPC danés (base = año más reciente con dato macro). El IPC no viene en el dataset; se **deriva** de `dk_ann_infl_rate_pct` cumulada desde el año más reciente hacia atrás. La lógica canónica es `kpis.build_cpi_from_inflation` + `deflate_sqm_price`, **compartida por `run_pipeline.py` y `export_marts.py`** (una sola definición; test en `tests/test_kpis.py`). Para años sin inflación (pre-1992 o gaps) se asume 2% anual de fallback.
 2. **Índice Regional** (`compute_regional_index`) — base 1992 = 100, por región. Si una región no tiene observaciones en 1992 el fallback es el primer trimestre disponible.
 3. **Drawdown** (`compute_drawdown`) — máximo acumulado por `(region, house_type)` con `cummax`; `drawdown_pct = (precio − cummax) / cummax × 100`.
 4. **Volatilidad** (`compute_volatility`) — std del `pct_change` trimestral en ventana móvil de 4 trimestres por `house_type`.
@@ -167,6 +170,8 @@ Entry point: `run_cleaning_pipeline(df, config)` → `(cleaned_df, audit_log_df)
 | `mart_transactions_map.csv` | Agregado por `zip_code` para vista de mapa |
 | `mart_zip_segments.csv` | Segmentación no supervisada por `zip_code` (PCA/KMeans/t-SNE) — Entrega 6 |
 | `mart_segment_profiles.csv` | Perfil (centroide) por cluster de segmentación — Entrega 6 |
+| `mart_segmentation_validation.csv` | Métricas de validación por k (7 criterios) + experimento η² — Entrega 6 |
+| `mart_rfm_segments.csv` | RFM de atractivo de mercado por `zip_code` (R=momentum, F=liquidez, M=precio) — complemento TF |
 
 Versiones sintéticas (sin data real) se generan con `scripts/generate_tableau.py`.
 
@@ -180,8 +185,8 @@ Versiones sintéticas (sin data real) se generan con `scripts/generate_tableau.p
 
 ## Datos
 
-- **Regiones (5)**: `København` (capital), `Sjælland`, `Syddanmark`, `Midtjylland`, `Nordjylland`.
-- **Tipologías de interés (4)**: `Villa`, `Ejerlejlighed` (apartamento), `Fritidshus` (casa de verano), `Rækkehus` (adosada).
+- **Regiones (4, valores reales en inglés)**: `Zealand` (región capital — contiene Copenhague; no existe una región `Copenhagen` en la data), `Jutland`, `Fyn & islands`, `Bornholm`.
+- **Tipologías de interés (valores reales en inglés)**: `Villa`, `Apartment` (apartamento), `Summerhouse` (casa de verano), `Townhouse` (adosada), `Farm`.
 - **Períodos de crisis** definidos en config: 2007–2012 (GFC) y 2006–2009 (burbuja inmobiliaria).
 - Silver usa Parquet con compresión Snappy; los scripts usan `gc.collect()` explícito para manejar peak memory en runs de 1.5M filas.
 - Las columnas `*_pct` originales vienen con `%25` (URL-encoded `%`) en el nombre y son renombradas por la regla P8.
