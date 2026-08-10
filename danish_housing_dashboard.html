@@ -485,6 +485,22 @@
         <div id="segment-profiles-table">Cargando…</div>
         <div class="takeaway mt-2"><span class="takeaway-icon">→</span><span class="takeaway-text" id="ti-segment">Cargando…</span></div>
       </div>
+      <div class="card p-5 mb-4">
+        <div class="flex items-start justify-between mb-1 gap-2">
+          <div>
+            <div class="section-title">Proyección de la Segmentación · PCA / t-SNE</div>
+            <div class="section-sub">483 códigos postales · 6 features estandarizadas · cada punto es un zip, coloreado por arquetipo</div>
+          </div>
+          <select id="segment-scatter-mode" onchange="renderSegmentScatter(this.value)" aria-label="Elegir proyección del clustering: PCA o t-SNE">
+            <option value="pca">PCA (2 comps · 63.6% var.)</option>
+            <option value="tsne">t-SNE (exploratorio)</option>
+          </select>
+        </div>
+        <canvas id="chartSegmentScatter" height="230" role="img" aria-label="Dispersión de códigos postales en el espacio PCA o t-SNE, coloreados por arquetipo de segmentación"></canvas>
+        <div class="takeaway mt-2"><span class="takeaway-icon">→</span><span class="takeaway-text">
+          <strong>k=4</strong> (operativo, por informatividad de negocio) sobre <strong>k=2</strong> (científico, elegido por consenso de 7 criterios: silueta 0.265, estabilidad bootstrap ARI 0.96). PCA retiene <strong>63.6%</strong> de la varianza en 2 componentes; t-SNE es exploratorio, no prueba de validación — el respaldo cuantitativo está en <code style="font-size:.7rem">mart_segmentation_validation.csv</code>.
+        </span></div>
+      </div>
       <div class="card p-5">
         <div class="flex items-start justify-between mb-2 gap-2">
           <div class="section-title">Top 15 Ciudades</div>
@@ -948,6 +964,8 @@ function buildData({ ri, dd, vol, mc, mp, zipSeg = [], segProf = [] }) {
       max_drawdown: parseFloat(d.max_drawdown),
       liquidity_log: parseFloat(d.liquidity_log),
       growth_recent: parseFloat(d.growth_recent),
+      pca1: parseFloat(d.pca1), pca2: parseFloat(d.pca2),
+      tsne1: parseFloat(d.tsne1), tsne2: parseFloat(d.tsne2),
     };
   });
   const segment_profiles = segProf.map(d => ({
@@ -1659,6 +1677,52 @@ function renderSegmentProfiles() {
   }
 }
 
+// ── Scatter PCA / t-SNE de la segmentación (Entrega 6) ─────────────────────────
+let chartSegmentScatter = null;
+function renderSegmentScatter(mode) {
+  const canvas = document.getElementById('chartSegmentScatter');
+  if (!canvas) return;
+  const segs = DATA.zip_segments || {};
+  const xKey = mode === 'tsne' ? 'tsne1' : 'pca1';
+  const yKey = mode === 'tsne' ? 'tsne2' : 'pca2';
+  const xLabel = mode === 'tsne' ? 't-SNE 1' : 'PC1';
+  const yLabel = mode === 'tsne' ? 't-SNE 2' : 'PC2';
+
+  const byLabel = {};
+  Object.entries(segs).forEach(([zip, s]) => {
+    const x = s[xKey], y = s[yKey];
+    if (!s.cluster_label || isNaN(x) || isNaN(y)) return;
+    (byLabel[s.cluster_label] ??= []).push({ x, y, zip, city: s.city, region: s.region, label: s.cluster_label });
+  });
+  const datasets = Object.entries(byLabel).map(([label, pts]) => ({
+    label, data: pts,
+    backgroundColor: hex2rgba(SEGMENT_COLORS[label] || SEGMENT_NODATA_COLOR, .75),
+    borderColor: 'transparent',
+    pointRadius: 3.5, pointHoverRadius: 6,
+  }));
+
+  if (chartSegmentScatter) chartSegmentScatter.destroy();
+  chartSegmentScatter = new Chart(canvas, {
+    type: 'scatter', data: { datasets },
+    options: {
+      ...CHART_DEFAULTS,
+      plugins: {
+        legend: { display: true, position: 'bottom', labels: { color: '#5b647a', font: { size: 10.5 }, padding: 10, boxWidth: 11 } },
+        tooltip: { ...CHART_DEFAULTS.plugins.tooltip,
+          callbacks: {
+            title: ctx => `${ctx[0].raw.city} (${ctx[0].raw.zip})`,
+            label: ctx => ` ${ctx.raw.label} · ${ctx.raw.region}`,
+          }
+        },
+      },
+      scales: {
+        x: { ...CHART_DEFAULTS.scales.x, title: { display: true, text: xLabel, color: '#5b647a', font: { size: 10 } } },
+        y: { ...CHART_DEFAULTS.scales.y, title: { display: true, text: yLabel, color: '#5b647a', font: { size: 10 } } },
+      },
+    },
+  });
+}
+
 function renderRegionStats(prices) {
   const k = DATA.kpis;
   const maxP = Math.max(...Object.values(prices).filter(p => p > 0));
@@ -2071,6 +2135,7 @@ window.addEventListener('load', async () => {
     renderAnnual();
     renderCities();
     renderSegmentProfiles();
+    renderSegmentScatter('pca');
     renderScatter();
     renderRollingCorr();
     renderVolatility();
